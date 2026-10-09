@@ -117,7 +117,7 @@ function tariffGrid(c,surgFee,anesFee){
   if(cc>=300&&cc<310)return {total:18400,official:true,global:true,label:'Forfait AMO public · K300',band:'K300 : 18 400 DH',note:'Référence historique : convention nationale AMO des établissements publics (mai 2007). Vérifier la grille effectivement appliquée par l’établissement.'};
   if(cc>=310){var publicSteps=Math.ceil((cc-300)/10);return {total:18400+publicSteps*600,official:true,global:true,label:'Forfait AMO public · supplément à partir de K310',band:'À partir de K310 : +600 DH par tranche de 10 K',note:'Référence historique : convention nationale AMO des établissements publics (mai 2007), supplément de 600 DH par tranche de 10 K à partir de K310.'};}
  }else{
-  if(cc<30){var partial=Math.max(0,(Number(surgFee)||0)+(Number(anesFee)||0)+(cc*sectorKeyValue()*0.5));return {total:partial,official:false,global:false,label:'Privé · inférieur à K30 (forfait non indiqué)',band:'Hors de la grille forfaitaire privée à partir de K30',note:'La grille forfaitaire privée consultée commence à K30. Montant affiché = honoraires NGAP calculés + salle d’opération estimée ; séjour, clinique, pharmacie et consommables ne sont pas chiffrés dans ce montant partiel.'};}
+  if(cc<30){var partial=Math.max(0,(Number(surgFee)||0)+(Number(anesFee)||0)+(cc*(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value))*0.5));return {total:partial,official:false,global:false,label:'Privé · inférieur à K30 (forfait non indiqué)',band:'Hors de la grille forfaitaire privée à partir de K30',note:'La grille forfaitaire privée consultée commence à K30. Montant affiché = honoraires NGAP calculés + salle d’opération estimée ; séjour, clinique, pharmacie et consommables ne sont pas chiffrés dans ce montant partiel.'};}
   var privateBands=[
    {min:30,max:40,total:1950},{min:40,max:50,total:2600},{min:50,max:60,total:4000},
    {min:60,max:70,total:4800},{min:70,max:80,total:5600},{min:80,max:90,total:6400},
@@ -284,7 +284,7 @@ function calculate(){
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
  var today=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
  $('totalHeadline').textContent=grid?fmt(totalAll):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(extra?' · + '+fmt(extra)+' d’implants en sus':''):'Sélectionnez une intervention principale.';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(extra?' · + '+fmt(extra)+' d’implants en sus':''):(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
  $('payerAmount').textContent=grid?(unknownCoverage?'À confirmer':fmt(coverAll)):'—';
  $('patientAmount').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
  $('todayAmount').textContent=grid?(typeof today==='string'?today:fmt(today)):'—';
@@ -325,7 +325,33 @@ function calculate(){
  calculateImplants();
 }
 function addGesture(){gestures.push({id:nextId++,act:null,coef:'',query:''});renderGestures();calculate()}
-function summary(){if(!lastCalc||!lastCalc.rows.length)return 'SIMULATEUR NGAP — sélectionnez une intervention.';return ['SIMULATEUR NGAP — estimation indicative, non devis','Intervention principale : '+mainAct.code+' · '+mainAct.title,'Gestes associés : '+lastCalc.rows.slice(1).map(function(r){return r.act.code+' · '+r.act.title+' (K '+r.coef+')'}).join(' ; '),'Coefficient pondéré : '+lastCalc.coefficient,'Tarif opératoire : '+fmt(lastCalc.total),'Implants hors forfait : '+fmt(lastCalc.implantExtra),'Total estimé acte + implants hors forfait : '+fmt(lastCalc.totalAll),'Honoraires chirurgien : '+fmt(lastCalc.surgeon),'Honoraires anesthésiste : '+fmt(lastCalc.anesthesia),'Bloc opératoire : '+fmt(lastCalc.block),'Part clinique : '+fmt(lastCalc.clinic),'Payeur : '+$('payer').value,'Paiement : '+$('paymentType').value,'Part payeur simulée : '+(typeof lastCalc.coverage==='number'?fmt(lastCalc.coverage):lastCalc.coverage),'Reste patient simulé : '+(typeof lastCalc.patient==='number'?fmt(lastCalc.patient):lastCalc.patient),'À payer aujourd’hui : '+(typeof lastCalc.today==='number'?fmt(lastCalc.today):lastCalc.today),'Référence : NGAP marocaine + grille forfaitaire publiée dans l’arrêté 1961-06, à vérifier avant facturation.'].join('\n')}
+function summary(){
+ if(!lastCalc||!lastCalc.rows.length)return 'SIMULATEUR NGAP — sélectionnez une intervention.';
+ var mainLine=mainAct?mainAct.code+' · '+mainAct.title:'Non sélectionnée';
+ var associated=lastCalc.rows.filter(function(r){return r.origin!=='principale'}).map(function(r){return r.act.code+' · '+r.act.title+' (coefficient '+(r.coef===null?'non autonome':r.coef)+')'}).join(' ; ')||'Aucun';
+ var amount=function(v){return typeof v==='number'?fmt(v):String(v);};
+ return [
+  'SIMULATEUR NGAP ORTHOPÉDIE-TRAUMATOLOGIE — estimation, pas un devis',
+  'Secteur : '+(lastCalc.sector==='public'?'public':'privé'),
+  'Intervention principale : '+mainLine,
+  'Gestes associés : '+associated,
+  'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
+  'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
+  'Forfait de référence : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
+  'Implants hors forfait : '+fmt(lastCalc.implantExtra),
+  'Total acte + implants en sus : '+fmt(lastCalc.totalAll),
+  'Honoraires chirurgien (calcul NGAP) : '+fmt(lastCalc.surgeon),
+  'Honoraires anesthésiste (calcul NGAP) : '+fmt(lastCalc.anesthesia),
+  'Bloc opératoire (NGAP art. 23) : '+fmt(lastCalc.block),
+  'Part clinique/établissement : '+amount(lastCalc.clinic),
+  'Payeur : '+$('payer').value,
+  'Type de paiement : '+$('paymentType').value,
+  'Part payeur simulée : '+amount(lastCalc.coverage),
+  'Reste patient estimé : '+amount(lastCalc.patient),
+  'À payer aujourd’hui : '+amount(lastCalc.today),
+  'Source : NGAP marocaine fournie ; grille privée 1961-06 (2006) ; convention AMO établissements publics (2007). Vérifier le barème en vigueur et l’accord du payeur avant facturation.'
+ ].join('\n');
+}
 $('implantSearch').addEventListener('input',renderImplantSearch);
 $('implantRate').addEventListener('input',function(){calculate();calculateImplants();});
 $('clearImplants').addEventListener('click',function(){selectedImplants=[];renderImplants();calculate();});
