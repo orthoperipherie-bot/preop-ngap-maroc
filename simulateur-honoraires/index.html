@@ -349,11 +349,11 @@ function calculate(){
  var unknownCoverage=coverageUnknown||implantUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
  var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
- $('totalHeadline').textContent=grid?(unknownCoverage?'À confirmer':fmt(patientAll)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste à charge estimé après couverture, implants « en sus » inclus':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
- $('payerAmount').textContent=grid?(unknownCoverage?'À confirmer':fmt(coverAll)):'—';
- $('patientAmount').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
- $('todayAmount').textContent=grid?(typeof todayAll==='string'?todayAll:fmt(todayAll)):'—';
+ $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste à charge de l’acte seul, hors implants':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
+ $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
+ $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
+ $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('summaryAct').textContent=mainAct?mainAct.code+' · '+mainAct.title:'À sélectionner';
  $('summaryBasis').textContent=grid?grid.label:'—';
@@ -423,9 +423,9 @@ function summary(){
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
   'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
   'Base tarifaire utilisée pour l’acte : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
-  'Part payeur simulée (acte + implants en sus) : '+amount(lastCalc.coverageAll),
-  'Reste net à payer par le patient (acte + implants en sus) : '+amount(lastCalc.patientAll),
-  'À avancer aujourd’hui selon le mode de paiement : '+amount(lastCalc.todayAll),
+  'Part payeur simulée — acte seul, hors implants : '+amount(lastCalc.coverage),
+  'Reste à payer par le patient — acte seul, hors implants : '+amount(lastCalc.patient),
+  'À avancer aujourd’hui — acte seul, hors implants : '+amount(lastCalc.today),
   'Honoraires bruts théoriques du chirurgien : '+fmt(lastCalc.surgeon),
   (lastCalc.surgeonStatus==='public'?'Net individuel du chirurgien public : non calculable à partir de la NGAP (rémunération statutaire/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
   (lastCalc.surgeonStatus==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur':'Net estimé du chirurgien libéral (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
