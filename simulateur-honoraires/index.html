@@ -14,11 +14,11 @@
 .metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:clamp(18px,4vw,25px);margin-top:4px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.row span{color:var(--muted)}.row strong{text-align:right;font-variant-numeric:tabular-nums}.notice{padding:10px;border-radius:10px;background:var(--warn);font-size:12px;margin:9px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.actions .btn{flex:1}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}td.num,th.num{text-align:right;white-space:nowrap}a{color:var(--accent)}@media(max-width:420px){.app{padding:11px 8px 30px}.panel{padding:10px}.line{grid-template-columns:minmax(0,1fr) 70px 29px;gap:4px}.line .remove{width:29px}.tab{padding:9px 5px;font-size:12px}}
 </style></head><body><main class="app">
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → montant à la charge du patient pour l’acte seul. Les implants sont chiffrés séparément dans l’onglet dédié. Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 31 — la valeur principale affiche le NET RESTANT À PAYER PAR LE PATIENT après prise en charge simulée. Le coût de référence avant couverture reste visible dans l’onglet « Détails estimés NGAP ».</p>
+<p class="muted" id="buildVersion">Version 32 — le total principal affiche le net restant à payer par le patient. Le net du chirurgien dépend séparément de son statut professionnel (libéral ou public), dans « Détails estimés NGAP ».</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
-<div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Secteur privé — clinique</option><option value="public">Secteur public — hôpital / CHU</option></select></div>
+<div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Secteur privé — clinique</option><option value="public">Secteur public — CHU</option><option value="nonprofit">Hôpital privé à but non lucratif</option></select></div>
 <div class="field"><label for="careSetting">Modalité de chirurgie</label><select id="careSetting"><option value="hospitalisation" selected>Hospitalisation</option><option value="ambulatoire">Ambulatoire / sans nuitée</option></select></div>
 <div class="field"><label>Valeur K/KC préremplie</label><div id="sectorKDisplay" class="selected"><strong>22,50 DH</strong><small>Référence secteur privé</small></div></div>
 </div><p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
@@ -58,7 +58,8 @@
 <div class="panel"><h2>Sources et actualité du barème</h2><p class="muted">Référence : <a href="https://www.sante.gov.ma/Reglementation/Cov_Med/Documents/AMO/arretes/Arr%C3%AAt%C3%A9%20n%C2%B0%202314-08.pdf" target="_blank" rel="noopener">arrêté du ministère de la Santé n°2314-08 — TNR des dispositifs médicaux</a>. L’arrêté n°3207-15 a modifié les tarifs de la classe III : <a href="https://pharmacie.ma/uploads/pdfs/BO_6422_Fr-DM.pdf" target="_blank" rel="noopener">Bulletin officiel n°6422 — arrêté n°3207-15</a>. Les valeurs orthopédiques sont affichées avec la date de leur source ; ne les considérez pas comme tarif actuel garanti avant vérification. <a href="https://www.cnops.org.ma/fr/dispositifs-medicaux" target="_blank" rel="noopener">Règles CNOPS sur les dispositifs médicaux</a>.</p></div>
 </section>
 <section id="tab-details" class="hidden">
-<div class="panel"><h2>Ventilation estimée</h2><p class="muted">Chirurgien : coefficient opératoire pondéré × valeur K/KC du secteur. Anesthésie : coefficient secondaire NGAP lorsqu’il est indiqué ; à défaut, l’article 22 prévoit K15 sans dépasser le coefficient de l’acte. Bloc : 50 % de la cotation opératoire selon l’article 23. La part établissement est un résiduel estimatif et peut être indiquée « à confirmer » si la ventilation et le forfait de référence ne sont pas compatibles.</p>
+<div class="panel"><h2>Ventilation estimée</h2><p class="muted">Chirurgien : coefficient opératoire pondéré × valeur K/KC de l’établissement. Anesthésie : coefficient secondaire NGAP lorsqu’il est indiqué ; à défaut, l’article 22 prévoit K15 sans dépasser le coefficient de l’acte. Bloc : 50 % de la cotation opératoire selon l’article 23. La part établissement est un résiduel estimatif et peut être indiquée « à confirmer » si la ventilation et le forfait de référence ne sont pas compatibles.</p>
+<div class="field"><label for="surgeonStatus">Statut professionnel du chirurgien (pour le calcul du net)</label><select id="surgeonStatus"><option value="liberal" selected>Exercice libéral</option><option value="public">Médecin public / fonctionnaire</option></select><p class="muted">Le statut du chirurgien est distinct du secteur de l’établissement. En libéral, le net estimé = honoraires bruts théoriques − retenue/commission paramétrée. Pour un médecin public, la NGAP ne permet pas de déduire un salaire net personnel : le montant est indiqué comme non calculable.</p></div>
 <div class="metrics"><div class="metric"><small>Tarif de référence avant prise en charge</small><strong id="dTotal">—</strong></div><div class="metric"><small id="dSurgeonGrossLabel">Honoraires bruts du chirurgien</small><strong id="dSurgeonGross">—</strong></div><div class="metric surgeon-highlight"><small id="dSurgeonNetLabel">Net estimé du chirurgien (privé)</small><strong id="dSurgeonNet">—</strong></div><div class="metric"><small>Honoraires anesthésiste</small><strong id="dAnesthesia">—</strong></div><div class="metric"><small>Bloc opératoire</small><strong id="dBlock">—</strong></div><div class="metric"><small>Part clinique / établissement</small><strong id="dClinic">—</strong></div><div class="metric"><small>Résiduel à ventiler</small><strong id="dResidual">—</strong></div></div>
 <div class="grid"><div class="field"><label for="surgeonRetention">Retenue / commission sur les honoraires du chirurgien (%)</label><input id="surgeonRetention" type="number" min="0" max="100" step="0.5" value="0"></div><div class="field"><label>Calcul du net</label><div id="surgeonNetNote" class="muted">Net = honoraires bruts − retenue paramétrée. Impôts et cotisations personnelles non inclus.</div></div></div><div class="row"><span>Retenue estimée</span><strong id="dSurgeonRetention">0 DH</strong></div><div class="row"><span>Secteur appliqué</span><strong id="dSector">—</strong></div><div class="row"><span>Modalité</span><strong id="dCareSetting">Hospitalisation</strong></div><div class="row"><span>Barème de référence</span><strong id="dTariffBand">—</strong></div><div class="row"><span>Coefficient chirurgien pondéré</span><strong id="dSurgeonCoef">—</strong></div><div class="row"><span>Coefficient anesthésie calculé / estimé</span><strong id="dAnesthesiaCoef">—</strong></div><div class="row"><span>Valeur K/KC utilisée</span><strong id="dKeyValue">—</strong></div><div id="dNotice" class="notice">Les détails seront calculés après sélection d’un acte.</div></div>
 <div class="panel"><h2>Actes retenus</h2><div class="tablewrap"><table><thead><tr><th>Type</th><th>Code</th><th>Libellé</th><th class="num">Coeff.</th><th class="num">Pond.</th><th class="num">Retenu</th><th class="num">Anesth.</th></tr></thead><tbody id="actTable"><tr><td colspan="7">Sélectionnez une intervention.</td></tr></tbody></table></div></div>
@@ -154,18 +155,16 @@ function ambulatoryTariff(coef,surgeonFee,anesthesiaFee,blockFee){
 }
 function sectorKeyValue(){return $('sector').value==='public'?13:22.5}
 function updateSector(){
- var pub=$('sector').value==='public',v=pub?13:22.5;
+ var sector=$('sector').value, pub=sector==='public', nonprofit=sector==='nonprofit', v=pub?13:22.5;
  $('keyValue').value=String(v);
  var display=$('sectorKDisplay');display.innerHTML='';
  var strong=document.createElement('strong');strong.textContent=fmt(v);
- var small=document.createElement('small');small.textContent=pub?'Secteur public · K/KC AMO — convention 2007 (à confirmer)':'Secteur privé · K/KC AMO — convention 2006 (à confirmer)';
+ var small=document.createElement('small');small.textContent=pub?'Secteur public · CHU · convention AMO 2007 (à confirmer)':nonprofit?'Hôpital privé non lucratif · K/KC privé utilisé par défaut, à confirmer':'Secteur privé · clinique · convention AMO 2006 (à confirmer)';
  display.append(strong,small);
- $('sectorNote').textContent=pub?'Secteur public : K/KC = 13 DH (référence AMO des établissements publics, convention 2007). En hospitalisation, le total utilise le forfait de référence de l’établissement. En ambulatoire, estimation NGAP + bloc faute de forfait ambulatoire distinct confirmé. Vérifiez la grille de l’hôpital.':'Secteur privé : K/KC = 22,50 DH (référence conventionnelle historique 2006). En hospitalisation, le calcul utilise le forfait AMO privé de référence ; en ambulatoire, il donne une estimation NGAP + bloc. Vérifiez le barème conventionné réellement appliqué.';
- $('kNote').textContent='La lettre-clé K/KC est préremplie selon le secteur et reste modifiable. Le forfait global AMO, lui, est fixé par sa tranche de coefficient : changer K/KC ajuste les honoraires calculés, mais ne modifie pas le forfait de référence.';
- $('payerSectorSummary').textContent=pub?'Secteur public : K/KC = 13 DH ; en hospitalisation, estimation du reste patient à partir du forfait AMO de l’établissement public.':'Secteur privé : K/KC = 22,50 DH ; en hospitalisation, estimation du reste patient à partir du forfait AMO du secteur privé.';
- $('careSettingNote').textContent=$('careSetting').value==='ambulatoire'?
- 'Ambulatoire / sans nuitée : estimation NGAP des honoraires + bloc, hors éventuel forfait d’établissement, consommables et pharmacie.':
- 'Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';
+ $('sectorNote').textContent=pub?'Secteur public — CHU : K/KC = 13 DH et grille forfaitaire AMO public (référence conventionnelle de 2007). Vérifiez la convention et le barème actuellement appliqués par le CHU. En ambulatoire, estimation NGAP + bloc faute de forfait ambulatoire distinct confirmé.':nonprofit?'Hôpital privé à but non lucratif : l’application utilise par défaut la référence du secteur privé (K/KC 22,50 DH et grille AMO privée). Cette hypothèse doit être confirmée avec la convention propre à l’établissement ; le tarif peut différer. La valeur K/KC reste modifiable.':'Secteur privé — clinique : K/KC = 22,50 DH (référence conventionnelle historique 2006) et grille forfaitaire AMO privée. Vérifiez le barème conventionné réellement appliqué.';
+ $('kNote').textContent='La valeur monétaire K/KC est préremplie selon l’établissement et reste modifiable. La grille forfaitaire hospitalière est distincte de K × coefficient ; changer K/KC ajuste la ventilation théorique chirurgien/anesthésie mais ne change pas le forfait global de référence.';
+ $('payerSectorSummary').textContent=pub?'Secteur public / CHU : K/KC = 13 DH ; grille de référence AMO des établissements publics.':nonprofit?'Hôpital privé à but non lucratif : hypothèse par défaut du secteur privé (K/KC = 22,50 DH et grille privée), à confirmer dans la convention de l’établissement.':'Secteur privé / clinique : K/KC = 22,50 DH et grille forfaitaire AMO privée de référence.';
+ $('careSettingNote').textContent=$('careSetting').value==='ambulatoire'?'Ambulatoire / sans nuitée : estimation NGAP des honoraires + bloc, hors éventuel forfait d’établissement, consommables et pharmacie. Vérifiez la convention applicable au secteur choisi.':'Hospitalisation : forfait global de référence selon le secteur sélectionné, sous réserve de la convention effectivement appliquée.';
  updateCoverageDefault();updateImplantRate();calculate();
 }
 function defaultCoverage(p,sector,careSetting){
@@ -178,14 +177,14 @@ function updateCoverageDefault(){
  var v=defaultCoverage($('payer').value,$('sector').value,$('careSetting').value);
  $('coverageRate').value=v===null?'':String(v);
 }function payerNote(p,m){
- var sector=$('sector').value||'private',care=$('careSetting').value||'hospitalisation',s={
+ var sector=$('sector').value||'private',care=$('careSetting').value||'hospitalisation',s={ 
   payant:'Payant : aucune prise en charge n’est soustraite.',
-  cnops:care==='ambulatoire'?'CNOPS : référence de 80 % de la TNR pour les actes médicaux/chirurgicaux délivrés en ambulatoire, sous réserve de l’acte exact et des règles du dossier.':'CNOPS : taux de référence '+(sector==='public'?'100 %':'90 %')+' de la TNR pour les soins liés à l’hospitalisation et la chirurgie, selon le secteur.',
-  cnss:'CNSS : taux général de référence de 70 % de la TNR selon l’ACAPS. Certains cas de maladies graves ou invalidantes ouvrent droit à un taux supérieur : confirmer auprès de la CNSS.',
+  cnops:care==='ambulatoire'?'CNOPS : référence de 80 % de la TNR en ambulatoire, sous réserve de l’acte exact et des règles du dossier.':sector==='public'?'CNOPS : taux de référence de 100 % de la TNR pour le CHU public selon la convention utilisée par ce simulateur ; vérifier les règles du dossier.':sector==='nonprofit'?'Hôpital privé à but non lucratif : hypothèse de 90 % du barème privé utilisée pour la simulation uniquement ; confirmez la convention propre à l’établissement et les droits du patient.':'CNOPS : hypothèse de référence de 90 % du forfait/TNR en clinique privée ; le taux reconnu et le montant réellement couvert dépendent du dossier et de la convention.',
+  cnss:'CNSS : taux de référence/hypothèse de 70 % pour la simulation, à confirmer selon la prestation, la TNR et les droits du dossier.',
   far:'FAR / régime militaire : renseignez le taux prévu par le régime et l’accord applicable.',
-  assurance:'Assurance privée : renseignez le taux et les plafonds de la garantie contractuelle.'
+  assurance:'Assurance privée : renseignez le taux, les plafonds et la franchise de la garantie contractuelle.'
  }[p]||'Taux de couverture à confirmer.';
- return s+(m==='direct'?' Paiement direct : le patient paie le total estimé ; aucune part payeur n’est déduite au moment du paiement.':m==='pec'?' En PEC : le reste patient est estimé après déduction de la part payeur simulée.':' En remboursement : le patient avance le montant facturé puis demande le remboursement prévu par son régime.');
+ return s+(m==='direct'?' Paiement direct : le patient paie le montant facturé au moment du soin, sans déduction d’un versement direct du payeur.':m==='pec'?' En PEC : le reste patient est estimé après déduction de la part payeur simulée.':' En remboursement : le patient avance le montant facturé puis demande le remboursement prévu par son régime.');
 }
 function implantMatches(q){
  var n=norm(q);if(!n)return [];
@@ -356,15 +355,16 @@ function calculate(){
  $('payerNote').textContent=payerNote(payer,mode);
  $('dTotal').textContent=grid?fmt(total):'—';
  $('dCareSetting').textContent=careSetting==='ambulatoire'?'Ambulatoire / sans nuitée':'Hospitalisation';
- var publicSector=$('sector').value==='public';
- $('dSector').textContent=publicSector?'Secteur public — hôpital / CHU':'Secteur privé — clinique';
- $('dSurgeonGrossLabel').textContent=publicSector?'Valeur chirurgicale théorique K/KC (pas un revenu individuel)':'Honoraires bruts du chirurgien';
- $('dSurgeonNetLabel').textContent=publicSector?'Net individuel du chirurgien public':'Net estimé du chirurgien (privé)';
- $('surgeonRetention').disabled=publicSector;
+ var sectorValue=$('sector').value,publicFacility=sectorValue==='public',nonprofitFacility=sectorValue==='nonprofit';
+ var publicSurgeon=$('surgeonStatus').value==='public';
+ $('dSector').textContent=publicFacility?'Secteur public — CHU':nonprofitFacility?'Hôpital privé à but non lucratif':'Secteur privé — clinique';
+ $('dSurgeonGrossLabel').textContent=publicSurgeon?'Valeur théorique associée à l’acte (pas un revenu individuel)':'Honoraires bruts théoriques du chirurgien';
+ $('dSurgeonNetLabel').textContent=publicSurgeon?'Net individuel du chirurgien public':'Net estimé du chirurgien libéral';
+ $('surgeonRetention').disabled=publicSurgeon;
  $('dSurgeonGross').textContent=grid?fmt(sf):'—';
- $('dSurgeonNet').textContent=!grid?'—':(publicSector?'Non calculable à partir de la NGAP':fmt(surgeonNet));
- $('dSurgeonRetention').textContent=!grid?'—':(publicSector?'Sans objet':fmt(surgeonRetention));
- $('surgeonNetNote').textContent=publicSector?'Secteur public : K/KC et la ventilation sont des références tarifaires institutionnelles, pas le revenu individuel du chirurgien. La rémunération nette dépend du traitement, des indemnités (gardes, responsabilités, etc.), des retenues et de la fiscalité.':'Secteur privé : net estimé = honoraires bruts théoriques − retenue/commission paramétrée ('+retentionPct.toLocaleString('fr-FR',{maximumFractionDigits:1})+' %). Impôts, cotisations personnelles et autres frais non inclus ; adaptez le taux à votre convention avec la clinique.';
+ $('dSurgeonNet').textContent=!grid?'—':(publicSurgeon?'Non calculable à partir de la NGAP':fmt(surgeonNet));
+ $('dSurgeonRetention').textContent=!grid?'—':(publicSurgeon?'Sans objet':fmt(surgeonRetention));
+ $('surgeonNetNote').textContent=publicSurgeon?'Statut public/fonctionnaire : la NGAP et le forfait de l’établissement ne permettent pas de calculer le salaire net individuel. Il dépend de la rémunération statutaire, des indemnités, gardes, retenues et de la fiscalité. La valeur affichée ci-dessus est seulement théorique.':'Statut libéral : net professionnel estimé = honoraires bruts théoriques − retenue/commission paramétrée ('+retentionPct.toLocaleString('fr-FR',{maximumFractionDigits:1})+' %). Impôts, cotisations personnelles, charges et frais propres non inclus ; adaptez le taux à votre convention avec la clinique ou l’établissement.';
  $('dAnesthesia').textContent=grid?(pureNonop?'0 DH':fmt(af)):'—';
  $('dBlock').textContent=grid?fmt(block):'—';
  $('dClinic').textContent=!grid?'—':pureNonop?'0 DH':(careSetting==='ambulatoire'?'Non comprise dans l’estimation ambulatoire':(clinicKnown?fmt(clinic):'À confirmer'));
@@ -397,7 +397,7 @@ function calculate(){
   var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightText,c===null?'—':(r.weight===undefined?'—':((r.coef||0)*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2})),an];
   cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td);});tb.appendChild(tr);
  });
- lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,surgeonNet:surgeonNet,surgeonRetention:surgeonRetention,surgeonRetentionRate:retentionPct,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value,careSetting:careSetting};
+ lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,surgeonNet:surgeonNet,surgeonRetention:surgeonRetention,surgeonRetentionRate:retentionPct,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value,surgeonStatus:$('surgeonStatus').value,careSetting:careSetting};
  calculateImplants();
 }
 function addGesture(){gestures.push({id:nextId++,act:null,coef:'',query:''});renderGestures();calculate()}
@@ -408,7 +408,8 @@ function summary(){
  var amount=function(v){return typeof v==='number'?fmt(v):String(v);};
  return [
   'SIMULATEUR NGAP ORTHOPÉDIE-TRAUMATOLOGIE — estimation, pas un devis',
-  'Secteur : '+(lastCalc.sector==='public'?'public':'privé'),
+  'Établissement : '+(lastCalc.sector==='public'?'secteur public — CHU':lastCalc.sector==='nonprofit'?'hôpital privé à but non lucratif':'secteur privé — clinique'),
+  'Statut du chirurgien : '+(lastCalc.surgeonStatus==='public'?'public / fonctionnaire':'libéral'),
   'Modalité : '+(lastCalc.careSetting==='ambulatoire'?'ambulatoire / sans nuitée':'hospitalisation'),
   'Intervention principale : '+mainLine,
   'Gestes associés : '+associated,
@@ -418,9 +419,9 @@ function summary(){
   'Part payeur simulée (acte + implants en sus) : '+amount(lastCalc.coverageAll),
   'Reste final à charge du patient (acte + implants en sus) : '+amount(lastCalc.patientAll),
   'À avancer aujourd’hui selon le mode de paiement : '+amount(lastCalc.todayAll),
-  (lastCalc.sector==='public'?'Valeur chirurgicale théorique secteur public (pas revenu personnel) : ':'Honoraires bruts du chirurgien : ')+fmt(lastCalc.surgeon),
-  (lastCalc.sector==='public'?'Net individuel du chirurgien public : non calculable par la NGAP (traitement/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
-  (lastCalc.sector==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur pour le secteur public':'Net estimé du chirurgien privé (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
+  'Honoraires bruts théoriques du chirurgien : '+fmt(lastCalc.surgeon),
+  (lastCalc.surgeonStatus==='public'?'Net individuel du chirurgien public : non calculable à partir de la NGAP (rémunération statutaire/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
+  (lastCalc.surgeonStatus==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur':'Net estimé du chirurgien libéral (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
   'Honoraires anesthésiste (calcul NGAP) : '+fmt(lastCalc.anesthesia),
   'Bloc opératoire (NGAP art. 23) : '+fmt(lastCalc.block),
   'Part clinique/établissement : '+amount(lastCalc.clinic),
@@ -454,6 +455,7 @@ $('coverageRate').addEventListener('input',calculate);
 $('surgeonRetention').addEventListener('input',calculate);
 $('payer').addEventListener('change',function(){updateCoverageDefault();updateImplantRate();calculate();});
 $('sector').addEventListener('change',updateSector);
+$('surgeonStatus').addEventListener('change',calculate);
 $('careSetting').addEventListener('change',function(){
  var care=$('careSetting').value;
  $('careSettingNote').textContent=care==='ambulatoire'?
@@ -468,7 +470,7 @@ $('copySummary').addEventListener('click',function(){
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){$('copySummary').textContent='Résumé copié';}).catch(function(){alert(t);});else alert(t);
 });
 $('reset').addEventListener('click',function(){
- mainAct=null;gestures=[];nextId=1;$('surgeonRetention').value='0';
+ mainAct=null;gestures=[];nextId=1;$('surgeonRetention').value='0';$('surgeonStatus').value='liberal';
  $('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('mainActNote').textContent='';
  $('payer').value='cnops';$('paymentType').value='pec';$('careSetting').value='hospitalisation';$('careSettingNote').textContent='Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';$('coverageRate').value=String(defaultCoverage('cnops',$('sector').value,$('careSetting').value));$('cumulationMode').value='standard';$('a215Osteosynthesis').checked=false;$('a211Applicable').checked=false;
  selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';
