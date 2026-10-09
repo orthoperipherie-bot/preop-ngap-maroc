@@ -1,0 +1,9 @@
+{
+  "name": "Fiche préopératoire NGAP Maroc",
+  "short_name": "Fiche préop",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7f6",
+  "theme_color": "#145a55"
+}
