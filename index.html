@@ -28,8 +28,9 @@ var costIds=['daily','clinicFee','bloc','anesth','pharmacy','other'];
 $('shares').innerHTML=shareNames.map(function(name,i){return '<div class="grid"><div><label>'+name+'</label></div><div class="field"><input type="number" min="0" max="100" step=".1" id="pct-'+shareIds[i]+'" placeholder="%"></div><div class="row"><span>Montant</span><strong id="share-'+shareIds[i]+'">—</strong></div></div>'}).join('');
 function facilityPublic(){return val('facility')==='public'}
 function publicRate(coef){
- var c=Number(coef);if(!Number.isFinite(c)||c<=0)return null;
- if(c<20)return 400;if(c<=29)return 600;if(c<=34)return 780;if(c<=39)return 820;if(c<=44)return 860;if(c<=49)return 900;if(c<=79)return 1960;if(c<=129)return 2960;return null;
+ // La NGAP seule ne permet pas de déduire un forfait hospitalier complet.
+ // Un forfait doit être saisi à partir du devis/grille confirmé(e) de l’établissement.
+ return null;
 }
 function suggestedDays(a){
  var c=a&&a.code||'',t=norm((a&&a.title||'')+' '+(a&&a.terms||''));
@@ -53,65 +54,177 @@ function implantSuggestion(a){
 function score(a,q){var n=norm(q),code=norm(a.code),title=norm(a.title),all=norm(a.title+' '+(a.terms||'')+' '+a.code);if(!n)return 0;if(code===n)return 1200;if(title===n)return 1100;if(n==='pth'&&['C433','N117'].includes(a.code))return 1150;if(n==='ptg'&&['C434','N127'].includes(a.code))return 1150;if(['lca','lcp'].includes(n)&&a.code==='N109')return 1150;if(n==='canal carpien'&&['C609','C610'].includes(a.code))return 1150;if(code.indexOf(n)===0)return 950;var phrase=all.indexOf(n)>=0?250:0,words=n.split(' ').filter(Boolean),hits=words.filter(function(w){return all.indexOf(w)>=0}).length;return phrase+(hits===words.length?100:0)+(hits/Math.max(1,words.length))*100}
 function search(){var q=val('search').trim(),list=[];if(!q)list=['N109','N127','C433','C434','N111','C303','C304','C609','A143','A145','N117'].map(function(c){return acts.find(function(a){return a.code===c})}).filter(Boolean);else list=acts.map(function(a){return {a:a,s:score(a,q)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s||a.a.code.localeCompare(b.a.code)}).slice(0,10).map(function(x){return x.a});$('suggestions').innerHTML='';list.slice(0,10).forEach(function(a){var b=document.createElement('button');b.type='button';b.className='match';b.innerHTML='<span><strong>'+esc(a.code)+' · '+esc(a.title)+'</strong><small>Coefficient(s) : '+esc((a.coeffs||[]).join(' / ')||'à vérifier')+' · ligne source '+esc(a.source_line||'—')+'</small></span><span class="tag">Choisir</span>';b.onclick=function(){choose(a)};$('suggestions').appendChild(b)});if(q&&!list.length)$('suggestions').innerHTML='<div class="notice">Aucune correspondance. Essaie un code, un synonyme ou moins de mots.</div>'}
 function applyPrivateProfile(){if(facilityPublic())return;costIds.forEach(function(id){if(!costTouched[id]&&privateProfile[id]!==undefined&&privateProfile[id]!==null&&privateProfile[id]!=='')$(id).value=privateProfile[id]})}
+function defaultCoverageRate(){
+ var payer=val('payer'),care=val('careMode'),pub=facilityPublic(),facility=val('facility');
+ if(payer==='self')return 0;
+ if(payer==='cnops'){
+  if(care==='ambulatory')return 80;
+  return pub?100:90;
+ }
+ if(payer==='cnss'){
+  if(care!=='ambulatory'&&pub&&val('ald')==='yes')return 90;
+  return 70;
+ }
+ return null;
+}
+function updateCoverageDefaults(force){
+ var payer=val('payer'),rate=defaultCoverageRate();
+ if(force||!rateEdited)$('rate').value=rate===null?'':String(rate);
+ if(payer==='self'){
+  if(force||!tnrEdited)$('tnr').value='0';
+  if(!rateEdited)$('rate').value='0';
+ }
+ var care=val('careMode'),facility=val('facility'),s='';
+ if(payer==='cnops'){
+  if(care==='ambulatory')s='CNOPS : taux indicatif de 80 % de la TNR pour les actes ambulatoires.';
+  else if(facility==='public')s='CNOPS : taux indicatif de 100 % de la TNR dans le secteur public / sanitaire militaire, sous réserve du poste et des droits.';
+  else if(facility==='nonprofit')s='CNOPS : taux initial de 90 % utilisé comme hypothèse si l’établissement non lucratif relève du secteur privé conventionné. Son statut ne garantit pas à lui seul ce classement : confirme la convention et l’accord écrit.';
+  else s='CNOPS : taux indicatif de 90 % de la TNR pour l’hospitalisation/chirurgie dans le secteur privé.';
+  s+=' Base TNR, forfaits des implants/dispositifs, exclusions et accord préalable à confirmer.';
+ }else if(payer==='cnss'){
+  s='CNSS / AMO : taux de départ réglé à 70 % de la base de référence. Le taux peut dépendre du type de prestation, de la situation d’ALD et des règles en vigueur ; vérifie la prise en charge avant de valider.';
+  if(care!=='ambulatory'&&facility==='public'&&val('ald')==='yes')s+=' Le paramètre ALD fait proposer 90 % dans ce cas, à confirmer avec la CNSS.';
+ }else if(payer==='far')s='FAR / régime militaire : aucun taux automatique n’est supposé. Saisis la base et le taux figurant sur l’accord ou le barème applicable.';
+ else if(payer==='insurance')s='Assurance privée : le taux dépend du contrat, du plafond, des exclusions, du réseau et de la prise en charge préalable. Renseigne la base éligible et le taux confirmés.';
+ else if(payer==='self')s='Paiement direct : aucune part d’assurance n’est comptée. Le montant patient estimé correspond à la totalité du devis.';
+ else s='Autre organisme / mutuelle : renseigne la base remboursable et le taux confirmé par écrit.';
+ if(facility==='nonprofit')s+=' Attention : « à but non lucratif / œuvre sociale » ne signifie pas automatiquement « secteur public » au regard du remboursement.';
+ $('coverageNote').textContent=s;
+}
 function updateTariffNote(){
- var pub=facilityPublic();
- if(pub){$('tariffNote').textContent='Mode hôpital public : forfait indicatif selon une grille comparative disponible, à confirmer auprès de l’établissement. Le forfait peut inclure le séjour, le chirurgien, l’anesthésiste, le bloc et la pharmacie/consommables ; les implants et frais non inclus sont ajoutés séparément. Si un tarif manque dans la grille, il faut le saisir manuellement.'}
- else{$('tariffNote').textContent='Mode clinique privée : K/KC est prérempli avec une valeur de référence indicative de 22,50 DH, modifiable. Les tarifs du séjour, du bloc, de l’anesthésie, de la pharmacie et de la clinique varient : saisis-les ou mémorise-les comme modèle local. Un champ vide n’est pas considéré comme un tarif de 0 DH.'}
+ var pub=facilityPublic(),mode=val('billingMode'),care=val('careMode');
+ document.body.classList.toggle('facility-public',pub);
+ document.body.classList.toggle('package-mode',mode==='package');
+ if(mode==='package'){
+  $('tariffNote').textContent='Mode forfait global : saisis uniquement le forfait écrit/confirmé de l’établissement. Les honoraires, le bloc, la pharmacie et les nuitées réputés inclus ne seront pas additionnés une seconde fois. Les implants et autres frais hors forfait restent ajoutés séparément.';
+ }else{
+  var sector=pub?'hôpital public / ESH':(val('facility')==='nonprofit'?'clinique à but non lucratif / œuvre sociale':'clinique privée');
+  $('tariffNote').textContent='Mode détail par poste — '+sector+'. Le chirurgien est estimé par coefficient NGAP × K/KC saisi. Le second coefficient est affiché comme estimation d’anesthésie uniquement à confirmer pour l’acte sélectionné. Les tarifs du bloc, de la pharmacie, de l’établissement et des nuitées doivent provenir du devis. '+(care==='ambulatory'?'Le calcul exclut les nuitées.':care==='day'?'L’hôpital de jour n’ajoute pas de nuitée.':'Les nuitées sont calculées selon le nombre et le tarif que tu saisis.');
+ }
 }
 function setFacilityUI(force){
- var pub=facilityPublic();document.body.classList.toggle('facility-public',pub);
- if(force||!kEdited)$('k').value=pub?'7.5':'22.5';
- if(pub){
-  if(force||!publicForfaitEdited){var p=selected?publicRate(selected.coef):null;$('publicForfaitManual').value=p===null?'':String(p)}
-  if(force||!rateEdited)$('rate').value='100';
-  if(force||!tnrEdited){var pf=selected?publicRate(selected.coef):null;$('tnr').value=pf===null?'':String(pf)}
-  $('manual').value='';
- }else{
-  if(!rateEdited&&val('rate')==='100')$('rate').value='';
-  if(!tnrEdited)$('tnr').value='';
-  applyPrivateProfile();
- }
+ var pub=facilityPublic();
+ document.body.classList.toggle('facility-public',pub);
+ document.body.classList.toggle('package-mode',val('billingMode')==='package');
+ if(force||!kEdited)$('k').value='22.5';
+ if(force&&!publicForfaitEdited)$('publicForfaitManual').value='';
+ if(force&&!tnrEdited)$('tnr').value='';
+ if(val('careMode')!=='inpatient'&&!daysEdited)$('days').value='0';
+ else if(val('careMode')==='inpatient'&&!daysEdited)$('days').value=String(selected?suggestedDays(selected):1);
+ if(force&&!rateEdited)updateCoverageDefaults(true);else updateCoverageDefaults(false);
  updateTariffNote();calc();
 }
 function choose(a,loading){
- var wasTitle=lastAutoDetails;var oldCode=selected&&selected.code;selected=a;if(!loading&&oldCode!==a.code)publicForfaitEdited=false;$('actName').textContent=a.title;$('actCode').textContent=a.code;$('actCoef').textContent=(a.coeffs||[]).join(' / ')||'À vérifier';
- $('actNote').textContent=(a.note||'')+' Vérifier la lettre-clé, la cotation et les règles de cumul dans le PDF original avant facturation.';
- var actTerms=norm((a.title||'')+' '+(a.terms||''));$('discipline').value=(/^A\d{3}$/.test(a.code)||/fracture|traumatisme|osteosynthese/.test(actTerms))?'Traumatologie':(/arthroscopie|ligament croise|lca|lcp|menisque|meniscectomie/.test(actTerms)?'Chirurgie du sport':'Orthopédie');
+ var wasTitle=lastAutoDetails,oldCode=selected&&selected.code;
+ selected=a;
+ if(!loading&&oldCode!==a.code){publicForfaitEdited=false;tnrEdited=false;$('publicForfaitManual').value='';$('tnr').value='';}
+ $('actName').textContent=a.title;$('actCode').textContent=a.code;$('actCoef').textContent=(a.coeffs||[]).join(' / ')||'À vérifier';
+ $('actNote').textContent=(a.note||'')+' Vérifier le libellé, la lettre-clé, le coefficient principal/associé et les règles de cumul dans le PDF original avant facturation.';
+ var actTerms=norm((a.title||'')+' '+(a.terms||''));
+ $('discipline').value=(/^A\d{3}$/.test(a.code)||/fracture|traumatisme|osteosynthese/.test(actTerms))?'Traumatologie':(/arthroscopie|ligament croise|lca|lcp|menisque|meniscectomie/.test(actTerms)?'Chirurgie du sport':'Orthopédie');
  if(!loading)$('manual').value='';
- if(!kEdited)$('k').value=facilityPublic()?'7.5':'22.5';
- if(!daysEdited)$('days').value=String(suggestedDays(a));
+ if(!kEdited)$('k').value='22.5';
+ if(!daysEdited)$('days').value=val('careMode')==='inpatient'?String(suggestedDays(a)):'0';
  var details=val('details');if(!details.trim()||details===wasTitle){$('details').value=a.title;lastAutoDetails=a.title}else{lastAutoDetails=details}
- if(!publicForfaitEdited){var p=publicRate(a.coef);$('publicForfaitManual').value=p===null?'':String(p)}
- if(facilityPublic()){
-  if(!tnrEdited){var p2=publicRate(a.coef);$('tnr').value=p2===null?'':String(p2)}
-  if(!rateEdited)$('rate').value='100';
- }else applyPrivateProfile();
+ if(!publicForfaitEdited)$('publicForfaitManual').value='';
+ if(!tnrEdited)$('tnr').value=val('payer')==='self'?'0':'';
  var suggestion=implantSuggestion(a);
  if(lines.length===1&&(!lines[0].name||lines[0].name===autoImplantName)){lines[0].name=suggestion;lines[0].qty=1;lines[0].price='';autoImplantName=suggestion;renderLines()}
- updateTariffNote();$('search').value=a.title;search();calc();
+ updateTariffNote();updateCoverageDefaults(false);$('search').value=a.title;search();calc();
 }
+
 function addLine(d){d=d||{};var id=lines.length?Math.max.apply(null,lines.map(function(x){return x.id}))+1:1;lines.push({id:id,name:d.name||'',qty:d.qty==null?1:d.qty,price:d.price==null?'':d.price});renderLines()}
 function renderLines(){$('implantLines').innerHTML='';lines.forEach(function(x){var r=document.createElement('div');r.className='line';r.innerHTML='<input aria-label="Désignation" placeholder="Implant / consommable" value="'+esc(x.name)+'"><input aria-label="Quantité" type="number" min="0" value="'+esc(x.qty)+'"><input aria-label="Prix unitaire" type="number" min="0" placeholder="DH" value="'+esc(x.price)+'"><strong>0 DH</strong><button aria-label="Supprimer">×</button>';var ins=r.querySelectorAll('input');ins.forEach(function(el,i){el.oninput=function(){x[['name','qty','price'][i]]=el.value;calc()}});r.querySelector('button').onclick=function(){lines=lines.filter(function(y){return y.id!==x.id});renderLines();calc()};$('implantLines').appendChild(r)});calc()}
-function fee(){if(facilityPublic())return null;if(num('manual')!==null)return num('manual');if(!selected||selected.coef==null||num('k')===null)return null;return selected.coef*num('k')}
-function publicForfait(){if(!facilityPublic())return null;var manual=num('publicForfaitManual');return manual!==null?manual:(selected?publicRate(selected.coef):null)}
-function calc(){
- var pub=facilityPublic(),surgeon=fee(),pf=publicForfait(),implants=lines.reduce(function(s,x){return s+(Number(x.qty)||0)*(Number(x.price)||0)},0),stay=pub?0:(num('days')||0)*(num('daily')||0);
- var privateExtras=['anesth','bloc','pharmacy','clinicFee','other'].reduce(function(s,id){return s+(num(id)||0)},0);
- var total=pub?((pf||0)+implants+(num('other')||0)):((surgeon||0)+implants+stay+privateExtras);
- var implantPriceMissing=lines.some(function(x){return norm(x.name)&&String(x.price==null?'':x.price).trim()===''});var privatePriceMissing=costIds.some(function(id){return num(id)===null});var totalKnown=pub?(pf!==null&&!implantPriceMissing):(surgeon!==null&&!privatePriceMissing&&!implantPriceMissing);
- $('surgeonTotal').textContent=pub?'Inclus au forfait public':(surgeon===null?'À renseigner':fmt(surgeon));
- $('implantsTotal').textContent=fmt(implants);$('stayTotal').textContent=pub?'Inclus au forfait public':fmt(stay);
- $('publicForfaitMetric').textContent=pub?(pf===null?'À renseigner':fmt(pf)):'—';
- $('grand').textContent=totalKnown?fmt(total):'Forfait à renseigner';
- var tnr=num('tnr'),rate=num('rate');$('payerTotal').textContent=!totalKnown||tnr===null||rate===null?'À renseigner':fmt(Math.min(total,tnr)*Math.min(100,rate)/100);$('patientTotal').textContent=!totalKnown||tnr===null||rate===null?'À renseigner':fmt(Math.max(0,total-Math.min(total,tnr)*Math.min(100,rate)/100));
- var pool=num('pool'),ps=0,amt=0,complete=true;shareIds.forEach(function(id){var p=num('pct-'+id);if(p===null)complete=false;else{ps+=p;if(pool!==null)amt+=pool*p/100}$('share-'+id).textContent=p===null||pool===null?'—':fmt(pool*p/100)});$('pctTotal').textContent=ps.toLocaleString('fr-FR')+' %';$('shareTotal').textContent=pool===null?'—':fmt(amt);$('shareStatus').textContent=pool===null||!complete?'Renseigne l’enveloppe et les cinq pourcentages.':Math.abs(ps-100)<.01?'Répartition complète : 100 %.':'Attention : les pourcentages ne totalisent pas 100 %.';
+function fee(){
+ if(num('manual')!==null)return num('manual');
+ if(!selected||selected.coef==null||num('k')===null)return null;
+ return Number(selected.coef)*Number(num('k'));
 }
-function data(){return {patient:val('patient'),date:val('date'),clinic:val('clinic'),surgeon:val('surgeon'),facility:val('facility'),side:val('side'),discipline:val('discipline'),details:val('details'),act:selected,k:val('k'),manual:val('manual'),publicForfaitManual:val('publicForfaitManual'),days:val('days'),daily:val('daily'),clinicFee:val('clinicFee'),bloc:val('bloc'),anesth:val('anesth'),pharmacy:val('pharmacy'),other:val('other'),tnr:val('tnr'),rate:val('rate'),notes:val('notes'),lines:lines,pool:val('pool'),shares:shareIds.map(function(id){return {id:id,pct:val('pct-'+id)}}),total:$('grand').textContent}}
+function anesthesiaFee(){
+ if(num('anesth')!==null)return num('anesth');
+ var second=selected&&selected.secondary;
+ if(second===null||second===undefined||String(second).trim()===''||num('k')===null)return null;
+ var n=Number(second);return Number.isFinite(n)?n*Number(num('k')):null;
+}
+function publicForfait(){
+ if(val('billingMode')!=='package')return null;
+ var manual=num('publicForfaitManual');
+ return manual===null?null:manual;
+}
+function calc(){
+ var pub=facilityPublic(),packageMode=val('billingMode')==='package',care=val('careMode');
+ var surgeon=fee(),anesthesia=anesthesiaFee();
+ var implants=lines.reduce(function(s,x){return s+(Number(x.qty)||0)*(Number(x.price)||0)},0);
+ var stay=care==='inpatient'?(num('days')||0)*(num('daily')||0):0;
+ var bloc=num('bloc'),pharmacy=num('pharmacy'),clinic=num('clinicFee'),other=num('other'),pf=publicForfait();
+ var implantPriceMissing=lines.some(function(x){return norm(x.name)&&String(x.price==null?'':x.price).trim()===''});
+ var detailMissing=(surgeon===null||anesthesia===null||bloc===null||pharmacy===null||clinic===null||other===null||
+  (care==='inpatient'&&num('daily')===null)||implantPriceMissing);
+ var packageMissing=(pf===null||other===null||implantPriceMissing);
+ var total=packageMode?((pf||0)+implants+(other||0)):
+  ((surgeon||0)+(anesthesia||0)+(bloc||0)+(pharmacy||0)+stay+(clinic||0)+implants+(other||0));
+ var totalKnown=packageMode?!packageMissing:!detailMissing;
+ $('surgeonTotal').textContent=packageMode?'Inclus au forfait':(surgeon===null?'À renseigner':fmt(surgeon));
+ $('implantsTotal').textContent=fmt(implants);
+ $('stayTotal').textContent=packageMode?'Inclus au forfait':(care==='inpatient'?fmt(stay):(care==='day'?'Sans nuitée':'0 DH'));
+ $('publicForfaitMetric').textContent=packageMode?(pf===null?'À renseigner':fmt(pf)):'—';
+ $('grand').textContent=totalKnown?fmt(total):'Compléter les tarifs';
+ $('breakSurgeon').textContent=packageMode?'Inclus au forfait':(surgeon===null?'À renseigner':fmt(surgeon));
+ $('breakAnesth').textContent=packageMode?'Inclus au forfait':(anesthesia===null?'À renseigner':fmt(anesthesia)+(num('anesth')===null&&selected&&selected.secondary!==null?' · estimation du coefficient associé':''));
+ $('breakBloc').textContent=packageMode?'Inclus au forfait':(bloc===null?'À renseigner':fmt(bloc));
+ $('breakPharmacy').textContent=packageMode?'Inclus au forfait':(pharmacy===null?'À renseigner':fmt(pharmacy));
+ $('breakStay').textContent=packageMode?'Inclus au forfait':(care==='inpatient'?(num('daily')===null?'Tarif à renseigner':fmt(stay)):'Sans nuitée');
+ $('breakImplants').textContent=fmt(implants)+(implantPriceMissing?' · prix manquant':'');
+ $('breakClinic').textContent=packageMode?'Inclus au forfait':(clinic===null?'À renseigner':fmt(clinic));
+ $('breakOther').textContent=other===null?'À renseigner':fmt(other);
+ $('breakPackage').textContent=packageMode?(pf===null?'Forfait à renseigner':fmt(pf)):'Non applicable';
+ $('breakTotal').textContent=totalKnown?fmt(total):'À compléter';
+ var tnr=num('tnr'),rate=num('rate'),cover=null,patient=null;
+ if(totalKnown&&val('payer')==='self'){cover=0;patient=total}
+ else if(totalKnown&&tnr!==null&&rate!==null){cover=Math.min(total,tnr)*Math.min(100,rate)/100;patient=Math.max(0,total-cover)}
+ $('payerTotal').textContent=cover===null?'À renseigner':fmt(cover);
+ $('patientTotal').textContent=patient===null?'À renseigner':fmt(patient);
+ var payment=val('paymentMode');
+ $('dueAtFacility').textContent=!totalKnown?'À compléter':(payment==='tiers'?fmt(patient===null?total:patient):fmt(total));
+ if(val('payer')==='self'&&payment==='tiers')$('dueAtFacility').textContent=totalKnown?fmt(total):'À compléter';
+ var pool=num('pool'),ps=0,amt=0,complete=true;
+ shareIds.forEach(function(id){var p=num('pct-'+id);if(p===null)complete=false;else{ps+=p;if(pool!==null)amt+=pool*p/100}$('share-'+id).textContent=p===null||pool===null?'—':fmt(pool*p/100)});
+ $('pctTotal').textContent=ps.toLocaleString('fr-FR')+' %';$('shareTotal').textContent=pool===null?'—':fmt(amt);
+ $('shareStatus').textContent=pool===null||!complete?'Renseigne l’enveloppe et les cinq pourcentages.':Math.abs(ps-100)<.01?'Répartition complète : 100 %.':'Attention : les pourcentages ne totalisent pas 100 %.';
+}
+function data(){return {
+ patient:val('patient'),date:val('date'),clinic:val('clinic'),surgeon:val('surgeon'),
+ facility:val('facility'),careMode:val('careMode'),billingMode:val('billingMode'),payer:val('payer'),paymentMode:val('paymentMode'),ald:val('ald'),
+ side:val('side'),discipline:val('discipline'),details:val('details'),act:selected,
+ k:val('k'),manual:val('manual'),publicForfaitManual:val('publicForfaitManual'),
+ days:val('days'),daily:val('daily'),clinicFee:val('clinicFee'),bloc:val('bloc'),anesth:val('anesth'),
+ pharmacy:val('pharmacy'),other:val('other'),tnr:val('tnr'),rate:val('rate'),notes:val('notes'),
+ lines:lines,pool:val('pool'),shares:shareIds.map(function(id){return {id:id,pct:val('pct-'+id)}}),
+ total:$('grand').textContent
+}}
 function summary(d){
- d=d||data();var pub=d.facility==='public';var arr=['FICHE PRÉOPÉRATOIRE — NGAP MAROC','Établissement : '+(pub?'Hôpital public / ESH':'Clinique privée'),'Référence : '+(d.patient||'non renseignée'),'Date : '+(d.date||'—'),'Nom établissement : '+(d.clinic||'—'),'Chirurgien : '+(d.surgeon||'—'),'Discipline / côté : '+d.discipline+' / '+d.side,'Intervention : '+(d.details||(d.act&&d.act.title)||'—'),'Acte NGAP : '+(d.act?d.act.code+' — '+d.act.title:'à sélectionner'),'Coefficient(s) extrait(s) : '+((d.act&&d.act.coeffs||[]).join(' / ')||'à vérifier')];
- if(pub)arr.push('Forfait public indicatif : '+(d.publicForfaitManual||'à confirmer'), 'Le forfait public peut inclure séjour, honoraires chirurgien/anesthésiste, bloc, pharmacie et consommables : vérifier la grille applicable.','Honoraires chirurgien / séjour / bloc / anesthésie / pharmacie : inclus selon le forfait, ne pas compter deux fois.');
- else {var surgeonEstimate=d.manual!==''&&d.manual!=null?Number(d.manual):(d.act&&d.act.coef!=null&&d.k!==''&&d.k!=null?Number(d.act.coef)*Number(d.k):null);arr.push('Honoraires chirurgien simulés : '+(surgeonEstimate===null?'à compléter':fmt(surgeonEstimate)),'Hospitalisation : '+(d.days||0)+' jours × '+(d.daily||0)+' DH = '+fmt((Number(d.days)||0)*(Number(d.daily)||0)),'Anesthésiste : '+fmt(d.anesth||0),'Bloc : '+fmt(d.bloc||0),'Pharmacie : '+fmt(d.pharmacy||0),'Clinique hors séjour : '+fmt(d.clinicFee||0));}
- arr=arr.concat(['IMPLANTS / CONSOMMABLES'].concat((d.lines||[]).map(function(x){return '- '+(x.name||'Article')+' : '+x.qty+' × '+(x.price||'prix à saisir')+' DH'})),['Total implants : '+$('implantsTotal').textContent,'Autres frais : '+fmt(d.other||0),'TOTAL ESTIMÉ : '+d.total,'Payeur théorique : '+$('payerTotal').textContent,'Reste patient estimé : '+$('patientTotal').textContent,'Notes : '+(d.notes||'—'),'ATTENTION : simulation. Vérifier la nomenclature, la grille tarifaire, les règles de cumul et la prise en charge.']);return arr.join('\n')
+ d=d||data();var pub=d.facility==='public',packageMode=d.billingMode==='package';
+ var careLabel={inpatient:'Hospitalisation complète',ambulatory:'Ambulatoire sans nuitée',day:'Hôpital de jour'}[d.careMode]||d.careMode;
+ var payerLabel={cnops:'CNOPS / AMO',cnss:'CNSS / AMO',far:'FAR / régime militaire',insurance:'Assurance privée',self:'Paiement direct',other:'Autre organisme'}[d.payer]||d.payer;
+ var surgeonEstimate=d.manual!==''&&d.manual!=null?Number(d.manual):(d.act&&d.act.coef!=null&&d.k!==''&&d.k!=null?Number(d.act.coef)*Number(d.k):null);
+ var anestEstimate=d.anesth!==''&&d.anesth!=null?Number(d.anesth):(d.act&&d.act.secondary!=null&&d.k!==''&&d.k!=null?Number(d.act.secondary)*Number(d.k):null);
+ var out=['FICHE PRÉOPÉRATOIRE — NGAP MAROC',
+ 'Établissement : '+(pub?'Hôpital public / ESH':d.facility==='nonprofit'?'Clinique à but non lucratif / œuvre sociale':'Clinique privée'),
+ 'Mode de soins : '+careLabel,'Mode de tarification : '+(packageMode?'forfait global confirmé':'détail par poste'),
+ 'Référence : '+(d.patient||'non renseignée'),'Date : '+(d.date||'—'),'Établissement : '+(d.clinic||'—'),'Chirurgien : '+(d.surgeon||'—'),
+ 'Discipline / côté : '+d.discipline+' / '+d.side,'Acte NGAP : '+(d.act?d.act.code+' — '+d.act.title:'à sélectionner'),
+ 'Coefficient(s) extrait(s) : '+((d.act&&d.act.coeffs||[]).join(' / ')||'à vérifier')];
+ if(packageMode){out.push('Forfait global saisi : '+(d.publicForfaitManual||'à compléter'),'Implants hors forfait : '+fmt((d.lines||[]).reduce(function(s,x){return s+(Number(x.qty)||0)*(Number(x.price)||0)},0)),'Autres frais non inclus : '+(d.other||'à compléter')+' DH','Les postes intégrés au forfait ne sont pas calculés séparément.')}
+ else {out.push('Honoraires chirurgien estimés : '+(surgeonEstimate===null?'à compléter':fmt(surgeonEstimate)),
+ 'Honoraires anesthésiste estimés : '+(anestEstimate===null?'à compléter':fmt(anestEstimate)),
+ 'Bloc opératoire : '+(d.bloc||'à compléter')+' DH','Pharmacie / consommables : '+(d.pharmacy||'à compléter')+' DH',
+ 'Nuitées : '+(d.careMode==='inpatient'?(d.days||0)+' × '+(d.daily||'à compléter')+' DH':'sans nuitée'),
+ 'Autres frais établissement : '+(d.clinicFee||'à compléter')+' DH')}
+ out=out.concat(['IMPLANTS / DISPOSITIFS'].concat((d.lines||[]).map(function(x){return '- '+(x.name||'Article')+' : '+x.qty+' × '+(x.price||'prix à saisir')+' DH'}),
+ ['Organisme payeur : '+payerLabel,'Mode de règlement : '+d.paymentMode,'TNR / base globale éligible : '+(d.tnr||'non renseignée')+' DH','Taux saisi : '+(d.rate||'non renseigné')+' %',
+ 'Total provisoire : '+d.total,'Part du payeur : '+$('payerTotal').textContent,'Reste patient après remboursement : '+$('patientTotal').textContent,'À payer à l’établissement : '+$('dueAtFacility').textContent,
+ 'Notes : '+(d.notes||'—'),'ATTENTION : estimation à confronter à la NGAP, au devis de l’établissement, à la TNR, au contrat/accord de prise en charge et aux règles applicables.']));
+ return out.join('\n')
 }
 function flash(s){$('message').textContent=s;$('message').classList.remove('hidden')}
 function download(name,text,type){var a=document.createElement('a'),url=URL.createObjectURL(new Blob([text],{type:type}));a.href=url;a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(url)},1200)}
