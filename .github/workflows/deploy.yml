@@ -44,6 +44,8 @@ jobs:
           cp index.html site/index.html
           cp manifest.webmanifest site/manifest.webmanifest
           cp sw.js site/sw.js
+          mkdir -p site/simulateur-honoraires
+          cp simulateur-honoraires/index.html site/simulateur-honoraires/index.html
           touch site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
