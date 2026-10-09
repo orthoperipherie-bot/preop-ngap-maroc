@@ -73,8 +73,9 @@ function setFacilityUI(force){
  updateTariffNote();calc();
 }
 function choose(a,loading){
- var wasTitle=lastAutoDetails;selected=a;$('actName').textContent=a.title;$('actCode').textContent=a.code;$('actCoef').textContent=(a.coeffs||[]).join(' / ')||'À vérifier';
+ var wasTitle=lastAutoDetails;var oldCode=selected&&selected.code;selected=a;if(!loading&&oldCode!==a.code)publicForfaitEdited=false;$('actName').textContent=a.title;$('actCode').textContent=a.code;$('actCoef').textContent=(a.coeffs||[]).join(' / ')||'À vérifier';
  $('actNote').textContent=(a.note||'')+' Vérifier la lettre-clé, la cotation et les règles de cumul dans le PDF original avant facturation.';
+ var actTerms=norm((a.title||'')+' '+(a.terms||''));$('discipline').value=(/^A\d{3}$/.test(a.code)||/fracture|traumatisme|osteosynthese/.test(actTerms))?'Traumatologie':(/arthroscopie|ligament croise|lca|lcp|menisque|meniscectomie/.test(actTerms)?'Chirurgie du sport':'Orthopédie');
  if(!loading)$('manual').value='';
  if(!kEdited)$('k').value=facilityPublic()?'7.5':'22.5';
  if(!daysEdited)$('days').value=String(suggestedDays(a));
