@@ -1,0 +1,1 @@
+GitHub Pages deployment re-triggered after Pages source was configured to GitHub Actions. See Actions for latest build and deployment status. The app builds its act search catalogue from the NGAP PDF during the workflow.
