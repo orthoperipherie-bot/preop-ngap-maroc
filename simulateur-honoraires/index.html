@@ -234,6 +234,14 @@ function calculate(){
  var rules=selected.filter(function(r){return r.act.kind==='rule'||r.coef===null});
  var nonop=selected.filter(function(r){return r.act.kind==='nonop'&&r.coef!==null});
  var valid=selected.filter(function(r){return r.coef!==null&&r.act.kind!=='rule'&&r.act.kind!=='nonop'});
+ var modifierNotes=[],modifierCodes=rules.map(function(r){return r.act.code;}),baseForModifier=valid.find(function(r){return r.origin==='principale';})||valid.slice().sort(function(a,b){return b.coef-a.coef||a.order-b.order})[0];
+ if(baseForModifier){
+  baseForModifier.baseCoef=baseForModifier.coef;baseForModifier.modifierFactor=1;
+  if(modifierCodes.indexOf('A153')>=0||modifierCodes.indexOf('A154')>=0){baseForModifier.modifierFactor*=1.2;modifierNotes.push('Majoration automatique de 20 % du geste de base pour fracture ouverte (A153/A154), selon le contexte clinique.');}
+  if(modifierCodes.indexOf('A155')>=0){baseForModifier.modifierFactor*=1.5;modifierNotes.push('Supplément automatique de 50 % du coefficient de fracture pour pseudarthrose/cal vicieux (A155).');}
+  if(modifierCodes.indexOf('A211')>=0){baseForModifier.modifierFactor*=1.5;modifierNotes.push('Majoration automatique de 50 % du geste de luxation (A211), sous réserve de la localisation prévue par la NGAP.');}
+  baseForModifier.coef=baseForModifier.baseCoef*baseForModifier.modifierFactor;
+ }
  var supplements=valid.filter(function(r){return r.act.kind==='supplement'});
  var normal=valid.filter(function(r){return r.act.kind!=='supplement'});
  normal.sort(function(a,b){return b.coef-a.coef||a.order-b.order});
@@ -257,7 +265,9 @@ function calculate(){
    if(r.weight<=0)return;
    sc+=r.coef*r.weight;
    var anest= r.act.secondary===null||r.act.secondary===undefined?null:parseNum(r.act.secondary);
-   if(anest===null){anest=Math.min(15,Math.max(0,r.coef));anestEstimated=true;}
+   var baseCoef=r.baseCoef===undefined?r.coef:r.baseCoef;
+   if(anest===null){anest=Math.min(15,Math.max(0,baseCoef));anestEstimated=true;}
+   anest*=r.modifierFactor||1;
    ac+=anest*r.weight;
   });
   supplements.forEach(function(r){sc+=r.coef;});
@@ -305,20 +315,22 @@ function calculate(){
  $('dKeyValue').textContent=fmt(k);
  var notes=[];
  if(grid)notes.push(grid.note);
+ modifierNotes.forEach(function(n){notes.push(n+' La majoration est également répercutée sur l’anesthésie, selon l’article 22(7), lorsque la cotation le prévoit.');});
  if(!pureNonop&&grid){notes.push('Frais de salle d’opération : 50 % de la cotation opératoire, conformément à l’article 23 de la NGAP.');}
  if(anestEstimated)notes.push('Anesthésie sans coefficient secondaire explicite : K15, sans dépasser le coefficient de l’acte, selon l’article 22 de la NGAP.');
  if(grid&&grid.global===false)notes.push('Ce total est partiel/hors forfait global ; les frais d’établissement, le séjour, la pharmacie et les consommables ne sont pas entièrement chiffrés.');
  if(grid&&grid.global!==false&&!pureNonop&&!clinicKnown)notes.push('Ventilation clinique impossible avec ces références : chirurgien + anesthésie + bloc dépassent le forfait sectoriel de '+fmt(Math.abs(rawClinic))+'. Le total forfaitaire reste affiché, mais la part clinique n’est pas inventée.');
- if(rules.length)notes.push('Règle(s) nécessitant une application manuelle : '+rules.map(function(r){return r.act.code+' — '+(r.act.note||r.act.title)}).join(' ; '));
+ var manualRules=rules.filter(function(r){return ['A153','A154','A155','A211'].indexOf(r.act.code)<0;});
+ if(manualRules.length)notes.push('Règle(s) nécessitant une vérification ou application manuelle : '+manualRules.map(function(r){return r.act.code+' — '+(r.act.note||r.act.title)}).join(' ; '));
  if(supplements.length)notes.push('Supplément(s) sélectionné(s) : vérifier l’acte de base et les conditions de cumul avant validation.');
  if(nonop.length&&!pureNonop)notes.push('Acte(s) non opératoire(s) ignoré(s) dans le forfait chirurgical combiné ; calculer séparément.');
  $('dNotice').textContent=notes.join(' ');
  var tb=$('actTable');tb.innerHTML='';
  if(!selected.length)tb.innerHTML='<tr><td colspan="7">Sélectionnez une intervention.</td></tr>';
  else selected.forEach(function(r){
-  var tr=document.createElement('tr'),c=r.coef,weightText=r.cotation||'—';
+  var tr=document.createElement('tr'),c=r.baseCoef===undefined?r.coef:r.baseCoef,weightText=r.cotation||'—';
   var an=r.act.kind==='rule'?'Voir la règle':r.act.kind==='supplement'?'Supplément, pas d’anesthésie distincte':pureNonop?'—':(r.act.secondary===null||r.act.secondary===undefined?'K15 plafonné au coefficient':String(r.act.secondary));
-  var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightText,c===null?'—':(r.weight===undefined?'—':(c*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2})),an];
+  var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightText,c===null?'—':(r.weight===undefined?'—':((r.coef||0)*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2})),an];
   cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td);});tb.appendChild(tr);
  });
  lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:unknownCoverage?'À confirmer':coverAll,patient:patientAll,today:today,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value};
