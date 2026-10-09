@@ -11,7 +11,7 @@
 <div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Privé — clinique / convention</option><option value="public">Public — hôpital / CHU</option></select></div>
 <div class="field"><label>Valeur K/KC préremplie</label><div id="sectorKDisplay" class="selected"><strong>22,50 DH</strong><small>Référence secteur privé</small></div></div>
 </div><p id="sectorNote" class="notice">Privé : K/KC = 22,50 DH ; le forfait de chirurgie de référence est utilisé lorsqu’une tranche est disponible.</p></div>
-<div class="hero"><div class="sub">À RÉGLER AUJOURD’HUI — ACTE SEUL, HORS IMPLANTS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant concerne uniquement l’acte et les gestes associés. En PEC, il correspond au reste à payer estimé ; en paiement direct ou avant remboursement, il correspond à l’avance pour l’acte. Le prix des implants n’est pas inclus sur cette page.</div></div>
+<div class="hero"><div class="sub">RESTE À CHARGE ESTIMÉ DU PATIENT — ACTE SEUL, HORS IMPLANTS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Le montant affiché ici est ce qui reste estimé à la charge du patient après la prise en charge simulée, hors implants. En mode « remboursement », le patient avance le tarif total : cette avance est affichée séparément dans « À payer aujourd’hui ». En mode « direct », aucune part de payeur n’est déduite automatiquement.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div>
@@ -322,7 +322,7 @@ function calculate(){
  var unknownCoverage=coverageUnknown||implantUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
  var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
- $('totalHeadline').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'— DH';
+ $('totalHeadline').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'— DH';
  $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · calcul de l’acte seul, hors implants':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
  $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
