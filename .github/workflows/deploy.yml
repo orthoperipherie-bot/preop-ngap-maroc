@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install PDF tools
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
       - name: Download NGAP source PDF
@@ -26,6 +29,16 @@ jobs:
           pdftotext -layout /tmp/ngap.pdf ngap_raw.txt
       - name: Build act catalogue
         run: python scripts/build_catalog.py ngap_raw.txt site/acts.json
+      - name: Publish catalogue at repository root
+        run: |
+          cp site/acts.json acts.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add acts.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update generated NGAP act catalogue"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
       - name: Prepare static app
         run: |
           cp index.html site/index.html
