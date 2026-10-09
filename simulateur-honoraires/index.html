@@ -4,14 +4,14 @@
 :root{color-scheme:light dark;--bg:light-dark(#f3f7f5,#101b19);--card:light-dark(#fff,#1a2926);--ink:light-dark(#172722,#eaf4ef);--muted:light-dark(#60736b,#a6bbb2);--line:light-dark(#dce6e0,#354841);--accent:light-dark(#17665a,#88d8c4);--soft:light-dark(#e3f3ee,#203b34);--warn:light-dark(#fff2d9,#49391d)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,sans-serif}.app{max-width:900px;padding:15px 11px 35px;margin:auto}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:850}h1{font-size:28px;line-height:1.15;margin:7px 0}h2{font-size:17px;margin:0 0 12px}.muted{font-size:12px;color:var(--muted)}.panel{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px;margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{min-width:0;margin-bottom:9px}label{display:block;font-size:12px;color:var(--muted);font-weight:750;margin-bottom:5px}input,select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);color:var(--ink);font:inherit}.btn{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);color:var(--ink);font:inherit;font-weight:750;cursor:pointer}.btn.primary{background:var(--accent);color:#102820;border-color:transparent}.btn.danger{color:#b44}.tabs{display:flex;gap:7px;margin:15px 0 12px}.tab{flex:1}.tab.active{background:var(--soft);border-color:var(--accent);color:var(--accent)}.hidden{display:none!important}.selected{border:1px solid var(--line);border-radius:10px;background:var(--soft);padding:9px;margin:7px 0}.selected strong{display:block}.selected small{display:block;color:var(--muted);margin-top:3px}.match{display:block;text-align:left;width:100%;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:9px;margin-top:5px;cursor:pointer}.match strong{display:block;font-size:13px}.match small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.line{display:grid;grid-template-columns:minmax(0,1fr) 83px 32px;gap:6px;align-items:start;margin:9px 0}.line .field{margin:0}.line .remove{padding:9px 0;width:32px}.hero{background:var(--soft);border:1px solid var(--line);border-radius:15px;padding:15px;margin:12px 0}.hero .big{font-size:clamp(28px,7vw,39px);font-weight:850;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.hero .sub{color:var(--muted);font-size:12px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.metric{background:var(--soft);border-radius:12px;padding:12px;min-width:0}.metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:clamp(18px,4vw,25px);margin-top:4px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.row span{color:var(--muted)}.row strong{text-align:right;font-variant-numeric:tabular-nums}.notice{padding:10px;border-radius:10px;background:var(--warn);font-size:12px;margin:9px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.actions .btn{flex:1}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}td.num,th.num{text-align:right;white-space:nowrap}a{color:var(--accent)}@media(max-width:420px){.app{padding:11px 8px 30px}.panel{padding:10px}.line{grid-template-columns:minmax(0,1fr) 70px 29px;gap:4px}.line .remove{width:29px}.tab{padding:9px 5px;font-size:12px}}
 </style></head><body><main class="app">
-<div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention principale + gestes associés → tarif total et ventilation immédiate. Ce n’est pas un devis.</p>
+<div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → montant à la charge du patient pour l’acte seul. Les implants sont chiffrés séparément dans l’onglet dédié. Ce n’est pas un devis.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de soins</h2><div class="grid">
 <div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Privé — clinique / convention</option><option value="public">Public — hôpital / CHU</option></select></div>
 <div class="field"><label>Valeur K/KC préremplie</label><div id="sectorKDisplay" class="selected"><strong>22,50 DH</strong><small>Référence secteur privé</small></div></div>
 </div><p id="sectorNote" class="notice">Privé : K/KC = 22,50 DH ; le forfait de chirurgie de référence est utilisé lorsqu’une tranche est disponible.</p></div>
-<div class="hero"><div class="sub">À RÉGLER AUJOURD’HUI (SELON LE MODE DE PAIEMENT)</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Selon le mode choisi, ce montant représente soit le reste à payer avec la PEC, soit l’avance complète en paiement direct ou avant remboursement. Le tarif total estimé à la charge du patient (acte + implant) figure séparément ci-dessous.</div></div>
+<div class="hero"><div class="sub">À RÉGLER AUJOURD’HUI — ACTE SEUL, HORS IMPLANTS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant concerne uniquement l’acte et les gestes associés. En PEC, il correspond au reste à payer estimé ; en paiement direct ou avant remboursement, il correspond à l’avance pour l’acte. Le prix des implants n’est pas inclus sur cette page.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div>
@@ -23,7 +23,6 @@
 <div class="field"><label for="coverageRate">Taux de couverture simulé (%)</label><input id="coverageRate" type="number" min="0" max="100" step="1" value="90"></div>
 <div class="field"><label>Barème sectoriel</label><div id="payerSectorSummary" class="muted">Le secteur règle la valeur K/KC et la méthode de calcul du total.</div></div></div><div id="payerNote" class="notice">CNOPS : hypothèse de 90 % de la TNR pour la chirurgie en clinique privée. Le taux réel dépend des droits, du tarif reconnu et de l’accord préalable.</div></div>
 <div class="metrics"><div class="metric"><small>Part payeur estimée</small><strong id="payerAmount">—</strong></div><div class="metric"><small>Reste patient estimé</small><strong id="patientAmount">—</strong></div><div class="metric"><small>À payer aujourd’hui</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
-<div class="panel"><h2>Tarif total estimé (acte + implant)</h2><div class="metric"><small>Montant final estimé à la charge du patient après la part du payeur</small><strong id="totalPatientActImplant">—</strong></div><p class="muted">Le tarif combine l’acte chirurgical et les implants signalés « En sus », puis déduit la part du payeur simulée. Les implants considérés inclus dans le forfait ne sont pas ajoutés une seconde fois. Le montant varie selon le secteur, le payeur et le type de paiement sélectionnés.</p></div>
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
 </section>
 <section id="tab-implants" class="hidden">
@@ -222,7 +221,7 @@ function calculateImplants(){
  $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rateUnknown?'Taux à confirmer':fmt(cover));
  $('implantPatientTotal').textContent=!selectedImplants.length?'—':(rateUnknown?'Taux à confirmer':fmt(patient));
  $('implantExtraTotal').textContent=fmt(extra);
- $('totalWithImplants').textContent=lastCalc&&lastCalc.grid?(typeof lastCalc.patient==='number'?fmt(lastCalc.patient):lastCalc.patient):'Sélectionnez d’abord un acte';
+ $('totalWithImplants').textContent=lastCalc&&lastCalc.grid?(typeof lastCalc.patientAll==='number'?fmt(lastCalc.patientAll):lastCalc.patientAll):'Sélectionnez d’abord un acte';
  if(unknownPurchase>0)$('implantPriceNote').textContent=unknownPurchase+' unité(s) sans prix fournisseur : le TNR sert de prix de travail et de base estimative. Le calcul réel du reste à charge nécessite le prix d’achat exact.';
  else $('implantPriceNote').textContent='Prix d’achat renseigné pour tous les dispositifs. La base remboursable estimée est plafonnée au TNR par ligne.';
  $('implantCoverNote').textContent=($('payer').value==='cnops'?'CNOPS : hypothèse 100 % du TNR admissible, sous réserve de la liste et de l’accord préalable.':$('payer').value==='cnss'?'CNSS/AMO : hypothèse 70 %, à confirmer pour le dossier.':$('payer').value==='payant'?'Payant : aucun remboursement simulé.':$('payer').value==='far'?'FAR : taux à confirmer dans le régime applicable.':'Assurance : taux à confirmer dans le contrat.')+' Le barème intégré est un repère daté, pas une garantie de remboursement.';
@@ -306,7 +305,12 @@ function calculate(){
  var payer=$('payer').value,mode=$('paymentType').value,rate=parseNum($('coverageRate').value);
  var eligible=payer!=='payant'&&mode!=='direct',coverageUnknown=eligible&&rate===null;
  if(rate!==null)rate=Math.max(0,Math.min(100,rate))/100;
- var cover=eligible&&!coverageUnknown?total*rate:0,implantRate=deviceCoverageRate(),extra=0,implantCover=0,implantUnknown=false;
+ // Première page : calcul du patient pour l'acte seul. Aucun coût d'implant n'est affiché ici.
+ var cover=eligible&&!coverageUnknown?total*rate:0;
+ var patientAct=coverageUnknown?'À confirmer':Math.max(0,total-cover);
+ var todayAct=mode==='pec'?patientAct:total;
+ // Le calcul combiné, implant(s) marqué(s) « En sus » inclus, reste réservé à l'onglet Implants & TNR.
+ var implantRate=deviceCoverageRate(),extra=0,implantCover=0,implantUnknown=false;
  selectedImplants.forEach(function(it){
   if(!it.separate)return;
   var q=num(it.qty),unit=deviceUnitPurchase(it);
@@ -317,13 +321,12 @@ function calculate(){
  var totalAll=total+extra,coverAll=cover+implantCover;
  var unknownCoverage=coverageUnknown||implantUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
- var today=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
- $('totalHeadline').textContent=grid?(typeof today==='string'?today:fmt(today)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(extra?' · implants en sus intégrés au calcul':''):(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
- $('payerAmount').textContent=grid?(unknownCoverage?'À confirmer':fmt(coverAll)):'—';
- $('patientAmount').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
- $('totalPatientActImplant').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
- $('todayAmount').textContent=grid?(typeof today==='string'?today:fmt(today)):'—';
+ var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
+ $('totalHeadline').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'— DH';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · calcul de l’acte seul, hors implants':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
+ $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
+ $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
+ $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('summaryAct').textContent=mainAct?mainAct.code+' · '+mainAct.title:'À sélectionner';
  $('summaryBasis').textContent=grid?grid.label:'—';
@@ -361,7 +364,7 @@ function calculate(){
   var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightText,c===null?'—':(r.weight===undefined?'—':((r.coef||0)*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2})),an];
   cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td);});tb.appendChild(tr);
  });
- lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:unknownCoverage?'À confirmer':coverAll,patient:patientAll,today:today,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value};
+ lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value};
  calculateImplants();
 }
 function addGesture(){gestures.push({id:nextId++,act:null,coef:'',query:''});renderGestures();calculate()}
@@ -377,18 +380,17 @@ function summary(){
   'Gestes associés : '+associated,
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
   'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
-  'Forfait de référence : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
-  'Montant technique indicatif avant couverture (acte + implants marqués « En sus ») : '+fmt(lastCalc.totalAll),
-  'Montant estimé à la charge du patient (acte + implants en sus) : '+amount(lastCalc.patient),
+  'Forfait de référence pour l’acte : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
+  'Part payeur simulée (acte seul) : '+amount(lastCalc.coverage),
+  'Reste patient estimé (acte seul) : '+amount(lastCalc.patient),
+  'À payer aujourd’hui pour l’acte seul : '+amount(lastCalc.today),
   'Honoraires chirurgien (calcul NGAP) : '+fmt(lastCalc.surgeon),
   'Honoraires anesthésiste (calcul NGAP) : '+fmt(lastCalc.anesthesia),
   'Bloc opératoire (NGAP art. 23) : '+fmt(lastCalc.block),
   'Part clinique/établissement : '+amount(lastCalc.clinic),
   'Payeur : '+$('payer').value,
   'Type de paiement : '+$('paymentType').value,
-  'Part payeur simulée : '+amount(lastCalc.coverage),
-  'Reste patient estimé : '+amount(lastCalc.patient),
-  'À payer aujourd’hui : '+amount(lastCalc.today),
+  'Implants : non inclus dans ce résumé ; consulter l’onglet « Implants & TNR ».',
   'Source : NGAP marocaine fournie ; grille privée 1961-06 (2006) ; convention AMO établissements publics (2007). Vérifier le barème en vigueur et l’accord du payeur avant facturation.'
  ].join('\n');
 }
