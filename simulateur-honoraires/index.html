@@ -13,8 +13,8 @@
 .row.patient-row span,.row.patient-row strong{color:var(--patient-ink)!important;font-weight:800}
 .metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:clamp(18px,4vw,25px);margin-top:4px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.row span{color:var(--muted)}.row strong{text-align:right;font-variant-numeric:tabular-nums}.notice{padding:10px;border-radius:10px;background:var(--warn);font-size:12px;margin:9px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.actions .btn{flex:1}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}td.num,th.num{text-align:right;white-space:nowrap}a{color:var(--accent)}@media(max-width:420px){.app{padding:11px 8px 30px}.panel{padding:10px}.line{grid-template-columns:minmax(0,1fr) 70px 29px;gap:4px}.line .remove{width:29px}.tab{padding:9px 5px;font-size:12px}}
 </style></head><body><main class="app">
-<div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → reste à payer par le patient. Les implants cochés « En sus » sont ajoutés au calcul patient avec leur prise en charge simulée ; les implants inclus dans le forfait ne sont pas ajoutés une seconde fois. Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 33 — le montant principal affiche le reste à payer par le patient, acte + implants cochés « En sus » inclus. Le montant à avancer aujourd’hui est indiqué séparément. Le net du chirurgien dépend de son statut professionnel, dans « Détails estimés NGAP ».</p>
+<div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → reste à payer estimé par le patient. Les implants sont calculés séparément dans l’onglet « Implants & TNR ». Ce n’est pas un devis.</p>
+<p class="muted" id="buildVersion">Version 34 — la « Saisie rapide » calcule le reste à payer pour l’acte seul. Les implants sont estimés uniquement dans l’onglet « Implants & TNR ». Le montant à avancer aujourd’hui est indiqué séparément.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
@@ -29,8 +29,8 @@
 <p id="surgeonStatusPrompt" class="muted">Libéral : le net simulé sera calculé après la retenue/commission saisie, hors impôts et cotisations personnelles. Public : les honoraires d’acte ne permettent pas de calculer un salaire net individuel.</p>
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
-<p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants marqués « En sus » sont ajoutés séparément.</p></div>
-<div class="hero patient-highlight"><div class="sub">RESTE FINAL À PAYER PAR LE PATIENT — ACTE + IMPLANTS « EN SUS »</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste final à la charge du patient après la couverture estimée, implants « En sus » inclus. Le volet « Détails estimés NGAP » conserve le tarif complet avant couverture. En mode « remboursement », le montant à avancer aujourd’hui est affiché séparément ; en paiement direct, aucune couverture n’est déduite.</div></div>
+<p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants sont estimés uniquement dans l’onglet « Implants & TNR ».</p></div>
+<div class="hero patient-highlight"><div class="sub">RESTE FINAL À PAYER PAR LE PATIENT — ACTE SEUL, HORS IMPLANTS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste final estimé à la charge du patient pour l’acte seul, après couverture estimée. Les implants sont calculés séparément dans l’onglet « Implants & TNR ». Le volet « Détails estimés NGAP » conserve le tarif de référence de l’acte avant couverture. En mode « remboursement », le montant à avancer aujourd’hui est affiché séparément ; en paiement direct, aucune couverture n’est déduite.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div>
@@ -41,7 +41,7 @@
 <div class="field"><label for="paymentType">Type de paiement</label><select id="paymentType"><option value="direct">Direct — paiement immédiat</option><option value="pec" selected>PEC — prise en charge</option><option value="remboursement">Remboursement après avance</option></select></div>
 <div class="field"><label for="coverageRate">Taux de couverture simulé (%)</label><input id="coverageRate" type="number" min="0" max="100" step="1" value="90"></div>
 <div class="field"><label>Barème sectoriel</label><div id="payerSectorSummary" class="muted">Le secteur règle la valeur K/KC et la méthode de calcul du total.</div></div></div><div id="payerNote" class="notice">CNOPS : hypothèse de 90 % de la TNR pour la chirurgie en clinique privée. Le taux réel dépend des droits, du tarif reconnu et de l’accord préalable.</div></div>
-<div class="metrics"><div class="metric"><small>Part payeur estimée — acte + implants en sus</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte + implants</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small>Montant à payer aujourd’hui (avance ou reste PEC)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
+<div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte seul</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small>Montant à payer aujourd’hui (avance ou reste PEC)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
 </section>
 <section id="tab-implants" class="hidden">
@@ -349,11 +349,11 @@ function calculate(){
  var unknownCoverage=coverageUnknown||implantUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
  var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
- $('totalHeadline').textContent=grid?(unknownCoverage?'À confirmer':fmt(patientAll)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste à charge estimé du patient, implants « En sus » sélectionnés inclus':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
- $('payerAmount').textContent=grid?(unknownCoverage?'À confirmer':fmt(coverAll)):'—';
- $('patientAmount').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
- $('todayAmount').textContent=grid?(typeof todayAll==='string'?todayAll:fmt(todayAll)):'—';
+ $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste à charge estimé pour l’acte seul':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
+ $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
+ $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
+ $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('summaryAct').textContent=mainAct?mainAct.code+' · '+mainAct.title:'À sélectionner';
  $('summaryBasis').textContent=grid?grid.label:'—';
@@ -422,14 +422,10 @@ function summary(){
   'Gestes associés : '+associated,
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
   'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
-  'Base tarifaire utilisée pour l’acte : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
+  'Tarif de référence de l’acte avant couverture : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
   'Part payeur simulée — acte seul, hors implants : '+amount(lastCalc.coverage),
   'Reste à payer par le patient — acte seul, hors implants : '+amount(lastCalc.patient),
   'À avancer aujourd’hui — acte seul, hors implants : '+amount(lastCalc.today),
-  'Coût de référence acte + implants « En sus » avant couverture : '+fmt(lastCalc.totalAll),
-  'Part payeur estimée — acte + implants « En sus » : '+amount(lastCalc.coverageAll),
-  'Reste final à la charge du patient — acte + implants « En sus » : '+amount(lastCalc.patientAll),
-  'À payer aujourd’hui — acte + implants « En sus » : '+amount(lastCalc.todayAll),
   'Honoraires bruts théoriques du chirurgien : '+fmt(lastCalc.surgeon),
   (lastCalc.surgeonStatus==='public'?'Net individuel du chirurgien public : non calculable à partir de la NGAP (rémunération statutaire/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
   (lastCalc.surgeonStatus==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur':'Net estimé du chirurgien libéral (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
@@ -438,7 +434,6 @@ function summary(){
   'Part clinique/établissement : '+amount(lastCalc.clinic),
   'Payeur : '+$('payer').value,
   'Type de paiement : '+$('paymentType').value,
-  'Montant des implants cochés « En sus » : '+fmt(lastCalc.implantExtra)+' (prix fournisseur réel à vérifier si le TNR sert de valeur de travail).',
   'Source : NGAP marocaine fournie ; grille privée 1961-06 (2006) ; convention AMO établissements publics (2007). Vérifier le barème en vigueur et l’accord du payeur avant facturation.'
  ].join('\n');
 }
