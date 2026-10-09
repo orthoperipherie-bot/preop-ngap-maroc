@@ -97,14 +97,14 @@ Le simulateur mobile charge désormais `orthopedie-actes.json`, un catalogue sp�
 
 ### Secteur et calcul automatique
 
-- **Privé :** K/KC prérempli à 22,50 DH d’après l’arrêté n°1961-06. Les forfaits publiés par tranche de coefficient sont utilisés à partir de K30. Pour K inférieur à K30, l’application affiche une interpolation et la signale comme indicative.
+- **Privé :** K/KC prérempli à 22,50 DH d’après l’arrêté n°1961-06 (2006). Les forfaits privés publiés par tranche de coefficient sont utilisés à partir de K30. Pour K inférieur à K30, le total est partiel (honoraires NGAP + bloc estimé) et les frais d’établissement non chiffrés ne sont pas inclus.
 - **Public :** K/KC prérempli à 7,50 DH selon l’arrêté conjoint n°10-04 (2004). Le forfait public global n’étant pas directement déductible du seul code NGAP, le total public est une estimation comparative calculée au prorata 7,50/22,50 du forfait de référence privé. Il est explicitement étiqueté non officiel et doit être remplacé par le tarif de l’établissement lorsqu’il est connu.
 - **Cumul :** le défaut suit l’article 9 B de la NGAP : coefficient le plus élevé à 100 %, deuxième acte à 50 %, suivants non cotés ; des options permettent d’utiliser les exceptions de 75 % et du troisième acte à 50 % dans les situations décrites par le texte.
 - **Anesthésie :** le coefficient secondaire du catalogue est utilisé lorsqu’il figure dans l’acte ; à défaut, K15 est retenu sans dépasser le coefficient opératoire, conformément à l’article 22.
 - **Bloc opératoire :** 50 % du coefficient opératoire pondéré, conformément à l’article 23.
 - **Ventilation :** la part clinique/établissement est un solde estimé du total global après honoraires et bloc ; elle ne constitue pas un honoraire autonome garanti.
 
-Sources officielles utilisées : NGAP fournie (arrêté n°177-06), forfaits et valeur K/KC du privé dans l’arrêté n°1961-06, et valeur K/KC du public dans l’arrêté conjoint n°10-04. Le mode public reste une estimation comparative, pas une grille de forfait public complète.
+Sources utilisées : NGAP marocaine fournie (arrêté n°177-06) ; grille forfaitaire privée de l’arrêté n°1961-06 (2006) ; convention nationale AMO des établissements publics (mai 2007, copie consultable en ligne). Ces grilles sont des références datées et ne garantissent pas qu’un établissement ou un payeur les applique encore sans avenant. Le total est un forfait de référence, pas nécessairement le devis de la clinique ou la facture économique complète du public.
 
 
 ### Contrôle des actes de regroupement
