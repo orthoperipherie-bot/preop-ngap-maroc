@@ -89,3 +89,19 @@ Sources : NGAP marocaine, arrêté n°177-06 : https://cnops.org.ma/sites/defaul
 Le simulateur inclut un sous-module de 44 lignes TNR historiques d’implants et dispositifs orthopédiques extraites du barème officiel n°2314-08 (2008) : composants de prothèses de hanche/genou/épaule, fixateurs, plaques, vis, clous et broches. Pour chaque ligne, l’outil distingue le TNR historique, le prix d’achat fournisseur (facultatif), la base de remboursement estimée plafonnée au TNR et le statut « facturé en sus du forfait opératoire ». Le coût d’implant n’est ajouté au total de l’intervention que si la case « En sus » est cochée, afin d’éviter le double comptage.
 
 **Avertissement de mise à jour :** l’arrêté n°3207-15 a remplacé certains tarifs de la classe III. Les valeurs orthopédiques importées sont donc affichées avec leur source et leur date, et doivent être confirmées à partir du barème applicable / accord du payeur avant de les considérer comme les TNR actuels. La CNOPS indique qu’un accord préalable peut être nécessaire et que la base de remboursement d’un dispositif est plafonnée au forfait réglementaire ou au prix d’achat s’il est inférieur. Les taux d’implants CNOPS (100 %) et CNSS/AMO (70 %) sont préproposés comme simulation à confirmer selon l’éligibilité du dispositif et le dossier. 
+
+
+## Catalogue spécialisé NGAP (octobre 2026)
+
+Le simulateur mobile charge désormais `orthopedie-actes.json`, un catalogue spécialisé de **359 entrées** construit à partir du PDF NGAP transmis dans la conversation : codes des chapitres traumatologiques, rachis, membre supérieur, membre inférieur, pied/cheville, os, tendons/muscles, articulations/prothèses, nerfs périphériques, quelques gestes vasculaires de membres pertinents en traumatologie et assimilations dédiées. Il ne charge plus la nomenclature complète toutes spécialités pour les recherches du simulateur.
+
+### Secteur et calcul automatique
+
+- **Privé :** K/KC prérempli à 22,50 DH d’après l’arrêté n°1961-06. Les forfaits publiés par tranche de coefficient sont utilisés à partir de K30. Pour K inférieur à K30, l’application affiche une interpolation et la signale comme indicative.
+- **Public :** K/KC prérempli à 7,50 DH selon l’arrêté conjoint n°10-04 (2004). Le forfait public global n’étant pas directement déductible du seul code NGAP, le total public est une estimation comparative calculée au prorata 7,50/22,50 du forfait de référence privé. Il est explicitement étiqueté non officiel et doit être remplacé par le tarif de l’établissement lorsqu’il est connu.
+- **Cumul :** le défaut suit l’article 9 B de la NGAP : coefficient le plus élevé à 100 %, deuxième acte à 50 %, suivants non cotés ; des options permettent d’utiliser les exceptions de 75 % et du troisième acte à 50 % dans les situations décrites par le texte.
+- **Anesthésie :** le coefficient secondaire du catalogue est utilisé lorsqu’il figure dans l’acte ; à défaut, K15 est retenu sans dépasser le coefficient opératoire, conformément à l’article 22.
+- **Bloc opératoire :** 50 % du coefficient opératoire pondéré, conformément à l’article 23.
+- **Ventilation :** la part clinique/établissement est un solde estimé du total global après honoraires et bloc ; elle ne constitue pas un honoraire autonome garanti.
+
+Sources officielles utilisées : NGAP fournie (arrêté n°177-06), forfaits et valeur K/KC du privé dans l’arrêté n°1961-06, et valeur K/KC du public dans l’arrêté conjoint n°10-04. Le mode public reste une estimation comparative, pas une grille de forfait public complète.
