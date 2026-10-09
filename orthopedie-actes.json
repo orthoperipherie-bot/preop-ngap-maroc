@@ -2218,54 +2218,6 @@
     "note": "Source : NGAP marocaine fournie, arrêté n°177-06 (2006). Vérifier le contexte exact et les règles de cumul avant facturation."
   },
   {
-    "code": "C611",
-    "title": "Résection caténaire ou ganglionnaire en général",
-    "coeffs": [
-      "120",
-      "60"
-    ],
-    "coef": 120,
-    "secondary": 60,
-    "key": "K",
-    "category": "Nerfs périphériques",
-    "kind": "act",
-    "sourceSection": "Titre II — Nerfs périphériques",
-    "terms": "Résection caténaire ou ganglionnaire en général Résection caténaire ou ganglionnaire en général Nerfs périphériques C611 C611 Résection caténaire ou ganglionnaire en général   chirurgie opératoire orthopédie traumatologie 120 60 C611 Nerfs périphériques",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "C612",
-    "title": "Sympathectomie dorso-lombaire sus et sous-diaphragmatique",
-    "coeffs": [
-      "120",
-      "60"
-    ],
-    "coef": 120,
-    "secondary": 60,
-    "key": "K",
-    "category": "Nerfs périphériques",
-    "kind": "act",
-    "sourceSection": "Titre II — Nerfs périphériques",
-    "terms": "Sympathectomie dorso-lombaire sus et sous-diaphragmatique Sympathectomie dorso-lombaire sus et sous-diaphragmatique Nerfs périphériques C612 C612 Sympathectomie dorso-lombaire sus et sous-diaphragmatique   chirurgie opératoire orthopédie traumatologie 120 60 C612 Nerfs périphériques",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "C613",
-    "title": "C613",
-    "coeffs": [
-      "120",
-      "60"
-    ],
-    "coef": 120,
-    "secondary": 60,
-    "key": "K",
-    "category": "Nerfs périphériques",
-    "kind": "act",
-    "sourceSection": "Titre II — Nerfs périphériques",
-    "terms": "C613 C613 Nerfs périphériques C613 C613    chirurgie opératoire orthopédie traumatologie 120 60 C613 Nerfs périphériques",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
     "code": "C614",
     "title": "Neurotomie périphérique",
     "coeffs": [
@@ -3125,134 +3077,6 @@
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
   },
   {
-    "code": "F102",
-    "title": "Exérèse d'une lésion expansive intra-durale, extra-médullaire",
-    "coeffs": [
-      "180",
-      "80"
-    ],
-    "coef": 180,
-    "secondary": 80,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Exérèse d'une lésion expansive intra-durale, extra-médullaire Exérèse d'une lésion expansive intra-durale, extra-médullaire Rachis F102 F102 Exérèse d'une lésion expansive intra-durale, extra-médullaire   180 80 F102 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F103",
-    "title": "Exérèse d’une lésion intra-médullaire — quatre métamères ou moins",
-    "coeffs": [
-      "300",
-      "130"
-    ],
-    "coef": 300,
-    "secondary": 130,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Exérèse d’une lésion intra-médullaire — quatre métamères ou moins Exérèse d’une lésion intra-médullaire (inférieure ou égale à quatre métamères) Rachis F103 F103    300 130 F103 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F104",
-    "title": "Exérèse d’une lésion intra-médullaire — plus de quatre métamères",
-    "coeffs": [
-      "450",
-      "150"
-    ],
-    "coef": 450,
-    "secondary": 150,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Exérèse d’une lésion intra-médullaire — plus de quatre métamères Exérèse d'une lésion intra-médullaire (supérieure à quatre métamères) Rachis F104 F104 Exérèse d'une lésion intra-médullaire (supérieure à quatre métamères)   450 150 F104 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F105",
-    "title": "Ponction d'un kyste intra-médullaire",
-    "coeffs": [
-      "150",
-      "50"
-    ],
-    "coef": 150,
-    "secondary": 50,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Ponction d'un kyste intra-médullaire Ponction d'un kyste intra-médullaire Rachis F105 F105 Ponction d'un kyste intra-médullaire   150 50 F105 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F106",
-    "title": "Exérèse d'une lésion expansive géante de la queue de cheval",
-    "coeffs": [
-      "400",
-      "130"
-    ],
-    "coef": 400,
-    "secondary": 130,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Exérèse d'une lésion expansive géante de la queue de cheval Exérèse d'une lésion expansive géante de la queue de cheval Rachis F106 F106 Exérèse d'une lésion expansive géante de la queue de cheval   400 130 F106 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F107",
-    "title": "Exérèse d'une lésion expansive en sablier",
-    "coeffs": [
-      "250",
-      "110"
-    ],
-    "coef": 250,
-    "secondary": 110,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Exérèse d'une lésion expansive en sablier Exérèse d'une lésion expansive en sablier Rachis F107 F107 Exérèse d'une lésion expansive en sablier   250 110 F107 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F108",
-    "title": "Traitement d'une malformation artérioveineuse médullaire",
-    "coeffs": [
-      "400",
-      "130"
-    ],
-    "coef": 400,
-    "secondary": 130,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Traitement d'une malformation artérioveineuse médullaire Traitement d'une malformation artérioveineuse médullaire Rachis F108 F108 Traitement d'une malformation artérioveineuse médullaire   400 130 F108 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F109",
-    "title": "Evacuation d'un hématome intra-rachidien",
-    "coeffs": [
-      "150",
-      "60"
-    ],
-    "coef": 150,
-    "secondary": 60,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Evacuation d'un hématome intra-rachidien Evacuation d'un hématome intra-rachidien Rachis F109 F109 Evacuation d'un hématome intra-rachidien   150 60 F109 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
     "code": "F110",
     "title": "Mise en place d'une traction cervicale (étrier, halo)",
     "coeffs": [
@@ -3299,22 +3123,6 @@
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
   },
   {
-    "code": "F113",
-    "title": "Traitement d'une cavité syringomyélique (ponction, drainage)",
-    "coeffs": [
-      "150",
-      "60"
-    ],
-    "coef": 150,
-    "secondary": 60,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Traitement d'une cavité syringomyélique (ponction, drainage) Traitement d'une cavité syringomyélique (ponction, drainage) Rachis F113 F113 Traitement d'une cavité syringomyélique (ponction, drainage)   150 60 F113 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
     "code": "F114",
     "title": "Traitement d’une malformation de la charnière cranio-cervicale — voie postérieure",
     "coeffs": [
@@ -3344,37 +3152,6 @@
     "kind": "act",
     "sourceSection": "Titre V — Rachis / moelle épinière",
     "terms": "Traitement d’une malformation de la charnière cranio-cervicale — voie transorale Traitement d’une malformation de la charnière cranio-cervicale (voie transorale) Rachis F115 F115    300 130 F115 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F116",
-    "title": "Traitement d'une myélo-méningocèle (spina bifida)",
-    "coeffs": [
-      "150",
-      "90"
-    ],
-    "coef": 150,
-    "secondary": 90,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Traitement d'une myélo-méningocèle (spina bifida) Traitement d'une myélo-méningocèle (spina bifida) Rachis F116 F116 Traitement d'une myélo-méningocèle (spina bifida)   150 90 F116 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F117",
-    "title": "Traitement des fistules sacrococcygiennes",
-    "coeffs": [
-      "60"
-    ],
-    "coef": 60,
-    "secondary": null,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Traitement des fistules sacrococcygiennes Traitement des fistules sacrococcygiennes Rachis F117 F117 Traitement des fistules sacrococcygiennes   60 F117 Rachis",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
   },
   {
@@ -3750,21 +3527,6 @@
     "kind": "act",
     "sourceSection": "Titre V — Rachis / moelle épinière",
     "terms": "Ablation isolée du coccyx Ablation isolée du coccyx Rachis F141 Ablation isolée du coccyx Rachis F141 Ablation isolée du coccyx   10 F141 F141 Rachis",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
-  },
-  {
-    "code": "F142",
-    "title": "Injection épidurale",
-    "coeffs": [
-      "8"
-    ],
-    "coef": 8,
-    "secondary": null,
-    "key": "K",
-    "category": "Rachis",
-    "kind": "act",
-    "sourceSection": "Titre V — Rachis / moelle épinière",
-    "terms": "Injection épidurale Injection épidurale Rachis F142 Injection épidurale Rachis F142 Injection épidurale   8 F142 F142 Rachis",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
   },
   {
@@ -5422,5 +5184,45 @@
     "sourceSection": "Titre I — Traitement des traumatismes",
     "terms": "lésion ostéo-articulaire, musculo-tendineuse ou des parties molles d'origine lésion ostéo-articulaire, musculo-tendineuse ou des parties molles d'origine Traumatologie A400 lésion ostéo-articulaire, musculo-tendineuse ou des parties molles d'origine Traumatologie A400 lésion ostéo-articulaire, musculo-tendineuse ou des parties molles d'origine   fracture traumatisme orthopédie ostéosynthèse immobilisation 11 A400 A400 Traumatologie",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
+  },
+  {
+    "code": "C539",
+    "title": "Traitement chirurgical d’un anévrisme artériel ou artérioveineux sans rétablissement de continuité — vaisseaux principaux des membres",
+    "coeffs": [
+      "80",
+      "30"
+    ],
+    "coeffText": [
+      "80",
+      "30"
+    ],
+    "coef": 80,
+    "secondary": 30,
+    "key": "K",
+    "source_line": 1568,
+    "terms": "Traitement chirurgical d’un anévrisme artériel ou artérioveineux sans rétablissement de continuité — vaisseaux principaux des membres Vaisseaux du membre / traumatologie C539 C539 1° Vaisseaux principaux des membres   chirurgie opératoire orthopédie traumatologie 80 30",
+    "note": "Code vasculaire concernant les principaux vaisseaux des membres ; à considérer comme geste associé uniquement dans les cas pertinents de traumatologie grave.",
+    "category": "Vaisseaux du membre / traumatologie",
+    "kind": "act"
+  },
+  {
+    "code": "C542",
+    "title": "Traitement chirurgical d’une embolie ou thrombose aiguë d’une artère ou veine profonde — vaisseaux principaux des membres",
+    "coeffs": [
+      "100",
+      "40"
+    ],
+    "coeffText": [
+      "100",
+      "40"
+    ],
+    "coef": 100,
+    "secondary": 40,
+    "key": "K",
+    "source_line": 1576,
+    "terms": "Traitement chirurgical d’une embolie ou thrombose aiguë d’une artère ou veine profonde — vaisseaux principaux des membres Vaisseaux du membre / traumatologie C542 C542 1° Vaisseaux principaux des membres   chirurgie opératoire orthopédie traumatologie 100 40",
+    "note": "Code vasculaire concernant les principaux vaisseaux des membres ; à considérer comme geste associé uniquement dans les cas pertinents de traumatologie grave.",
+    "category": "Vaisseaux du membre / traumatologie",
+    "kind": "act"
   }
 ]
