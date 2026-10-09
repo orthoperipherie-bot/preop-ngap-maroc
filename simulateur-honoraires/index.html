@@ -65,18 +65,52 @@ var norm=function(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0
 function isOrtho(a){var c=a.code||'',t=norm((a.title||'')+' '+(a.terms||''));return /^[AN]\d{3}$/.test(c)||/fracture|orthoped|osteosynth|arthroscop|arthroplast|prothese|menisque|ligament|tendon|rachis|hanche|genou|coude|epaule|poignet|cheville|pied|main|tibia|femur|humerus|clavicule|cotyle|bassin|metacarp|metatarse|calcan|scaphoide|coiffe|canal carpien|hallux/.test(t)}
 function score(a,q){var n=norm(q),c=norm(a.code),title=norm(a.title),all=norm((a.title||'')+' '+(a.terms||'')+' '+a.code);if(!n)return 0;if(c===n)return 2000;if(title===n)return 1800;if((n==='pth'||n==='prothese hanche')&&['C433','N117'].indexOf(a.code)>=0)return 1900;if((n==='ptg'||n==='prothese genou')&&['C434','N127'].indexOf(a.code)>=0)return 1900;if(n==='lca'&&a.code==='N109')return 1900;if(n==='canal carpien'&&['C609','C610'].indexOf(a.code)>=0)return 1900;if(c.indexOf(n)===0)return 1600;var words=n.split(' ').filter(Boolean),hits=words.filter(function(w){return all.indexOf(w)>=0}).length;return (all.indexOf(n)>=0?450:0)+(hits/Math.max(1,words.length))*250+(hits===words.length?120:0)+(isOrtho(a)?40:0)}
 function matches(q){var n=norm(q);if(!n)return [];return acts.map(function(a){return {a:a,s:score(a,q)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s||String(a.a.code).localeCompare(String(b.a.code))}).slice(0,9).map(function(x){return x.a})}
-function buildSuggestion(a,onPick){var b=document.createElement('button');b.type='button';b.className='match';var st=document.createElement('strong');st.textContent=a.code+' · '+a.title;var sm=document.createElement('small');sm.textContent='Coefficient(s) NGAP : '+((a.coeffs||[]).join(' / ')||'non renseigné');b.append(st,sm);b.onclick=function(){onPick(a)};return b}
+function buildSuggestion(a,onPick){var b=document.createElement('button');b.type='button';b.className='match';var st=document.createElement('strong');st.textContent=a.code+' · '+a.title;var sm=document.createElement('small');sm.textContent=(a.category||'Orthopédie-traumatologie')+' · '+(a.kind==='rule'?'Règle / majoration — voir note':a.kind==='supplement'?'Supplément NGAP':a.kind==='nonop'?'Appareillage assimilé':'Coeff. '+((a.coeffs||[]).join(' / ')||'à vérifier'));b.append(st,sm);b.onclick=function(){onPick(a)};return b}
 function renderMainSuggestions(){var q=$('mainSearch').value.trim(),box=$('mainSuggestions');box.innerHTML='';if(!q)return;var list=matches(q);if(!list.length){box.textContent='Aucune correspondance. Essayez le code exact ou un terme plus court.';return}list.forEach(function(a){box.appendChild(buildSuggestion(a,selectMain))})}
-function selectMain(a){mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficients du catalogue : '+((a.coeffs||[]).join(' / ')||'—');$('mainCoef').value=a.coef==null?'':a.coef;calculate()}
+function selectMain(a){mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;calculate()}
 function weight(i){return i===0?.75:.5}
 function renderGestures(){var root=$('gestures');root.innerHTML='';if(!gestures.length){root.textContent='Aucun geste associé.';root.className='muted';return}root.className='';gestures.forEach(function(g,i){var line=document.createElement('div');line.className='line';var sw=document.createElement('div');sw.className='field';var lab=document.createElement('label');lab.textContent='Geste '+(i+1)+' — code et libellé';var inp=document.createElement('input');inp.type='text';inp.autocomplete='off';inp.placeholder='Rechercher code ou acte';inp.value=g.act?g.act.code+' · '+g.act.title:g.query||'';var sug=document.createElement('div');sw.append(lab,inp,sug);var cw=document.createElement('div');cw.className='field';var cl=document.createElement('label');cl.textContent='Coeff. K';var ci=document.createElement('input');ci.type='number';ci.min='0';ci.step='.1';ci.placeholder='Coeff.';ci.value=g.coef==null?'':g.coef;cw.append(cl,ci);var rm=document.createElement('button');rm.type='button';rm.className='btn danger remove';rm.textContent='×';rm.onclick=function(){gestures=gestures.filter(function(x){return x.id!==g.id});renderGestures();calculate()};line.append(sw,cw,rm);root.appendChild(line);inp.addEventListener('input',function(){g.query=inp.value;g.act=null;g.coef='';sug.innerHTML='';if(!inp.value.trim())return;matches(inp.value).forEach(function(a){sug.appendChild(buildSuggestion(a,function(act){g.act=act;g.query=act.code+' · '+act.title;g.coef=act.coef==null?'':act.coef;renderGestures();calculate()}))});calculate()});ci.addEventListener('input',function(){g.coef=parseNum(ci.value);calculate()})})}
-function tariffGrid(c,surgFee,anesFee){var cc=Number(c)||0;if(cc<30){var t=Math.ceil((surgFee+anesFee)*1.8/50)*50;return {total:t,official:false,label:'Estimation hors grille K30',band:'Coefficient inférieur à K30 : estimation technique',note:'La grille publiée commence à K30 : estimation approximative à partir des honoraires et d’un facteur de frais indicatif.'}}
-var f={30:1950,40:2600,50:4000,60:4800,70:5600,80:6400,90:7200,100:8000,110:8800,120:9600,130:10400,140:11200,150:12000,160:12800,170:13600,180:14400,190:15200,200:16000,210:16800,220:17600,230:18400,240:19200,250:20000,260:20800,270:21600,280:22400,290:23200,300:24000};
-if(cc>300){var steps=Math.ceil((cc-300)/10);return {total:24000+steps*800,official:true,label:'Grille publiée · supplément à partir de K310',band:'À partir de K310 : +800 DH par tranche de 10 K',note:'Montant calculé selon la grille publiée de l’arrêté n°1961-06.'}}
-var lo=Math.floor(cc/10)*10;if(f[lo]!==undefined)return {total:f[lo],official:true,label:'Grille publiée · K'+lo+'–'+(lo+9),band:'K'+lo+' à K'+(lo+9)+' : '+fmt(f[lo]),note:'Tarif forfaitaire de la grille publiée dans l’arrêté n°1961-06 (texte de 2006), à comparer à la convention/TNR applicable.'};
-return {total:24000,official:true,label:'Grille publiée · K300',band:'K300 : 24 000 DH',note:'Tranche K300 utilisée ; vérifier les règles de cotation applicables.'}}
-function payerNote(p,m){var s={payant:'Payant : aucune couverture n’est déduite.',cnops:'CNOPS : taux initial 90 % de la TNR pour la chirurgie en clinique privée, selon l’information publiée. Droits, TNR et accord restent déterminants.',cnss:'CNSS : taux de simulation de 70 %, à confirmer selon le barème AMO, la TNR et les droits du dossier.',far:'FAR / militaire : hypothèse de simulation de 90 %, non garantie ; ajuster selon le régime et l’accord.',assurance:'Assurance privée : hypothèse illustrative de 80 %, à remplacer par la garantie contractuelle.'}[p];return s+(m==='direct'?' Paiement direct : pas de part payeur calculée dans le flux de trésorerie.':m==='pec'?' En PEC, le montant dû aujourd’hui correspond au reste patient simulé.':' En remboursement, le patient avance le total puis demande le remboursement estimé.')}
-
+function roundTo10(n){return Math.round((Number(n)||0)/10)*10}
+function privateForfaitForCoef(c){
+ var x=Number(c)||0;
+ var f={30:1950,40:2600,50:4000,60:4800,70:5600,80:6400,90:7200,100:8000,110:8800,120:9600,130:10400,140:11200,150:12000,160:12800,170:13600,180:14400,190:15200,200:16000,210:16800,220:17600,230:18400,240:19200,250:20000,260:20800,270:21600,280:22400,290:23200,300:24000};
+ if(x>300)return {total:24000+Math.ceil((x-300)/10)*800,official:true,band:'À partir de K310 : +800 DH par tranche de 10 K',label:'Forfait privé publié · supplément à partir de K310'};
+ if(x>=30){var lo=Math.floor(x/10)*10;return {total:f[lo]||24000,official:true,band:'K'+lo+' à K'+(lo+9)+' : '+fmt(f[lo]||24000),label:'Forfait privé publié · K'+lo+'–'+(lo+9)}}
+ return {total:1950*Math.max(0,x)/30,official:false,band:'K inférieur à 30 : hors première tranche publiée',label:'Interpolation indicative hors grille K30'};
+}
+function tariffGrid(c,surgFee,anesFee,blockFee,sector){
+ var ref=privateForfaitForCoef(c),parts=Math.max(0,surgFee)+Math.max(0,anesFee)+Math.max(0,blockFee),total,note;
+ if(sector==='public'){
+  total=roundTo10(ref.total*(7.5/22.5));
+  if(total<parts){total=roundTo10(parts);note='Le total comparatif public calculé à partir du rapport Kpublic/Kprivé est inférieur aux postes NGAP calculés ; il a été relevé au minimum des postes affichés. Le forfait public réel dépend du barème et du dossier de l’hôpital.'}
+  else note='Public : K/KC = 7,50 DH selon l’arrêté conjoint n°10-04 (2004). Le total global est une estimation comparative calculée en appliquant le rapport 7,50/22,50 au forfait privé de référence ; ce n’est pas un forfait public officiel par acte.';
+  return {total:total,official:false,label:'Secteur public · estimation comparative',band:ref.band+' · échelle publique simulée',note:note};
+ }
+ total=ref.total;
+ if(total<parts){total=roundTo10(parts);note='Les honoraires et frais de bloc calculés dépassent la tranche de forfait de référence ; le total a été relevé au minimum des postes détaillés. Vérifier la cotation, le cumul et le barème conventionnel.'}
+ else note=ref.official?'Forfait de chirurgie publié dans l’arrêté n°1961-06. Les honoraires du chirurgien, de l’anesthésiste et du bloc sont ventilés à l’intérieur de ce total.':'K inférieur à 30 : forfait interpolé, car la grille publiée commence à K30 ; estimation indicative, non tarif officiel.';
+ return {total:total,official:ref.official,label:ref.label,band:ref.band,note:note};
+}
+function payerNote(p,m,sector){
+ var s={
+ payant:'Payant : aucune couverture n’est déduite.',
+ cnops:sector==='public'?'CNOPS : scénario de 100 % de TNR pour le public, sous réserve des droits et de l’admissibilité de l’acte.':'CNOPS : scénario de 90 % de TNR pour une chirurgie/hospitalisation privée, sous réserve des droits, de la TNR et de l’accord.',
+ cnss:'CNSS : taux de simulation de 70 %, à confirmer selon la TNR, le barème AMO et les droits du dossier.',
+ far:'FAR / régime militaire : hypothèse de simulation de 80 %, à remplacer par la garantie applicable.',
+ assurance:'Assurance privée : hypothèse de simulation de 80 %, à remplacer par le taux, le plafond et les exclusions du contrat.'
+ }[p];
+ return s+(m==='direct'?' Paiement direct : aucune part payeur n’est déduite du paiement immédiat.':m==='pec'?' En PEC, le montant à payer aujourd’hui correspond au reste patient simulé.':' En remboursement, le patient avance le total puis reçoit le remboursement théorique indiqué.');
+}
+function applySectorDefaults(){
+ var sector=$('sector').value||'private',k=sector==='public'?7.5:22.5;
+ $('keyValue').value=String(k);
+ $('sectorKDisplay').innerHTML='<strong>'+k.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' DH</strong><small>'+(sector==='public'?'Arrêté conjoint n°10-04 (2004) — valeur K/KC secteur public':'Arrêté n°1961-06 — référence K/KC secteur privé')+'</small>';
+ $('kNote').textContent=sector==='public'?'Valeur K/KC de départ : 7,50 DH selon l’arrêté conjoint n°10-04 (2004), qui concerne les hôpitaux relevant du ministère de la Santé. La tarification effective de l’établissement peut dépendre d’autres textes ou conventions ; la valeur demeure modifiable.':'Valeur K/KC de départ : 22,50 DH selon le référentiel tarifaire privé publié dans l’arrêté n°1961-06. Le coefficient de chaque acte reste celui de la NGAP fournie ; la valeur monétaire est distincte et modifiable.';
+ $('sectorNote').textContent=sector==='public'?'Public : K/KC de référence = 7,50 DH. Les honoraires chirurgicaux, anesthésiques et bloc se calculent avec cette valeur. Faute de forfait global public directement calculable depuis le seul code NGAP, le tarif total affiché est une estimation comparative, et non un tarif hospitalier officiel garanti.':'Privé : K/KC de référence = 22,50 DH. Pour K30 et plus, le total s’appuie sur les forfaits de chirurgie publiés dans l’arrêté n°1961-06 ; les montants hors grille sont interpolés et signalés.';
+ $('payerSectorSummary').textContent=sector==='public'?'K/KC public 7,50 DH ; total global comparatif, non forfait public officiel.':'K/KC privé 22,50 DH ; forfait de référence par tranche de coefficient lorsque disponible.';
+ if($('payer').value==='cnops')$('coverageRate').value=sector==='public'?'100':'90';
+ $('implantRate').value=$('payer').value==='payant'?'0':$('payer').value==='cnops'?'100':$('payer').value==='cnss'?'70':'';
+}
 function implantMatches(q){
  var n=norm(q);if(!n)return [];
  return implantCatalog.map(function(x){var all=norm(x.code+' '+x.title);var score=norm(x.code)===n?2000:(all.indexOf(n)>=0?800:n.split(' ').filter(Boolean).filter(function(w){return all.indexOf(w)>=0}).length*100);return {x:x,score:score}})
@@ -138,39 +172,98 @@ function calculateImplants(){
 }
 
 function calculate(){
- var k=num($('keyValue').value)||22.5,mc=parseNum($('mainCoef').value),rows=[],associatedIndex=0;
- if(mainAct&&mc!==null)rows.push({type:'Principale',act:mainAct,coef:mc,weight:1});
- gestures.forEach(function(g){var c=parseNum(g.coef);if(g.act&&c!==null){rows.push({type:'Associé '+(associatedIndex+1),act:g.act,coef:c,weight:weight(associatedIndex)});associatedIndex++}});
- var sc=0,ac=0,anestEstimated=false;
- rows.forEach(function(r){sc+=r.coef*r.weight;var a=parseNum(r.act.secondary);if(a!==null)ac+=a*r.weight;else{ac+=r.coef*.5*r.weight;anestEstimated=true}});
- var sf=sc*k,af=ac*k,grid=rows.length?tariffGrid(sc,sf,af):null,total=grid?grid.total:0,res=grid?Math.max(0,total-sf-af):0;
- var bp=Math.min(100,num($('blockShare').value)),block=res*bp/100,clinic=res-block;
- var payer=$('payer').value,mode=$('paymentType').value,rate=Math.min(100,num($('coverageRate').value))/100,eligible=payer!=='payant'&&mode!=='direct',cover=eligible?total*rate:0;
+ var key=parseNum($('keyValue').value),k=key===null?($('sector').value==='public'?7.5:22.5):key;
+ var sector=$('sector').value||'private',selectedRows=[],order=0,mainC=parseNum($('mainCoef').value);
+ if(mainAct)selectedRows.push({type:'Principale',origin:'principal',act:mainAct,coef:mainC,order:order++});
+ gestures.forEach(function(g,i){if(g.act)selectedRows.push({type:'Geste associé '+(i+1),origin:'associated',act:g.act,coef:parseNum(g.coef),order:order++})});
+ var rules=selectedRows.filter(function(r){return r.act.kind==='rule'});
+ var billable=selectedRows.filter(function(r){return r.act.kind!=='rule'&&r.coef!==null});
+ var modifiers=rules.map(function(r){return r.act.code});
+ var principal=billable.find(function(r){return r.origin==='principal'});
+ var multiplier=1,modifierNotes=[];
+ if(principal){
+  if(modifiers.indexOf('A153')>=0||modifiers.indexOf('A154')>=0){multiplier*=1.2;modifierNotes.push('Majoration de 20 % pour fracture ouverte selon A153/A154.')}
+  if(modifiers.indexOf('A155')>=0){multiplier*=1.5;modifierNotes.push('Supplément de 50 % selon A155 (pseudarthrose/cal vicieux).')}
+  if(modifiers.indexOf('A211')>=0){multiplier*=1.5;modifierNotes.push('Majoration de 50 % selon A211, seulement pour les localisations indiquées dans la NGAP.')}
+  principal.coef*=multiplier;
+ }
+ var normal=billable.filter(function(r){return r.act.kind!=='supplement'&&r.act.kind!=='nonop'});
+ var supplements=billable.filter(function(r){return r.act.kind==='supplement'});
+ var nonop=billable.filter(function(r){return r.act.kind==='nonop'});
+ var mode=$('cumulationMode').value||'standard';
+ normal.sort(function(a,b){return b.coef-a.coef||a.order-b.order});
+ normal.forEach(function(r,i){
+  if(i===0){r.weight=1;r.cotation='100 % — coefficient le plus élevé'}
+  else if(i===1){r.weight=mode==='standard'?.5:.75;r.cotation=Math.round(r.weight*100)+' % — 2e acte'}
+  else if(i===2&&mode==='thirdTrauma'){r.weight=.5;r.cotation='50 % — 3e acte exceptionnel'}
+  else {r.weight=0;r.cotation='Non coté selon l’article 9 B'}
+ });
+ supplements.forEach(function(r){r.weight=1;r.cotation='Supplément NGAP à ajouter au geste de base'});
+ nonop.forEach(function(r){r.weight=1;r.cotation='Acte d’appareillage assimilé'});
+ rules.forEach(function(r){r.weight=0;r.cotation='Règle / majoration non autonome'});
+ var activeNormal=normal.filter(function(r){return r.weight>0}),sc=0,ac=0,anestEstimated=false,anestNotes=[];
+ activeNormal.forEach(function(r){
+  sc+=r.coef*r.weight;
+  var secondary=parseNum(r.act.secondary),ak;
+  if(secondary!==null){ak=secondary}
+  else {ak=Math.min(15,r.coef);anestEstimated=true;anestNotes.push(r.act.code+': K15 plafonné au coefficient de l’acte (article 22)')}
+  ac+=ak*r.weight;
+ });
+ supplements.forEach(function(r){sc+=r.coef});
+ var standaloneNonOp=activeNormal.length===0&&supplements.length===0&&nonop.length>0;
+ nonop.forEach(function(r){if(standaloneNonOp)sc+=r.coef;else r.weight=0});
+ var surgeon=sc*k,anesthesia=standaloneNonOp?0:ac*k,block=standaloneNonOp?0:sc*k*.5;
+ var grid=null,total=0;
+ if(activeNormal.length||supplements.length){
+  grid=tariffGrid(sc,surgeon,anesthesia,block,sector);total=grid.total;
+ }else if(standaloneNonOp){
+  total=surgeon;grid={total:total,official:false,label:'Acte assimilé non opératoire — K × valeur de la lettre-clé',band:'Hors forfait chirurgical',note:'Pas de frais d’anesthésie ni de salle opératoire calculés pour cet acte d’appareillage.'};
+ }
+ var clinic=grid?Math.max(0,total-surgeon-anesthesia-block):0;
+ var payer=$('payer').value,paymentMode=$('paymentType').value,rate=Math.min(100,num($('coverageRate').value))/100;
+ var eligible=payer!=='payant'&&paymentMode!=='direct',cover=eligible?total*rate:0;
  var implantRate=deviceCoverageRate(),extra=0,implantCover=0,implantCoverageUnknown=false;
  selectedImplants.forEach(function(it){if(it.separate){var q=num(it.qty);extra+=q*deviceUnitPurchase(it);if(eligible&&implantRate===null)implantCoverageUnknown=true;else if(eligible)implantCover+=q*deviceTnrBasis(it)*implantRate}});
- var totalAll=total+extra,coverAll=cover+(eligible?implantCover:0),patientAll=implantCoverageUnknown?'À confirmer':Math.max(0,totalAll-coverAll),today=mode==='pec'?patientAll:totalAll;
+ var totalAll=total+extra,coverAll=cover+(eligible?implantCover:0);
+ var patientAll=implantCoverageUnknown?'À confirmer':Math.max(0,totalAll-coverAll),today=paymentMode==='pec'?patientAll:totalAll;
  $('totalHeadline').textContent=grid?fmt(totalAll):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient pondéré '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+(extra?' · + '+fmt(extra)+' d’implants hors forfait':''):'Sélectionnez une intervention principale.';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · secteur '+(sector==='public'?'public':'privé')+' · K effectif '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+(extra?' · implants en sus '+fmt(extra):''):'Sélectionnez une intervention principale.';
  $('payerAmount').textContent=grid?(implantCoverageUnknown?'À confirmer':fmt(coverAll)):'—';
  $('patientAmount').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
- $('todayAmount').textContent=grid?(mode==='pec'&&typeof today==='string'?today:fmt(today)):'—';
+ $('todayAmount').textContent=grid?(typeof today==='string'?today:fmt(today)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('summaryAct').textContent=mainAct?mainAct.code+' · '+mainAct.title:'À sélectionner';
  $('summaryBasis').textContent=grid?grid.label:'—';
- $('summaryPayment').textContent=({'direct':'Paiement direct','pec':'Prise en charge préalable (PEC)','remboursement':'Avance puis remboursement'})[mode];
- $('payerNote').textContent=payerNote(payer,mode);
- $('dTotal').textContent=grid?fmt(total):'—';$('dSurgeon').textContent=grid?fmt(sf):'—';$('dAnesthesia').textContent=grid?fmt(af):'—';$('dBlock').textContent=grid?fmt(block):'—';$('dClinic').textContent=grid?fmt(clinic):'—';$('dResidual').textContent=grid?fmt(res):'—';
+ $('summaryPayment').textContent=({'direct':'Paiement direct','pec':'Prise en charge préalable (PEC)','remboursement':'Avance puis remboursement'})[paymentMode];
+ $('payerNote').textContent=payerNote(payer,paymentMode,sector);
+ $('dTotal').textContent=grid?fmt(total):'—';$('dSurgeon').textContent=grid?fmt(surgeon):'—';$('dAnesthesia').textContent=grid?fmt(anesthesia):'—';$('dBlock').textContent=grid?fmt(block):'—';$('dClinic').textContent=grid?fmt(clinic):'—';$('dResidual').textContent=grid?fmt(clinic):'—';
  $('dTariffBand').textContent=grid?grid.band:'—';$('dSurgeonCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
- $('dAnesthesiaCoef').textContent=grid?ac.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(anestEstimated?' · partiellement estimé faute de coefficient explicite':''):'—';
- $('dKeyValue').textContent=fmt(k);$('dNotice').textContent=grid?grid.note+' Ventilation du résiduel : bloc '+bp+' %, clinique '+(100-bp)+' %. '+(anestEstimated?'Pour un acte sans coefficient d’anesthésie explicite, approximation = 50 % du coefficient chirurgical.':''):'Sélectionnez une intervention pour afficher les montants.';
- var tb=$('actTable');tb.innerHTML='';if(!rows.length)tb.innerHTML='<tr><td colspan="7">Sélectionnez une intervention.</td></tr>';
- else rows.forEach(function(r){var tr=document.createElement('tr'),acx=parseNum(r.act.secondary),cells=[r.type,r.act.code,r.act.title,r.coef.toLocaleString('fr-FR',{maximumFractionDigits:2}),Math.round(r.weight*100)+' %',(r.coef*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2}),acx===null?'≈ '+(r.coef*.5).toLocaleString('fr-FR',{maximumFractionDigits:2}):acx];cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td)});tb.appendChild(tr)});
- lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,anesthesia:af,block:block,clinic:clinic,coefficient:sc,coverage:coverAll,patient:patientAll,today:today,grid:grid,rows:rows,mode:mode,payer:payer};
+ $('dAnesthesiaCoef').textContent=grid?(standaloneNonOp?'Sans objet pour cet acte':ac.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(anestEstimated?' · article 22 appliqué si coefficient secondaire absent':' · coefficients secondaires NGAP lorsqu’indiqués')):'—';
+ $('dKeyValue').textContent=fmt(k);
+ var ruleNote=rules.map(function(r){return r.act.code+' : '+(r.act.note||r.act.title)}).join(' ');
+ if(modifiers.indexOf('A215')>=0)ruleNote+=' A215 : la règle de remboursement 50 % requiert de confirmer la lésion associée et l’ostéosynthèse.';
+ if(modifiers.indexOf('A216')>=0)ruleNote+=' A216 : la majoration/cotation dépend des lésions des parties molles et des actes associés ; vérification manuelle requise.';
+ var notice=grid?grid.note+' Bloc opératoire calculé selon l’article 23 : 50 % du coefficient opératoire pondéré. Part clinique/établissement = solde du total après honoraires et bloc.':'Sélectionnez une intervention pour afficher les montants.';
+ if(anestEstimated)notice+=' Anesthésie : '+anestNotes.join('; ')+'.';
+ if(ruleNote)notice+=' Règle(s) NGAP sélectionnée(s) : '+ruleNote;
+ if(modifierNotes.length)notice+=' '+modifierNotes.join(' ');
+ if(supplements.length)notice+=' Les suppléments sélectionnés sont ajoutés à 100 % au coefficient pondéré ; vérifier qu’ils sont bien associés à l’acte de base.';
+ if(sector==='public'&&grid)notice+=' Le total global public est comparatif, calculé selon le rapport des valeurs K/KC (7,50/22,50) ; il ne remplace pas le barème réel de l’hôpital.';
+ $('dNotice').textContent=notice;
+ var tb=$('actTable');tb.innerHTML='';
+ if(!selectedRows.length)tb.innerHTML='<tr><td colspan="7">Sélectionnez une intervention.</td></tr>';
+ else selectedRows.forEach(function(r){
+  var tr=document.createElement('tr'),c=r.coef,weightLabel=r.cotation||'À vérifier',effective=c===null?'—':(r.weight===undefined?'—':(c*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2}));
+  var rawAna=parseNum(r.act.secondary),anestLabel=r.act.kind==='rule'?'Voir la règle':r.act.kind==='supplement'?'Supplément, sans anesthésie séparée':r.act.kind==='nonop'?'Sans objet':rawAna===null?'K15 (plafonné au coeff. acte)':String(rawAna);
+  var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightLabel,effective,anestLabel];
+  cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td)});tb.appendChild(tr);
+ });
+ lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:surgeon,anesthesia:anesthesia,block:block,clinic:clinic,coefficient:sc,coverage:coverAll,patient:patientAll,today:today,grid:grid,rows:selectedRows,mode:paymentMode,payer:payer};
 }
 function addGesture(){gestures.push({id:nextId++,act:null,coef:'',query:''});renderGestures();calculate()}
 function summary(){if(!lastCalc||!lastCalc.rows.length)return 'SIMULATEUR NGAP — sélectionnez une intervention.';return ['SIMULATEUR NGAP — estimation indicative, non devis','Intervention principale : '+mainAct.code+' · '+mainAct.title,'Gestes associés : '+lastCalc.rows.slice(1).map(function(r){return r.act.code+' · '+r.act.title+' (K '+r.coef+')'}).join(' ; '),'Coefficient pondéré : '+lastCalc.coefficient,'Tarif opératoire : '+fmt(lastCalc.total),'Implants hors forfait : '+fmt(lastCalc.implantExtra),'Total estimé acte + implants hors forfait : '+fmt(lastCalc.totalAll),'Honoraires chirurgien : '+fmt(lastCalc.surgeon),'Honoraires anesthésiste : '+fmt(lastCalc.anesthesia),'Bloc opératoire : '+fmt(lastCalc.block),'Part clinique : '+fmt(lastCalc.clinic),'Payeur : '+$('payer').value,'Paiement : '+$('paymentType').value,'Part payeur simulée : '+(typeof lastCalc.coverage==='number'?fmt(lastCalc.coverage):lastCalc.coverage),'Reste patient simulé : '+(typeof lastCalc.patient==='number'?fmt(lastCalc.patient):lastCalc.patient),'À payer aujourd’hui : '+(typeof lastCalc.today==='number'?fmt(lastCalc.today):lastCalc.today),'Référence : NGAP marocaine + grille forfaitaire publiée dans l’arrêté 1961-06, à vérifier avant facturation.'].join('\n')}
-$('implantSearch').addEventListener('input',renderImplantSearch);$('implantRate').addEventListener('input',function(){calculate();calculateImplants()});$('clearImplants').addEventListener('click',function(){selectedImplants=[];renderImplants();calculate()});$('copyImplantSummary').addEventListener('click',function(){var lines=selectedImplants.map(function(it){return it.device.code+' · '+it.device.title+' | quantité '+it.qty+' | TNR '+fmt(it.device.tnr)+' | prix achat '+(parseNum(it.purchase)===null?'non saisi':fmt(it.purchase))+' | base remboursable '+fmt(deviceTnrBasis(it))+' | '+(it.separate?'facturé en sus':'considéré inclus au forfait')});var rate=deviceCoverageRate();var txt=['Récapitulatif implants — estimation indicative',lines.join('\n'),'TNR cumulé : '+$('implantTnrTotal').textContent,'Base estimée : '+$('implantBaseTotal').textContent,'Prise en charge estimée : '+$('implantCoverTotal').textContent,'Reste estimé : '+$('implantPatientTotal').textContent,'Source des valeurs : arrêté 2314-08 (2008), à vérifier au regard des mises à jour.'].join('\n');if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt)});else alert(txt)});$('mainSearch').addEventListener('input',renderMainSuggestions);$('mainCoef').addEventListener('input',calculate);$('keyValue').addEventListener('input',calculate);$('blockShare').addEventListener('input',calculate);$('coverageRate').addEventListener('input',calculate);$('payer').addEventListener('change',function(){var r={payant:0,cnss:70,cnops:90,far:90,assurance:80};$('coverageRate').value=r[$('payer').value];updateImplantRate();calculate();calculateImplants()});$('paymentType').addEventListener('change',calculate);$('addGesture').addEventListener('click',addGesture);$('copySummary').addEventListener('click',function(){var t=summary();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){$('copySummary').textContent='Résumé copié';setTimeout(function(){$('copySummary').textContent='Copier le résumé'},1400)}).catch(function(){alert(t)});else alert(t)});$('reset').addEventListener('click',function(){mainAct=null;gestures=[];nextId=1;$('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('payer').value='cnops';$('paymentType').value='pec';$('coverageRate').value='90';$('blockShare').value='20';selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';updateImplantRate();renderGestures();renderImplants();calculate()});document.querySelectorAll('[data-tab]').forEach(function(b){b.onclick=function(){document.querySelectorAll('[data-tab]').forEach(function(x){x.classList.toggle('active',x===b)});['saisie','details','implants'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',b.dataset.tab!==t)})}});
-fetch('../acts.json').then(function(r){if(!r.ok)throw Error('catalogue inaccessible');return r.json()}).then(function(d){acts=Array.isArray(d)?d:[];$('tariffBasisHeadline').textContent='Catalogue NGAP chargé : '+acts.length.toLocaleString('fr-FR')+' références.'}).catch(function(){$('tariffBasisHeadline').textContent='Catalogue NGAP non chargé : vérifier le déploiement.'});
-updateImplantRate();renderGestures();renderImplants();calculate();
+$('implantSearch').addEventListener('input',renderImplantSearch);$('implantRate').addEventListener('input',function(){calculate();calculateImplants()});$('clearImplants').addEventListener('click',function(){selectedImplants=[];renderImplants();calculate()});$('copyImplantSummary').addEventListener('click',function(){var lines=selectedImplants.map(function(it){return it.device.code+' · '+it.device.title+' | quantité '+it.qty+' | TNR '+fmt(it.device.tnr)+' | prix achat '+(parseNum(it.purchase)===null?'non saisi':fmt(it.purchase))+' | base remboursable '+fmt(deviceTnrBasis(it))+' | '+(it.separate?'facturé en sus':'considéré inclus au forfait')});var rate=deviceCoverageRate();var txt=['Récapitulatif implants — estimation indicative',lines.join('\n'),'TNR cumulé : '+$('implantTnrTotal').textContent,'Base estimée : '+$('implantBaseTotal').textContent,'Prise en charge estimée : '+$('implantCoverTotal').textContent,'Reste estimé : '+$('implantPatientTotal').textContent,'Source des valeurs : arrêté 2314-08 (2008), à vérifier au regard des mises à jour.'].join('\n');if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt)});else alert(txt)});$('mainSearch').addEventListener('input',renderMainSuggestions);$('mainCoef').addEventListener('input',calculate);$('keyValue').addEventListener('input',calculate);$('coverageRate').addEventListener('input',calculate);$('cumulationMode').addEventListener('change',calculate);$('sector').addEventListener('change',function(){applySectorDefaults();calculate();calculateImplants()});$('payer').addEventListener('change',function(){var sec=$('sector').value;var r={payant:0,cnss:70,cnops:sec==='public'?100:90,far:80,assurance:80};$('coverageRate').value=r[$('payer').value];updateImplantRate();calculate();calculateImplants()});$('paymentType').addEventListener('change',calculate);$('addGesture').addEventListener('click',addGesture);$('copySummary').addEventListener('click',function(){var t=summary();if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){$('copySummary').textContent='Résumé copié';setTimeout(function(){$('copySummary').textContent='Copier le résumé'},1400)}).catch(function(){alert(t)});else alert(t)});$('reset').addEventListener('click',function(){mainAct=null;gestures=[];nextId=1;$('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('sector').value='private';$('payer').value='cnops';$('paymentType').value='pec';$('coverageRate').value='90';$('cumulationMode').value='standard';selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';updateImplantRate();renderGestures();renderImplants();calculate()});document.querySelectorAll('[data-tab]').forEach(function(b){b.onclick=function(){document.querySelectorAll('[data-tab]').forEach(function(x){x.classList.toggle('active',x===b)});['saisie','details','implants'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',b.dataset.tab!==t)})}});
+fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalogue inaccessible');return r.json()}).then(function(d){acts=Array.isArray(d)?d:[];$('tariffBasisHeadline').textContent='Catalogue NGAP chargé : '+acts.length.toLocaleString('fr-FR')+' références.'}).catch(function(){$('tariffBasisHeadline').textContent='Catalogue NGAP non chargé : vérifier le déploiement.'});
+applySectorDefaults();updateImplantRate();renderGestures();renderImplants();calculate();
 })();
 </script></body></html>
