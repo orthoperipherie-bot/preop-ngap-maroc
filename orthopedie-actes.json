@@ -2368,7 +2368,7 @@
     "coef": 290,
     "secondary": 127.5,
     "key": "KC",
-    "category": "Microchirurgie réparatrice",
+    "category": "Traumatologie",
     "kind": "assimilation",
     "sourceSection": "Assimilations — membre",
     "terms": "lambeau libre peau muscle os microchirurgie",
@@ -2383,7 +2383,7 @@
     "coef": 353,
     "secondary": 132.5,
     "key": "KC",
-    "category": "Microchirurgie réparatrice",
+    "category": "Traumatologie",
     "kind": "assimilation",
     "sourceSection": "Assimilations — traumatismes",
     "terms": "replantation réimplantation doigt segment membre microchirurgie",
@@ -2756,7 +2756,7 @@
     "source_line": 1746,
     "terms": "Suture nerveuse primitive Nerfs périphériques C605 Suture nerveuse primitive Suture nerveuse primitive Nerfs périphériques C605 Suture nerveuse primitive Nerfs périphériques C605 Suture nerveuse primitive   chirurgie opératoire orthopédie traumatologie 60 C605 C605 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2777,7 +2777,7 @@
     "source_line": 1747,
     "terms": "Suture nerveuse secondaire Nerfs périphériques C606 Suture nerveuse secondaire Suture nerveuse secondaire Nerfs périphériques C606 Suture nerveuse secondaire Nerfs périphériques C606 Suture nerveuse secondaire   chirurgie opératoire orthopédie traumatologie 70 30 C606 C606 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2798,7 +2798,7 @@
     "source_line": 1748,
     "terms": "Ablation de tumeur nerveuse avec suture (membre ou autre région) Nerfs périphériques C607 Ablation de tumeur nerveuse avec suture (membre ou autre région) Ablation de tumeur nerveuse avec suture (membre ou autre région) Nerfs périphériques C607 Ablation de tumeur nerveuse avec suture (membre ou autre région) Nerfs périphériques C607 Ablation de tumeur nerveuse avec suture (membre ou autre région)   chirurgie opératoire orthopédie traumatologie 80 30 C607 C607 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2819,7 +2819,7 @@
     "source_line": 1750,
     "terms": "Greffe nerveuse en un ou deux temps Nerfs périphériques C608 Greffe nerveuse en un ou deux temps Greffe nerveuse en un ou deux temps Nerfs périphériques C608 Greffe nerveuse en un ou deux temps Nerfs périphériques C608 Greffe nerveuse en un ou deux temps   chirurgie opératoire orthopédie traumatologie 120 60 C608 C608 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2838,7 +2838,7 @@
     "source_line": 1751,
     "terms": "Libération du nerf médian dans le syndrome du canal carpien Nerfs périphériques C609 Libération du nerf médian dans le syndrome du canal carpien Libération du nerf médian dans le syndrome du canal carpien Nerfs périphériques C609 Libération du nerf médian dans le syndrome du canal carpien Nerfs périphériques C609 Libération du nerf médian dans le syndrome du canal carpien canal carpien CTS nerf médian décompression main canal carpien CTS nerf médian chirurgie opératoire orthopédie traumatologie 50 C609 C609 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2851,7 +2851,7 @@
     "coef": 50,
     "secondary": null,
     "key": "K",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques",
     "terms": "Libération du nerf médian pour syndrome du canal carpien, avec ou sans synovectomie Nerfs périphériques C610 Libération du nerf médian pour syndrome du canal carpien, avec ou sans synovectomie Libération du nerf médian pour syndrome du canal carpien, avec ou sans synovectomie Nerfs périphériques C610 Libération du nerf médian pour syndrome du canal carpien, avec ou sans synovectomie Nerfs périphériques canal carpien nerf médian décompression main synovectomie C610 C610 Nerfs périphériques",
@@ -2872,7 +2872,7 @@
     "source_line": 1760,
     "terms": "Neurotomie périphérique Nerfs périphériques C614 Neurotomie périphérique Neurotomie périphérique Nerfs périphériques C614 Neurotomie périphérique Nerfs périphériques C614 Neurotomie périphérique   chirurgie opératoire orthopédie traumatologie 40 C614 C614 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2891,7 +2891,7 @@
     "source_line": 1762,
     "terms": "pédicule vasculonerveux Nerfs périphériques C615 pédicule vasculonerveux pédicule vasculonerveux Nerfs périphériques C615 pédicule vasculonerveux Nerfs périphériques C615 pédicule vasculonerveux   chirurgie opératoire orthopédie traumatologie 60 C615 C615 Nerfs périphériques",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Nerfs périphériques",
+    "category": "Nerfs périphériques / main-membre",
     "kind": "act",
     "sourceSection": "Titre II — Nerfs périphériques"
   },
@@ -2904,7 +2904,7 @@
     "coef": 353,
     "secondary": 132.5,
     "key": "KC",
-    "category": "Nerfs périphériques / membre supérieur",
+    "category": "Traumatologie",
     "kind": "assimilation",
     "sourceSection": "Assimilations — membre supérieur",
     "terms": "plexus brachial exploration microchirurgie",
@@ -2919,7 +2919,7 @@
     "coef": 40,
     "secondary": null,
     "key": "K",
-    "category": "Orthèses / appareillage",
+    "category": "Traumatologie",
     "kind": "nonop",
     "sourceSection": "Assimilations — membre supérieur",
     "terms": "orthèse dynamique main doigts appareil guidé arcade",
@@ -2934,7 +2934,7 @@
     "coef": 20,
     "secondary": null,
     "key": "K",
-    "category": "Orthèses / appareillage",
+    "category": "Traumatologie",
     "kind": "nonop",
     "sourceSection": "Assimilations — membre supérieur",
     "terms": "orthèse statique main doigts moulage",
@@ -2955,7 +2955,7 @@
     "source_line": 986,
     "terms": "Nettoyage ou pansement d’une brûlure — surface inférieure à 10 cm² Orthopédie-traumatologie A304 A304 Surface au dessous de 10 cm²   fracture traumatisme orthopédie ostéosynthèse immobilisation 8",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Orthopédie-traumatologie"
+    "category": "Traumatologie"
   },
   {
     "code": "A305",
@@ -2972,7 +2972,7 @@
     "source_line": 987,
     "terms": "Nettoyage ou pansement d’une brûlure — surface inférieure à 10 % de la surface du corps Orthopédie-traumatologie A305 A305 Surface inférieure à 10p. 100 de la surface du corps   fracture traumatisme orthopédie ostéosynthèse immobilisation 15",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Orthopédie-traumatologie"
+    "category": "Traumatologie"
   },
   {
     "code": "A306",
@@ -2990,7 +2990,7 @@
     "source_line": 988,
     "terms": "Nettoyage ou pansement d’une brûlure — surface de 10 à 20 % de la surface du corps Orthopédie-traumatologie A306",
     "note": "Coefficient corrigé d’après la NGAP fournie : K40 pour une surface de brûlure comprise entre 10 et 20 % de la surface corporelle.",
-    "category": "Orthopédie-traumatologie",
+    "category": "Traumatologie",
     "kind": "act"
   },
   {
@@ -3010,7 +3010,7 @@
     "source_line": 989,
     "terms": "Nettoyage ou pansement d’une brûlure — surface supérieure à 20 % de la surface du corps Orthopédie-traumatologie A307 A307 Surface supérieure à 20p. 100   fracture traumatisme orthopédie ostéosynthèse immobilisation 60 30",
     "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
-    "category": "Orthopédie-traumatologie"
+    "category": "Traumatologie"
   },
   {
     "code": "C300",
@@ -4617,7 +4617,7 @@
     "coef": 150,
     "secondary": null,
     "key": "KC",
-    "category": "Reconstruction / parties molles",
+    "category": "Traumatologie",
     "kind": "assimilation",
     "sourceSection": "Assimilations — chirurgie plastique/réparatrice",
     "terms": "lambeau musculocutané plastie réparation",
