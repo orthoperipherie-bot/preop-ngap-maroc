@@ -5958,7 +5958,7 @@
   },
   {
     "code": "A129",
-    "title": "Fracture articulaire de l'extrémité supérieure ou inférieure",
+    "title": "Fracture articulaire de l’extrémité supérieure ou inférieure — intitulé général",
     "coeffs": [],
     "coeffText": [],
     "coef": null,
@@ -5966,9 +5966,9 @@
     "key": "K",
     "source_line": 832,
     "terms": "Fracture articulaire de l'extrémité supérieure ou inférieure Traumatologie A129 Fracture articulaire de l'extrémité supérieure ou inférieure Traumatologie A129 Fracture articulaire de l'extrémité supérieure ou inférieure   fracture traumatisme orthopédie ostéosynthèse immobilisation A129",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
+    "note": "Rubrique de regroupement dans la NGAP, sans coefficient autonome. Choisir A130 (unifragmentaire, K100) ou A131 (multifragmentaire, K120) selon le cas.",
     "category": "Traumatologie",
-    "kind": "act",
+    "kind": "rule",
     "sourceSection": "Titre I — Traitement des traumatismes"
   },
   {
@@ -6377,7 +6377,7 @@
   },
   {
     "code": "A150",
-    "title": "Bassin — fractures transcotyloïdiennes",
+    "title": "Fractures transcotyloïdiennes — intitulé général",
     "coeffs": [],
     "coeffText": [],
     "coef": null,
@@ -6385,9 +6385,9 @@
     "key": "K",
     "source_line": 863,
     "terms": "Bassin — fractures transcotyloïdiennes Traumatologie A150 Bassin — fractures transcotyloïdiennes Traumatologie A150 Bassin — fractures transcotyloïdiennes fracture bassin cotyle acetabulum  fracture traumatisme orthopédie ostéosynthèse immobilisation A150",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation.",
+    "note": "Rubrique de regroupement dans la NGAP, sans coefficient autonome. Choisir A151 (un pilier) ou A152 (deux piliers avec deux voies d’abord différentes) selon le cas.",
     "category": "Traumatologie",
-    "kind": "act",
+    "kind": "rule",
     "sourceSection": "Titre I — Traitement des traumatismes"
   },
   {
