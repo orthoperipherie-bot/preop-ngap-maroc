@@ -1493,7 +1493,7 @@
   },
   {
     "code": "G132",
-    "title": "Libération de plusieurs tendons fléchisseurs/extenseurs — libellé principal du chapitre",
+    "title": "Doigt à ressort",
     "coeffs": [
       "30"
     ],
@@ -1503,8 +1503,8 @@
     "category": "Membre supérieur / main",
     "kind": "act",
     "sourceSection": "Titre VI — Membre supérieur",
-    "terms": "G132 Libération de plusieurs tendons fléchisseurs/extenseurs — libellé principal du chapitre Membre supérieur / main G132 Doigt à ressort doigt à ressaut trigger finger main  30 Doigt à ressort Membre supérieur / main G132 Doigt à ressort Doigt à ressort Membre supérieur / main G132 Doigt à ressort Membre supérieur / main G132 Doigt à ressort doigt à ressaut trigger finger main  30 G132 G132 Membre supérieur / main",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
+    "terms": "G132 doigt à ressort trigger finger blocage doigt",
+    "note": "Libellé et cotation repris de la NGAP fournie : Doigt à ressort, K30."
   },
   {
     "code": "G133",
@@ -1524,7 +1524,7 @@
   },
   {
     "code": "G134",
-    "title": "Libération des tendons — rubrique indiquée dans la NGAP",
+    "title": "Suture d’un ou plusieurs ligaments",
     "coeffs": [
       "20"
     ],
@@ -1534,8 +1534,8 @@
     "category": "Membre supérieur / main",
     "kind": "act",
     "sourceSection": "Titre VI — Membre supérieur",
-    "terms": "G134 Libération des tendons — rubrique indiquée dans la NGAP Membre supérieur / main G134 Suture d'un ou plusieurs ligaments   20 Suture d'un ou plusieurs ligaments Membre supérieur / main G134 Suture d'un ou plusieurs ligaments Suture d'un ou plusieurs ligaments Membre supérieur / main G134 Suture d'un ou plusieurs ligaments Membre supérieur / main G134 Suture d'un ou plusieurs ligaments   20 G134 G134 Membre supérieur / main",
-    "note": "Référence extraite du texte du PDF NGAP marocain fourni. Vérifier le libellé exact, la lettre-clé, les règles de cumul et la cotation applicable avant facturation."
+    "terms": "G134 suture ligaments doigt main poignet membre supérieur",
+    "note": "Libellé et cotation repris de la NGAP fournie : suture d’un ou plusieurs ligaments, K20."
   },
   {
     "code": "G135",
@@ -4512,16 +4512,16 @@
   },
   {
     "code": "A129",
-    "title": "Fracture articulaire de l’extrémité supérieure ou inférieure — intitulé général",
+    "title": "Fracture articulaire de l’extrémité supérieure ou inférieure — rubrique générale, choisir A130 ou A131",
     "coeffs": [],
     "coef": null,
     "secondary": null,
     "key": "K",
     "category": "Traumatologie",
-    "kind": "act",
+    "kind": "rule",
     "sourceSection": "Titre I — Traitement des traumatismes",
     "terms": "A129 Fracture articulaire de l’extrémité supérieure ou inférieure — intitulé général Traumatologie A129 Fracture articulaire de l'extrémité supérieure ou inférieure   fracture traumatisme orthopédie ostéosynthèse immobilisation Fracture articulaire de l’extrémité supérieure ou inférieure — intitulé général Traumatologie A129 A129 Fracture articulaire de l'extrémité supérieure ou inférieure   fracture traumatisme orthopédie ostéosynthèse immobilisation",
-    "note": "Rubrique de regroupement dans la NGAP, sans coefficient autonome. Choisir A130 (unifragmentaire, K100) ou A131 (multifragmentaire, K120) selon le cas."
+    "note": "Rubrique de regroupement sans coefficient autonome dans le PDF fourni ; la cotation est précisée en A130 (unifragmentaire) ou A131 (multifragmentaire)."
   },
   {
     "code": "A130",
@@ -4837,16 +4837,16 @@
   },
   {
     "code": "A150",
-    "title": "Fractures transcotyloïdiennes — intitulé général",
+    "title": "Fractures transcotyloïdiennes — rubrique générale, choisir A151 ou A152",
     "coeffs": [],
     "coef": null,
     "secondary": null,
     "key": "K",
     "category": "Traumatologie",
-    "kind": "act",
+    "kind": "rule",
     "sourceSection": "Titre I — Traitement des traumatismes",
     "terms": "A150 Fractures transcotyloïdiennes — intitulé général Traumatologie A150 Bassin — fractures transcotyloïdiennes fracture bassin cotyle acetabulum  fracture traumatisme orthopédie ostéosynthèse immobilisation Fractures transcotyloïdiennes — intitulé général Traumatologie A150 A150 Bassin — fractures transcotyloïdiennes fracture bassin cotyle acetabulum  fracture traumatisme orthopédie ostéosynthèse immobilisation",
-    "note": "Rubrique de regroupement dans la NGAP, sans coefficient autonome. Choisir A151 (un pilier) ou A152 (deux piliers avec deux voies d’abord différentes) selon le cas."
+    "note": "Rubrique de regroupement sans coefficient autonome dans le PDF fourni ; choisir A151 (un pilier) ou A152 (deux piliers avec deux voies d’abord différentes)."
   },
   {
     "code": "A151",
