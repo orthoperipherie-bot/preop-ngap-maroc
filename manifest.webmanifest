@@ -1,7 +1,7 @@
 {
-  "name": "Estimateur de coûts orthopédiques Maroc",
-  "short_name": "Estimateur ortho",
-  "start_url": "./",
+  "name": "Simulateur NGAP orthopédie-traumatologie — Maroc",
+  "short_name": "NGAP Ortho",
+  "start_url": "./simulateur-honoraires/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f7f6",
