@@ -16,11 +16,12 @@
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → montant à la charge du patient pour l’acte seul. Les implants sont chiffrés séparément dans l’onglet dédié. Ce n’est pas un devis.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
-<div class="panel"><h2>0 · Secteur de soins</h2><div class="grid">
-<div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Privé — clinique / convention</option><option value="public">Public — hôpital / CHU</option></select></div>
+<div class="panel"><h2>0 · Secteur d’exercice du médecin et de facturation</h2><div class="grid">
+<div class="field"><label for="sector">Secteur du médecin</label><select id="sector"><option value="private" selected>Médecin libéral — secteur privé / clinique</option><option value="public">Médecin du secteur public — hôpital / CHU</option></select></div>
 <div class="field"><label for="careSetting">Modalité de chirurgie</label><select id="careSetting"><option value="hospitalisation" selected>Hospitalisation</option><option value="ambulatoire">Ambulatoire / sans nuitée</option></select></div>
 <div class="field"><label>Valeur K/KC préremplie</label><div id="sectorKDisplay" class="selected"><strong>22,50 DH</strong><small>Référence secteur privé</small></div></div>
-</div><p id="sectorNote" class="notice">Privé : K/KC = 22,50 DH ; le forfait de chirurgie de référence est utilisé lorsqu’une tranche est disponible.</p>
+</div><p id="sectorNote" class="notice">Libéral/privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
+<p class="muted">Important : le choix « secteur public » applique le barème AMO de référence des établissements publics, pas une facturation individuelle du salaire ou des honoraires du médecin fonctionnaire. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants marqués « En sus » sont ajoutés séparément.</p></div>
 <div class="hero patient-highlight"><div class="sub">MONTANT ESTIMÉ À LA CHARGE DU PATIENT — ACTE + IMPLANTS MARQUÉS « EN SUS »</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Le montant affiché ici est le reste à charge estimé après la prise en charge simulée, implants marqués « En sus » inclus. En mode « remboursement », le patient avance le tarif total : cette avance est affichée séparément dans « À payer aujourd’hui ». En mode « direct », aucune part de payeur n’est déduite automatiquement.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
@@ -156,11 +157,11 @@ function updateSector(){
  $('keyValue').value=String(v);
  var display=$('sectorKDisplay');display.innerHTML='';
  var strong=document.createElement('strong');strong.textContent=fmt(v);
- var small=document.createElement('small');small.textContent=pub?'Convention nationale AMO — établissements publics, mai 2007':'Arrêté n°1961-06 — secteur privé, 2006';
+ var small=document.createElement('small');small.textContent=pub?'K/KC AMO public — convention 2007 (à confirmer)':'K/KC AMO privé — convention 2006 (à confirmer)';
  display.append(strong,small);
- $('sectorNote').textContent=pub?'Public : K = 13 DH (convention nationale AMO des établissements publics, mai 2007). En hospitalisation, le calcul utilise le forfait public de référence ; en ambulatoire, il utilise l’estimation NGAP + bloc. Vérifiez la grille appliquée par l’établissement.':'Privé : K = 22,50 DH (arrêté n°1961-06, 2006). En hospitalisation, le calcul utilise le forfait privé de référence ; en ambulatoire, il utilise l’estimation NGAP + bloc. Vérifiez la convention effectivement appliquée.';
+ $('sectorNote').textContent=pub?'Public : K/KC = 13 DH (référence AMO des établissements publics, convention 2007). En hospitalisation, le total est basé sur le forfait de référence de l’établissement ; ce n’est pas une facture individuelle du médecin public. En ambulatoire, l’application donne une estimation NGAP + bloc faute de forfait ambulatoire distinct confirmé. Vérifiez la grille appliquée par l’hôpital.':'Libéral/privé : K/KC = 22,50 DH (référence conventionnelle publiée pour le secteur privé, 2006). En hospitalisation, le calcul utilise le forfait AMO privé de référence ; en ambulatoire, il donne une estimation NGAP + bloc. Vérifiez le barème conventionné réellement appliqué.';
  $('kNote').textContent='La lettre-clé K/KC est préremplie selon le secteur et reste modifiable. Le forfait global AMO, lui, est fixé par sa tranche de coefficient : changer K/KC ajuste les honoraires calculés, mais ne modifie pas le forfait de référence.';
- $('payerSectorSummary').textContent=pub?'Public : forfait global de référence en hospitalisation ; estimation NGAP + bloc en ambulatoire. K/KC = 13 DH.':'Privé : forfait global de référence en hospitalisation ; estimation NGAP + bloc en ambulatoire. K/KC = 22,50 DH.';
+ $('payerSectorSummary').textContent=pub?'Médecin du secteur public : K/KC = 13 DH ; en hospitalisation, estimation du reste patient à partir du forfait AMO de l’établissement public.':'Médecin libéral : K/KC = 22,50 DH ; en hospitalisation, estimation du reste patient à partir du forfait AMO du secteur privé.';
  $('careSettingNote').textContent=$('careSetting').value==='ambulatoire'?
  'Ambulatoire / sans nuitée : estimation NGAP des honoraires + bloc, hors éventuel forfait d’établissement, consommables et pharmacie.':
  'Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';
@@ -364,6 +365,7 @@ function calculate(){
  $('dKeyValue').textContent=fmt(k);
  var notes=[];
  if(grid)notes.push(grid.note);
+ if($('sector').value==='public'&&grid&&grid.global!==false)notes.push('Secteur public : les montants chirurgien/anesthésiste affichés sont une ventilation théorique au sein du forfait de l’établissement ; ils ne constituent pas une facture individuelle ni le salaire du médecin fonctionnaire.');
  modifierNotes.forEach(function(n){notes.push(n+' La majoration est également répercutée sur l’anesthésie, selon l’article 22(7), lorsque la cotation le prévoit.');});
  if(!pureNonop&&grid){notes.push('Frais de salle d’opération : 50 % de la cotation opératoire, conformément à l’article 23 de la NGAP.');}
  if(anestEstimated)notes.push('Anesthésie sans coefficient secondaire explicite : K15, sans dépasser le coefficient de l’acte, selon l’article 22 de la NGAP.');
