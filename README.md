@@ -64,6 +64,8 @@ Les coefficients de comparaison de secteur (clinique privée = 100 %, non lucrat
 La base de remboursement/TNR est calculée par défaut comme **75 % du budget modélisé** uniquement pour permettre une simulation d’assurance sans saisie initiale. Ce n’est pas la TNR officielle propre à l’acte. Les taux CNOPS sont préproposés à titre de référence générale ; les valeurs CNSS sont des hypothèses à confirmer et les taux FAR/assurance/mutuelle sont illustratifs. Pour engager un patient ou facturer, comparer le résultat avec le devis détaillé, le tarif conventionnel de l’établissement et l’accord officiel du payeur.
 
 
+Source de taux AMO : [ACAPS — indemnisation en AMO](https://www.acaps.ma/fr/grand-public/droits/indemnisation-en-amo). La CNSS indique un taux général de 70 % de la TNR, pouvant monter à 90 % pour certaines maladies graves/invalidantes prises en charge dans le public ; la CNOPS applique 90 % en privé et 100 % dans le public pour l’hospitalisation/chirurgie.
+
 ## Nouveau simulateur d’honoraires NGAP
 
 Application mobile distincte : **https://orthoperipherie-bot.github.io/preop-ngap-maroc/simulateur-honoraires/**
@@ -91,7 +93,7 @@ Sources de référence : [NGAP marocaine, arrêté n°177-06](https://cnops.org.
 
 Le simulateur inclut un sous-module de 44 lignes TNR historiques d’implants et dispositifs orthopédiques extraites du barème officiel n°2314-08 (2008) : composants de prothèses de hanche/genou/épaule, fixateurs, plaques, vis, clous et broches. Pour chaque ligne, l’outil distingue le TNR historique, le prix d’achat fournisseur (facultatif), la base de remboursement estimée plafonnée au TNR et le statut « facturé en sus du forfait opératoire ». Le coût d’implant n’est ajouté au total de l’intervention que si la case « En sus » est cochée, afin d’éviter le double comptage.
 
-**Avertissement de mise à jour :** l’arrêté n°3207-15 a remplacé certains tarifs de la classe III. Les valeurs orthopédiques importées sont donc affichées avec leur source et leur date, et doivent être confirmées à partir du barème applicable / accord du payeur avant de les considérer comme les TNR actuels. La CNOPS indique qu’un accord préalable peut être nécessaire et que la base de remboursement d’un dispositif est plafonnée au forfait réglementaire ou au prix d’achat s’il est inférieur. Les taux d’implants CNOPS (100 %) et CNSS/AMO (70 %) sont préproposés comme simulation à confirmer selon l’éligibilité du dispositif et le dossier. 
+**Avertissement de mise à jour :** l’arrêté n°3207-15 a remplacé certains tarifs de la classe III. Les valeurs orthopédiques importées sont donc affichées avec leur source et leur date, et doivent être confirmées à partir du barème applicable / accord du payeur avant de les considérer comme les TNR actuels. La CNOPS indique qu’un accord préalable peut être nécessaire et que la base de remboursement d’un dispositif est plafonnée au forfait réglementaire ou au prix d’achat s’il est inférieur. Les taux d’implants CNOPS (100 %) et CNSS/AMO reste à renseigner pour les dispositifs, car leur prise en charge dépend du barème TNR et des règles propres aux implants ; ne pas transposer automatiquement le taux général des prestations médicales. 
 
 
 ## Catalogue spécialisé NGAP (octobre 2026)
