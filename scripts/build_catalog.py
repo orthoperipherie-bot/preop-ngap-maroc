@@ -50,6 +50,7 @@ overrides = {
  "C303":("Ablation de matériel d’ostéosynthèse ou de prothèse : bassin, hanche, fémur, rachis","retrait matériel ostéosynthèse plaque vis clou"),
  "C304":("Ablation de matériel d’ostéosynthèse ou de prothèse : autres localisations","retrait matériel ostéosynthèse plaque vis clou cheville pied poignet"),
  "C408":("Arthroscopie : biopsies et gestes thérapeutiques éventuels inclus","arthroscopie genou épaule cheville poignet chirurgie sport"),
+ "C609":("Libération du nerf médian dans le syndrome du canal carpien","canal carpien CTS nerf médian décompression main"),
  "C610":("Libération du nerf médian dans le syndrome du canal carpien","canal carpien CTS nerf médian décompression main"),
  "C218":("Exérèse totale d’une ou plusieurs gaines synoviales","synovectomie gaine tendon fléchisseur extenseur"),
  "N109":("Traitement d’une lésion du pivot central du genou avec autogreffe","LCA LCP ligament croisé antérieur postérieur reconstruction ligamentoplastie"),
@@ -84,7 +85,7 @@ tags = {
  "A112":"fracture bimalléolaire cheville", "A113":"fracture jambe tibia péroné",
  "A114":"fracture rotule patella", "A115":"fracture fémur cuisse",
  "A116":"fracture rachis colonne vertébrale", "A117":"fracture hanche", "A118":"fracture cotyle bassin acetabulum",
- "A119":"fracture bassin", "C610":"canal carpien CTS nerf médian",
+ "A119":"fracture bassin", "C609":"canal carpien CTS nerf médian", "C610":"canal carpien CTS nerf médian",
  "C433":"PTH THA prothèse totale de hanche", "C434":"PTG TKA prothèse totale du genou",
  "N109":"LCA ACL ligament croisé antérieur LCP PCL ligamentoplastie genou",
  "N111":"ménisque méniscectomie", "N127":"PTG genou prothèse",
@@ -115,7 +116,7 @@ for n, (idx, code, tail) in enumerate(starts):
     if code == "C101" and "Traitement par acupuncture" in title:
         title = title.split("Traitement par acupuncture", 1)[0].strip()
         if not coeffs: coeffs = ["5"]
-    if code == "C610": coeffs = ["50"]
+    if code in ("C609", "C610"): coeffs = ["50"]
     if len(title) > 420: title = title[:417] + "…"
     if code in overrides:
         title = overrides[code][0]
