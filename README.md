@@ -93,7 +93,7 @@ Le simulateur inclut un sous-module de 44 lignes TNR historiques d’implants et
 
 ## Catalogue spécialisé NGAP (octobre 2026)
 
-Le simulateur mobile charge désormais `orthopedie-actes.json`, un catalogue spécialisé de **359 entrées** construit à partir du PDF NGAP transmis dans la conversation : codes des chapitres traumatologiques, rachis, membre supérieur, membre inférieur, pied/cheville, os, tendons/muscles, articulations/prothèses, nerfs périphériques, quelques gestes vasculaires de membres pertinents en traumatologie et assimilations dédiées. Il ne charge plus la nomenclature complète toutes spécialités pour les recherches du simulateur.
+Le simulateur mobile charge désormais `orthopedie-actes.json`, un catalogue spécialisé de **338 entrées** construit à partir du PDF NGAP transmis dans la conversation : codes traumatologiques A, actes reconstructeurs et de parties molles utiles au membre C113–C139, muscles/tendons C200–C218, os C300–C314, articulations/prothèses C400–C442, gestes vasculaires des principaux vaisseaux des membres (C534/C537/C539/C542), nerfs périphériques sélectionnés (C605–C610/C614/C615), gestes rachidiens orthopédiques sélectionnés (F100/F101/F110–F112/F114/F115/F118–F141/F143), membre supérieur G, membre inférieur N et assimilations dédiées. Les actes sans rapport avec la pratique orthopédique (ex. varices, infiltrations de nerfs crâniens, certaines interventions intramédullaires neurochirurgicales) sont écartés. Le simulateur ne charge plus la nomenclature complète toutes spécialités pour les recherches.
 
 ### Secteur et calcul automatique
 
@@ -105,3 +105,8 @@ Le simulateur mobile charge désormais `orthopedie-actes.json`, un catalogue sp�
 - **Ventilation :** la part clinique/établissement est un solde estimé du total global après honoraires et bloc ; elle ne constitue pas un honoraire autonome garanti.
 
 Sources officielles utilisées : NGAP fournie (arrêté n°177-06), forfaits et valeur K/KC du privé dans l’arrêté n°1961-06, et valeur K/KC du public dans l’arrêté conjoint n°10-04. Le mode public reste une estimation comparative, pas une grille de forfait public complète.
+
+
+### Contrôle des actes de regroupement
+
+Les codes A129 et A150 sont conservés comme rubriques informatives non cotables en tant qu’actes autonomes : A129 renvoie vers A130/A131 selon le caractère unifragmentaire ou multifragmentaire ; A150 renvoie vers A151/A152 selon le nombre de piliers cotyloïdiens et les voies d’abord. Le moteur ne leur affecte donc pas de coefficient indépendant.
