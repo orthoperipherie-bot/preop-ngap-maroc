@@ -4,7 +4,7 @@ Application web interactive pour iPhone : recherche d'actes NGAP, estimation des
 
 ## Déploiement GitHub Pages
 
-Le workflow GitHub Actions `.github/workflows/deploy.yml` reconstruit le catalogue depuis le PDF NGAP publié par la CNOPS et publie l'application dans GitHub Pages.
+Le workflow GitHub Actions `.github/workflows/deploy.yml` reconstruit le catalogue depuis le PDF NGAP publié par la CNOPS et publie l'application dans GitHub Pages. Le fichier généré `acts.json` est également versionné à la racine pour que la recherche reste disponible si GitHub Pages utilise le mode de publication depuis la branche.
 
 Les libellés et coefficients sont extraits automatiquement du PDF source et doivent être vérifiés dans la nomenclature applicable avant toute facturation. Les calculs sont des simulations, pas une validation réglementaire.
 
