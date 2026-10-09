@@ -76,13 +76,16 @@ Application mobile distincte : **https://orthoperipherie-bot.github.io/preop-nga
 
 ### Hypothèses du simulateur
 
-La grille forfaitaire de chirurgie consultée provient de l’arrêté n°1961-06 publié en 2006 ; elle constitue une référence publiée à vérifier au regard des conventions et TNR effectivement appliquées en pratique. Pour les coefficients inférieurs à K30, qui ne figurent pas dans cette grille, le total est une estimation technique et non un forfait réglementaire.
+- **Secteur privé :** K/KC prérempli à **22,50 DH** d’après la grille privée de l’arrêté n°1961-06. Le forfait chirurgical AMO est appliqué par tranches à partir de K30. Pour un coefficient inférieur à K30, le calcul est explicitement partiel : honoraires NGAP + frais de salle estimés ; l’application n’invente pas les frais d’hospitalisation, de clinique ou de pharmacie absents de cette grille.
+- **Secteur public :** K prérempli à **13 DH**, d’après la grille n°1 de la Convention nationale AMO des établissements publics (mai 2007). Le simulateur applique la grille forfaitaire publique de cette convention par tranche de coefficient. Il s’agit d’une référence conventionnelle historique ; il faut vérifier qu’elle est toujours appliquée par l’établissement concerné.
+- **Cumul des gestes :** conformément à l’article 9 B du NGAP fourni, l’acte de coefficient le plus élevé est coté à 100 %, le deuxième à 50 % et les suivants ne sont normalement pas cotés. Une option active l’exception à 75 % pour le deuxième acte dans les situations décrites dans le texte ; une autre permet le troisième acte à 50 % en cas de traumatismes multiples récents.
+- **Honoraires chirurgien :** coefficient NGAP pondéré × valeur K/KC du secteur.
+- **Anesthésie :** le coefficient secondaire est utilisé lorsqu’il est indiqué dans la NGAP. À défaut, l’article 22 prévoit K15 sans dépasser le coefficient de l’acte opératoire ; cette règle est utilisée et signalée.
+- **Bloc opératoire :** 50 % de la cotation opératoire, selon l’article 23 du NGAP.
+- **Part clinique/établissement :** solde du forfait global après honoraires et bloc. C’est une ventilation de travail, pas un tarif contractuel autonome. Si les postes détaillés dépassent le forfait, l’application signale que la ventilation de la clinique ne peut pas être déterminée par soustraction.
+- **Couverture :** les valeurs de départ CNOPS/CNSS sont des hypothèses pour hospitalisation/chirurgie, modifiables. FAR et assurance privée n’ont pas de taux universel prérempli. Direct, PEC et remboursement changent le montant estimé à avancer, mais ne remplacent jamais l’accord du payeur.
 
-Le coefficient d’anesthésie lorsqu’il est indiqué dans la ligne NGAP est utilisé tel quel, multiplié par la même pondération appliquée à l’acte associé. En l’absence de coefficient anesthésique, le simulateur estime ce coefficient à 50 % du coefficient chirurgical correspondant ; cette approximation est signalée. Le partage du reliquat entre bloc opératoire (20 % par défaut, modifiable) et part clinique (solde) est une hypothèse de ventilation, car la grille consultée indique les éléments inclus dans le forfait mais ne publie pas une décomposition chiffrée bloc/clinique.
-
-Taux de couverture initialement suggérés pour faciliter le calcul : Payant 0 %, CNOPS 90 %, CNSS 70 %, FAR 90 %, assurance privée 80 %. Seul le repère CNOPS de 90 % en chirurgie privée s’appuie sur les indications publiées par la CNOPS ; les autres taux sont des hypothèses de simulation, modifiables. Pour une PEC ou un remboursement réels, il faut remplacer ces hypothèses par les droits, la TNR et la décision du payeur.
-
-Sources : NGAP marocaine, arrêté n°177-06 : https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf ; grille forfaitaire, arrêté n°1961-06 : https://www.sante.gov.ma/Reglementation/ASSURANCEMALADIE/1961-06.pdf ; CNOPS — hospitalisation et chirurgie : https://www.cnops.org.ma/fr/hospitalisation-et-chirurgie.
+Sources de référence : [NGAP marocaine, arrêté n°177-06](https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf) ; [grille privée de chirurgie, arrêté n°1961-06](https://www.sante.gov.ma/Reglementation/ASSURANCEMALADIE/1961-06.pdf) ; [grille n°1 AMO publique, convention de mai 2007 — K = 13 DH](https://anam.ma/anam/wp-content/uploads/2021/09/Grille1_2007.pdf) ; [grille forfaitaire publique de chirurgie — convention AMO de mai 2007](https://fr.scribd.com/document/615701759/Convention-CHU).
 
 ### Module « Implants & TNR » ajouté en octobre 2026
 
@@ -98,13 +101,13 @@ Le simulateur mobile charge désormais `orthopedie-actes.json`, un catalogue sp�
 ### Secteur et calcul automatique
 
 - **Privé :** K/KC prérempli à 22,50 DH d’après l’arrêté n°1961-06 (2006). Les forfaits privés publiés par tranche de coefficient sont utilisés à partir de K30. Pour K inférieur à K30, le total est partiel (honoraires NGAP + bloc estimé) et les frais d’établissement non chiffrés ne sont pas inclus.
-- **Public :** K/KC prérempli à 7,50 DH selon l’arrêté conjoint n°10-04 (2004). Le forfait public global n’étant pas directement déductible du seul code NGAP, le total public est une estimation comparative calculée au prorata 7,50/22,50 du forfait de référence privé. Il est explicitement étiqueté non officiel et doit être remplacé par le tarif de l’établissement lorsqu’il est connu.
+- **Public :** K prérempli à 13 DH selon la grille n°1 de la convention nationale AMO des établissements publics (mai 2007). Le total utilise les forfaits publics de cette convention par tranche de coefficient, mais leur application actuelle doit être confirmée auprès de l’établissement.
 - **Cumul :** le défaut suit l’article 9 B de la NGAP : coefficient le plus élevé à 100 %, deuxième acte à 50 %, suivants non cotés ; des options permettent d’utiliser les exceptions de 75 % et du troisième acte à 50 % dans les situations décrites par le texte.
 - **Anesthésie :** le coefficient secondaire du catalogue est utilisé lorsqu’il figure dans l’acte ; à défaut, K15 est retenu sans dépasser le coefficient opératoire, conformément à l’article 22.
 - **Bloc opératoire :** 50 % du coefficient opératoire pondéré, conformément à l’article 23.
 - **Ventilation :** la part clinique/établissement est un solde estimé du total global après honoraires et bloc ; elle ne constitue pas un honoraire autonome garanti.
 
-Sources utilisées : NGAP marocaine fournie (arrêté n°177-06) ; grille forfaitaire privée de l’arrêté n°1961-06 (2006) ; convention nationale AMO des établissements publics (mai 2007, copie consultable en ligne). Ces grilles sont des références datées et ne garantissent pas qu’un établissement ou un payeur les applique encore sans avenant. Le total est un forfait de référence, pas nécessairement le devis de la clinique ou la facture économique complète du public.
+Sources utilisées : NGAP marocaine fournie (arrêté n°177-06) ; grille forfaitaire privée de l’arrêté n°1961-06 (2006) ; convention nationale AMO des établissements publics (mai 2007). Ces références sont datées et ne garantissent pas qu’un établissement ou un payeur les applique encore sans avenant. Le forfait AMO est un forfait de référence, pas nécessairement le montant final réclamé au patient.
 
 
 ### Contrôle des actes de regroupement
