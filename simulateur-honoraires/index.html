@@ -18,8 +18,10 @@
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de soins</h2><div class="grid">
 <div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Privé — clinique / convention</option><option value="public">Public — hôpital / CHU</option></select></div>
+<div class="field"><label for="careSetting">Modalité de chirurgie</label><select id="careSetting"><option value="hospitalisation" selected>Hospitalisation</option><option value="ambulatoire">Ambulatoire / sans nuitée</option></select></div>
 <div class="field"><label>Valeur K/KC préremplie</label><div id="sectorKDisplay" class="selected"><strong>22,50 DH</strong><small>Référence secteur privé</small></div></div>
-</div><p id="sectorNote" class="notice">Privé : K/KC = 22,50 DH ; le forfait de chirurgie de référence est utilisé lorsqu’une tranche est disponible.</p></div>
+</div><p id="sectorNote" class="notice">Privé : K/KC = 22,50 DH ; le forfait de chirurgie de référence est utilisé lorsqu’une tranche est disponible.</p>
+<p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants marqués « En sus » sont ajoutés séparément.</p></div>
 <div class="hero patient-highlight"><div class="sub">RESTE À CHARGE ESTIMÉ DU PATIENT — ACTE SEUL, HORS IMPLANTS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Le montant affiché ici est ce qui reste estimé à la charge du patient après la prise en charge simulée, hors implants. En mode « remboursement », le patient avance le tarif total : cette avance est affichée séparément dans « À payer aujourd’hui ». En mode « direct », aucune part de payeur n’est déduite automatiquement.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
@@ -56,7 +58,7 @@
 <section id="tab-details" class="hidden">
 <div class="panel"><h2>Ventilation estimée</h2><p class="muted">Chirurgien : coefficient opératoire pondéré × valeur K/KC du secteur. Anesthésie : coefficient secondaire NGAP lorsqu’il est indiqué ; à défaut, l’article 22 prévoit K15 sans dépasser le coefficient de l’acte. Bloc : 50 % de la cotation opératoire selon l’article 23. La part établissement est un résiduel estimatif et peut être indiquée « à confirmer » si la ventilation et le forfait de référence ne sont pas compatibles.</p>
 <div class="metrics"><div class="metric"><small>Tarif global estimé</small><strong id="dTotal">—</strong></div><div class="metric surgeon-highlight"><small>Honoraires chirurgien</small><strong id="dSurgeon">—</strong></div><div class="metric"><small>Honoraires anesthésiste</small><strong id="dAnesthesia">—</strong></div><div class="metric"><small>Bloc opératoire</small><strong id="dBlock">—</strong></div><div class="metric"><small>Part clinique / établissement</small><strong id="dClinic">—</strong></div><div class="metric"><small>Résiduel à ventiler</small><strong id="dResidual">—</strong></div></div>
-<div class="row"><span>Barème de référence</span><strong id="dTariffBand">—</strong></div><div class="row"><span>Coefficient chirurgien pondéré</span><strong id="dSurgeonCoef">—</strong></div><div class="row"><span>Coefficient anesthésie calculé / estimé</span><strong id="dAnesthesiaCoef">—</strong></div><div class="row"><span>Valeur K/KC utilisée</span><strong id="dKeyValue">—</strong></div><div id="dNotice" class="notice">Les détails seront calculés après sélection d’un acte.</div></div>
+<div class="row"><span>Modalité</span><strong id="dCareSetting">Hospitalisation</strong></div><div class="row"><span>Barème de référence</span><strong id="dTariffBand">—</strong></div><div class="row"><span>Coefficient chirurgien pondéré</span><strong id="dSurgeonCoef">—</strong></div><div class="row"><span>Coefficient anesthésie calculé / estimé</span><strong id="dAnesthesiaCoef">—</strong></div><div class="row"><span>Valeur K/KC utilisée</span><strong id="dKeyValue">—</strong></div><div id="dNotice" class="notice">Les détails seront calculés après sélection d’un acte.</div></div>
 <div class="panel"><h2>Actes retenus</h2><div class="tablewrap"><table><thead><tr><th>Type</th><th>Code</th><th>Libellé</th><th class="num">Coeff.</th><th class="num">Pond.</th><th class="num">Retenu</th><th class="num">Anesth.</th></tr></thead><tbody id="actTable"><tr><td colspan="7">Sélectionnez une intervention.</td></tr></tbody></table></div></div>
 <div class="panel"><h2>Méthode et limites</h2><div class="row"><span>Tarif global</span><strong>Grille forfaitaire par tranche de coefficient K</strong></div><div class="row"><span>Chirurgien / anesthésiste</span><strong>Coefficients NGAP × valeur K/KC</strong></div><div class="row"><span>Bloc opératoire</span><strong>50 % de la cotation opératoire (NGAP, art. 23)</strong></div><div class="row"><span>Part clinique</span><strong>Solde après honoraires et bloc</strong></div><div class="notice">Privé : l’arrêté n°1961-06 publie un forfait par tranche de coefficient à partir de K30. En dessous de K30, le total affiché est partiel et exclut les frais d’établissement non chiffrés. Public : la convention nationale AMO des établissements publics (mai 2007) indique K/KC à 13 DH et des forfaits publics différenciés. Le détail chirurgien/anesthésie/bloc est calculé par cotation ; la part établissement n’est isolable que si elle reste compatible avec le forfait de référence. Public : K/KC = 13 DH selon la convention nationale AMO des établissements publics (mai 2007). Le forfait public est repris de la grille 2 de cette convention. Privé : K/KC = 22,50 DH et forfaits selon l’arrêté n°1961-06 (2006). Ces barèmes ont une date historique et doivent être confrontés à la convention actuellement appliquée par l’établissement et le payeur. L’anesthésie sans coefficient secondaire suit l’article 22 (K15 plafonné au coefficient de l’acte). Les frais de salle d’opération suivent l’article 23 (50 % du coefficient opératoire). Les conventions, cumul NGAP, droits du patient et accord du payeur prévalent.</div><p class="muted">Sources : <a href="https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf" target="_blank" rel="noopener">NGAP marocaine (arrêté n°177-06)</a> · <a href="https://www.sante.gov.ma/Reglementation/ASSURANCEMALADIE/1961-06.pdf" target="_blank" rel="noopener">privé : arrêté n°1961-06 — forfaits de chirurgie, K/KC 22,50 DH</a> · <a href="https://anam.ma/anam/wp-content/uploads/2021/09/Grille1_2007.pdf" target="_blank" rel="noopener">public : grille n°1 de la convention AMO — K 13 DH (ANAM)</a> · <a href="https://anam.ma/anam/wp-content/uploads/2021/09/Grille2_2007.pdf" target="_blank" rel="noopener">convention nationale AMO des établissements publics (mai 2007), grille forfaitaire publique</a> · <a href="https://www.cnops.org.ma/fr/hospitalisation-et-chirurgie" target="_blank" rel="noopener">CNOPS : couverture hospitalisation/chirurgie</a> · <a href="https://www.acaps.ma/fr/grand-public/droits/indemnisation-en-amo" target="_blank" rel="noopener">ACAPS : taux AMO CNSS/CNOPS</a>.</p></div></section>
 <footer class="muted">Outil indicatif d’aide à la pratique quotidienne, et non devis ou facture.</footer></main>
@@ -144,6 +146,10 @@ function tariffGrid(c,surgFee,anesFee){
  }
  return null;
 }
+function ambulatoryTariff(coef,surgeonFee,anesthesiaFee,blockFee){
+ var total=Math.max(0,(Number(surgeonFee)||0)+(Number(anesthesiaFee)||0)+(Number(blockFee)||0));
+ return {total:total,official:false,global:false,ambulatory:true,label:'Ambulatoire · honoraires NGAP + bloc, hors forfait de séjour',band:'Ambulatoire : chirurgien + anesthésiste estimé + bloc',note:'Le barème forfaitaire consulté pour le secteur '+($('sector').value==='public'?'public':'privé')+' est un forfait global d’hospitalisation. Aucun tarif forfaitaire ambulatoire distinct n’a été confirmé dans les sources intégrées. Estimation technique calculée à partir des cotations NGAP (K/KC), de l’anesthésie estimée/renseignée et des frais de bloc (article 23). Ne comprend pas un éventuel forfait d’établissement, les consommables, la pharmacie ni des frais supplémentaires : vérifier le tarif ambulatoire conventionné.'};
+}
 function sectorKeyValue(){return $('sector').value==='public'?13:22.5}
 function updateSector(){
  var pub=$('sector').value==='public',v=pub?13:22.5;
@@ -152,29 +158,32 @@ function updateSector(){
  var strong=document.createElement('strong');strong.textContent=fmt(v);
  var small=document.createElement('small');small.textContent=pub?'Convention nationale AMO — établissements publics, mai 2007':'Arrêté n°1961-06 — secteur privé, 2006';
  display.append(strong,small);
- $('sectorNote').textContent=pub?'Public : K = 13 DH (convention nationale AMO des établissements publics, mai 2007). Le total utilise le forfait AMO public de référence de cette convention ; vérifiez qu’il est toujours appliqué par votre établissement.':'Privé : K = 22,50 DH (arrêté n°1961-06, 2006). Le total utilise le forfait AMO privé de référence ; il ne garantit ni le montant facturé par la clinique ni l’accord du payeur.';
+ $('sectorNote').textContent=pub?'Public : K = 13 DH (convention nationale AMO des établissements publics, mai 2007). En hospitalisation, le calcul utilise le forfait public de référence ; en ambulatoire, il utilise l’estimation NGAP + bloc. Vérifiez la grille appliquée par l’établissement.':'Privé : K = 22,50 DH (arrêté n°1961-06, 2006). En hospitalisation, le calcul utilise le forfait privé de référence ; en ambulatoire, il utilise l’estimation NGAP + bloc. Vérifiez la convention effectivement appliquée.';
  $('kNote').textContent='La lettre-clé K/KC est préremplie selon le secteur et reste modifiable. Le forfait global AMO, lui, est fixé par sa tranche de coefficient : changer K/KC ajuste les honoraires calculés, mais ne modifie pas le forfait de référence.';
- $('payerSectorSummary').textContent=pub?'Forfait AMO public de référence (convention mai 2007) + K/KC à 13 DH.':'Forfait AMO privé de référence (arrêté 1961-06, 2006) + K/KC à 22,50 DH.';
+ $('payerSectorSummary').textContent=pub?'Public : forfait global de référence en hospitalisation ; estimation NGAP + bloc en ambulatoire. K/KC = 13 DH.':'Privé : forfait global de référence en hospitalisation ; estimation NGAP + bloc en ambulatoire. K/KC = 22,50 DH.';
+ $('careSettingNote').textContent=$('careSetting').value==='ambulatoire'?
+ 'Ambulatoire / sans nuitée : estimation NGAP des honoraires + bloc, hors éventuel forfait d’établissement, consommables et pharmacie.':
+ 'Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';
  updateCoverageDefault();updateImplantRate();calculate();
 }
-function defaultCoverage(p,sector){
+function defaultCoverage(p,sector,careSetting){
  if(p==='payant')return 0;
- if(p==='cnops')return sector==='public'?100:90;
+ if(p==='cnops')return careSetting==='ambulatoire'?80:(sector==='public'?100:90);
  if(p==='cnss')return 70;
  return null;
 }
 function updateCoverageDefault(){
- var v=defaultCoverage($('payer').value,$('sector').value);
+ var v=defaultCoverage($('payer').value,$('sector').value,$('careSetting').value);
  $('coverageRate').value=v===null?'':String(v);
 }function payerNote(p,m){
- var sector=$('sector').value||'private',s={
+ var sector=$('sector').value||'private',care=$('careSetting').value||'hospitalisation',s={
   payant:'Payant : aucune prise en charge n’est soustraite.',
-  cnops:'CNOPS : taux AMO de référence '+(sector==='public'?'100 %':'90 %')+' du forfait de référence pour l’hospitalisation/chirurgie, sous réserve des droits et règles du dossier.',
-  cnss:'CNSS : taux général de couverture AMO = 70 % de la TNR selon l’ACAPS. Un taux porté à 90 % peut s’appliquer à certaines maladies graves ou invalidantes nécessitant des soins prolongés/coûteux dans le secteur public. Ajustez selon les droits et le dossier.',
+  cnops:care==='ambulatoire'?'CNOPS : référence de 80 % de la TNR pour les actes médicaux/chirurgicaux délivrés en ambulatoire, sous réserve de l’acte exact et des règles du dossier.':'CNOPS : taux de référence '+(sector==='public'?'100 %':'90 %')+' de la TNR pour les soins liés à l’hospitalisation et la chirurgie, selon le secteur.',
+  cnss:'CNSS : taux général de référence de 70 % de la TNR selon l’ACAPS. Certains cas de maladies graves ou invalidantes ouvrent droit à un taux supérieur : confirmer auprès de la CNSS.',
   far:'FAR / régime militaire : renseignez le taux prévu par le régime et l’accord applicable.',
   assurance:'Assurance privée : renseignez le taux et les plafonds de la garantie contractuelle.'
  }[p]||'Taux de couverture à confirmer.';
- return s+(m==='direct'?' Paiement direct : le patient paie le total estimé, aucune part payeur n’est déduite au moment du paiement.':m==='pec'?' En PEC : le reste patient est estimé après déduction de la part payeur simulée.':' En remboursement : le patient avance le total, puis sollicite le remboursement estimé.');
+ return s+(m==='direct'?' Paiement direct : le patient paie le total estimé ; aucune part payeur n’est déduite au moment du paiement.':m==='pec'?' En PEC : le reste patient est estimé après déduction de la part payeur simulée.':' En remboursement : le patient avance le montant facturé puis demande le remboursement prévu par son régime.');
 }
 function implantMatches(q){
  var n=norm(q);if(!n)return [];
@@ -305,11 +314,12 @@ function calculate(){
   });
   supplements.forEach(function(r){sc+=r.coef;});
  }
+ var careSetting=$('careSetting').value||'hospitalisation';
  var sf=sc*k,af=pureNonop?0:ac*k,block=pureNonop?0:sc*k*.5;
- var grid=active.length?tariffGrid(sc,sf,af):(pureNonop?{total:sf,official:false,global:false,label:'Acte assimilé non opératoire',band:'K × valeur de la lettre-clé',note:'Acte d’appareillage assimilé : les frais de bloc et d’anesthésie ne sont pas calculés.'}:null);
+ var grid=active.length?(careSetting==='ambulatoire'?ambulatoryTariff(sc,sf,af,block):tariffGrid(sc,sf,af)):(pureNonop?{total:sf,official:false,global:false,label:'Acte assimilé non opératoire',band:'K × valeur de la lettre-clé',note:'Acte d’appareillage assimilé : les frais de bloc et d’anesthésie ne sont pas calculés.'}:null);
  if(!grid&&active.length===0&&!pureNonop&&selected.length===0){}
  var total=grid?grid.total:0,rawClinic=total-sf-af-block;
- var clinicKnown=!!grid&&grid.global!==false&&rawClinic>=0;
+ var clinicKnown=!!grid&&careSetting==='hospitalisation'&&grid.global!==false&&rawClinic>=0;
  var clinic=clinicKnown?rawClinic:null;
  var payer=$('payer').value,mode=$('paymentType').value,rate=parseNum($('coverageRate').value);
  var eligible=payer!=='payant'&&mode!=='direct',coverageUnknown=eligible&&rate===null;
@@ -342,11 +352,12 @@ function calculate(){
  $('summaryPayment').textContent=({'direct':'Paiement direct','pec':'PEC — prise en charge préalable','remboursement':'Avance puis remboursement'})[mode];
  $('payerNote').textContent=payerNote(payer,mode);
  $('dTotal').textContent=grid?fmt(total):'—';
+ $('dCareSetting').textContent=careSetting==='ambulatoire'?'Ambulatoire / sans nuitée':'Hospitalisation';
  $('dSurgeon').textContent=grid?fmt(sf):'—';
  $('dAnesthesia').textContent=grid?(pureNonop?'0 DH':fmt(af)):'—';
  $('dBlock').textContent=grid?fmt(block):'—';
- $('dClinic').textContent=!grid?'—':pureNonop?'0 DH':(clinicKnown?fmt(clinic):'À confirmer');
- $('dResidual').textContent=grid?(pureNonop?'0 DH':fmt(rawClinic)):'—';
+ $('dClinic').textContent=!grid?'—':pureNonop?'0 DH':(careSetting==='ambulatoire'?'Non comprise dans l’estimation ambulatoire':(clinicKnown?fmt(clinic):'À confirmer'));
+ $('dResidual').textContent=grid?(pureNonop?'0 DH':(careSetting==='ambulatoire'?'Hors forfait global':fmt(rawClinic))):'—';
  $('dTariffBand').textContent=grid?grid.band:'—';
  $('dSurgeonCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('dAnesthesiaCoef').textContent=grid?(pureNonop?'Sans objet':ac.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(anestEstimated?' · K15 par défaut, plafonné au coefficient de l’acte':' · coefficient secondaire de la NGAP lorsqu’indiqué')):'—';
@@ -356,7 +367,8 @@ function calculate(){
  modifierNotes.forEach(function(n){notes.push(n+' La majoration est également répercutée sur l’anesthésie, selon l’article 22(7), lorsque la cotation le prévoit.');});
  if(!pureNonop&&grid){notes.push('Frais de salle d’opération : 50 % de la cotation opératoire, conformément à l’article 23 de la NGAP.');}
  if(anestEstimated)notes.push('Anesthésie sans coefficient secondaire explicite : K15, sans dépasser le coefficient de l’acte, selon l’article 22 de la NGAP.');
- if(grid&&grid.global===false)notes.push('Ce total est partiel/hors forfait global ; les frais d’établissement, le séjour, la pharmacie et les consommables ne sont pas entièrement chiffrés.');
+ if(grid&&grid.ambulatory)notes.push('Ambulatoire : ce montant est une estimation technique NGAP + bloc, pas un forfait ambulatoire officiel confirmé. Vérifier le montant TNR/facturé reconnu. La part clinique/établissement, le séjour, les consommables et la pharmacie ne sont pas inclus dans cette estimation.');
+ else if(grid&&grid.global===false)notes.push('Ce total est partiel/hors forfait global ; les frais d’établissement, le séjour, la pharmacie et les consommables ne sont pas entièrement chiffrés.');
  if(grid&&grid.global!==false&&!pureNonop&&!clinicKnown)notes.push('Ventilation clinique impossible avec ces références : chirurgien + anesthésie + bloc dépassent le forfait sectoriel de '+fmt(Math.abs(rawClinic))+'. Le total forfaitaire reste affiché, mais la part clinique n’est pas inventée.');
  var manualRules=rules.filter(function(r){return ['A153','A154','A155','A211','A215'].indexOf(r.act.code)<0;});
  if(manualRules.length)notes.push('Règle(s) nécessitant une vérification ou application manuelle : '+manualRules.map(function(r){return r.act.code+' — '+(r.act.note||r.act.title)}).join(' ; '));
@@ -373,7 +385,7 @@ function calculate(){
   var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightText,c===null?'—':(r.weight===undefined?'—':((r.coef||0)*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2})),an];
   cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td);});tb.appendChild(tr);
  });
- lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value};
+ lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value,careSetting:careSetting};
  calculateImplants();
 }
 function addGesture(){gestures.push({id:nextId++,act:null,coef:'',query:''});renderGestures();calculate()}
@@ -385,6 +397,7 @@ function summary(){
  return [
   'SIMULATEUR NGAP ORTHOPÉDIE-TRAUMATOLOGIE — estimation, pas un devis',
   'Secteur : '+(lastCalc.sector==='public'?'public':'privé'),
+  'Modalité : '+(lastCalc.careSetting==='ambulatoire'?'ambulatoire / sans nuitée':'hospitalisation'),
   'Intervention principale : '+mainLine,
   'Gestes associés : '+associated,
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
@@ -426,6 +439,13 @@ $('a211Applicable').addEventListener('change',calculate);
 $('coverageRate').addEventListener('input',calculate);
 $('payer').addEventListener('change',function(){updateCoverageDefault();updateImplantRate();calculate();});
 $('sector').addEventListener('change',updateSector);
+$('careSetting').addEventListener('change',function(){
+ var care=$('careSetting').value;
+ $('careSettingNote').textContent=care==='ambulatoire'?
+ 'Ambulatoire / sans nuitée : le forfait global de chirurgie en hospitalisation n’est pas réutilisé. Le total affiché est une estimation NGAP des honoraires + bloc ; les frais d’établissement, pharmacie, consommables et tout forfait ambulatoire spécifique sont à confirmer. Le taux CNOPS par défaut passe à 80 %, modifiable.':
+ 'Hospitalisation : forfait global de référence selon le secteur, intégrant le séjour et les éléments mentionnés dans la convention. Le taux CNOPS par défaut est de 90 % en privé ou 100 % en public, modifiable selon le dossier.';
+ updateCoverageDefault();calculate();
+});
 $('paymentType').addEventListener('change',calculate);
 $('addGesture').addEventListener('click',addGesture);
 $('copySummary').addEventListener('click',function(){
@@ -435,7 +455,7 @@ $('copySummary').addEventListener('click',function(){
 $('reset').addEventListener('click',function(){
  mainAct=null;gestures=[];nextId=1;
  $('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('mainActNote').textContent='';
- $('payer').value='cnops';$('paymentType').value='pec';$('coverageRate').value=String(defaultCoverage('cnops',$('sector').value));$('cumulationMode').value='standard';$('a215Osteosynthesis').checked=false;$('a211Applicable').checked=false;
+ $('payer').value='cnops';$('paymentType').value='pec';$('careSetting').value='hospitalisation';$('coverageRate').value=String(defaultCoverage('cnops',$('sector').value,$('careSetting').value));$('cumulationMode').value='standard';$('a215Osteosynthesis').checked=false;$('a211Applicable').checked=false;
  selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';
  updateImplantRate();renderGestures();renderImplants();calculate();
 });
