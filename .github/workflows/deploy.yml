@@ -19,18 +19,16 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install PDF tools
-        run: sudo apt-get update && sudo apt-get install -y poppler-utils
-      - name: Download NGAP source PDF
+      - name: Refresh NGAP catalogue from official PDF (manual run only)
+        if: github.event_name == 'workflow_dispatch'
         run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
           mkdir -p site
-          curl -fL --connect-timeout 8 --max-time 20 'https://data.gov.ma/data/fr/dataset/b8425cb6-828f-4fa9-9f02-cdd372d18f65/resource/f66d23ac-012f-4439-ac99-4beb129ce640/download/ngap-cnops-2014.pdf' -o /tmp/ngap.pdf || curl -fL --connect-timeout 8 --max-time 20 'https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf' -o /tmp/ngap.pdf
+          curl -fL --connect-timeout 8 --max-time 30 'https://data.gov.ma/data/fr/dataset/b8425cb6-828f-4fa9-9f02-cdd372d18f65/resource/f66d23ac-012f-4439-ac99-4beb129ce640/download/ngap-cnops-2014.pdf' -o /tmp/ngap.pdf || curl -fL --connect-timeout 8 --max-time 30 'https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf' -o /tmp/ngap.pdf
           test -s /tmp/ngap.pdf
           pdftotext -layout /tmp/ngap.pdf ngap_raw.txt
-      - name: Build act catalogue
-        run: python scripts/build_catalog.py ngap_raw.txt site/acts.json
-      - name: Publish catalogue at repository root
-        run: |
+          python scripts/build_catalog.py ngap_raw.txt site/acts.json
           cp site/acts.json acts.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -39,12 +37,13 @@ jobs:
             git commit -m "Update generated NGAP act catalogue"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
-      - name: Prepare static app
+      - name: Prepare static apps
         run: |
+          mkdir -p site/simulateur-honoraires
+          cp acts.json site/acts.json
           cp index.html site/index.html
           cp manifest.webmanifest site/manifest.webmanifest
           cp sw.js site/sw.js
-          mkdir -p site/simulateur-honoraires
           cp simulateur-honoraires/index.html site/simulateur-honoraires/index.html
           touch site/.nojekyll
       - name: Configure Pages
