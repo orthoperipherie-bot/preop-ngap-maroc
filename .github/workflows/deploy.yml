@@ -1,0 +1,49 @@
+name: Build and deploy NGAP app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install PDF tools
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Download the NGAP source PDF
+        run: |
+          mkdir -p site
+          curl -fL --retry 3 'https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf' -o /tmp/ngap.pdf
+          pdftotext -layout /tmp/ngap.pdf ngap_raw.txt
+      - name: Build act catalogue
+        run: python scripts/build_catalog.py ngap_raw.txt site/acts.json
+      - name: Prepare static app
+        run: |
+          cp index.html site/index.html
+          cp manifest.webmanifest site/manifest.webmanifest
+          cp sw.js site/sw.js
+          touch site/.nojekyll
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
