@@ -263,7 +263,8 @@ function load(d){
  updateTariffNote();updateCoverageDefaults(false);calc();
  document.querySelector('[data-tab="fiche"]').click()
 }
-$('search').addEventListener('input',search);\n$('catalogScope').addEventListener('change',search);
+$('search').addEventListener('input',search);
+$('catalogScope').addEventListener('change',search);
 $('addImplant').onclick=function(){addLine()};
 $('save').onclick=save;
 $('exportTxt').onclick=function(){download('fiche-preoperatoire.txt',summary(),'text/plain;charset=utf-8')};
