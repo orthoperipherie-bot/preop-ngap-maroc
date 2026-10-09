@@ -44,7 +44,7 @@
 <div class="panel"><h2>Dispositifs de ce dossier</h2><p class="muted">Indiquez le prix d’achat unitaire si vous l’avez. Sinon, le TNR sert de valeur de travail et l’application le signale. Cochez « En sus » uniquement si le dispositif n’est pas inclus dans le forfait opératoire.</p>
 <div class="tablewrap"><table><thead><tr><th>Dispositif / code (source)</th><th class="num">Qté</th><th class="num">TNR unitaire</th><th class="num">Prix achat/unité</th><th class="num">Base estimée</th><th class="num">En sus</th><th></th></tr></thead><tbody id="implantTable"><tr><td colspan="7">Aucun implant sélectionné.</td></tr></tbody></table></div>
 <div class="row"><span>Supplément estimé d’implants facturés en sus</span><strong id="implantExtraTotal">0 DH</strong></div>
-<div class="row"><span>Total acte + implants hors forfait</span><strong id="totalWithImplants">—</strong></div>
+<div class="row"><span>À la charge du patient (acte + implants hors forfait)</span><strong id="totalWithImplants">—</strong></div>
 <div class="field" style="margin-top:10px"><label for="implantRate">Taux AMO estimé pour les implants (%)</label><input id="implantRate" type="number" min="0" max="100" step="1" value="100"></div>
 <div class="actions"><button class="btn" id="clearImplants">Effacer les implants</button><button class="btn" id="copyImplantSummary">Copier le récapitulatif implants</button></div>
 </div>
@@ -221,7 +221,7 @@ function calculateImplants(){
  $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rateUnknown?'Taux à confirmer':fmt(cover));
  $('implantPatientTotal').textContent=!selectedImplants.length?'—':(rateUnknown?'Taux à confirmer':fmt(patient));
  $('implantExtraTotal').textContent=fmt(extra);
- $('totalWithImplants').textContent=lastCalc&&lastCalc.grid?fmt(lastCalc.total+extra):'Sélectionnez d’abord un acte';
+ $('totalWithImplants').textContent=lastCalc&&lastCalc.grid?(typeof lastCalc.patient==='number'?fmt(lastCalc.patient):lastCalc.patient):'Sélectionnez d’abord un acte';
  if(unknownPurchase>0)$('implantPriceNote').textContent=unknownPurchase+' unité(s) sans prix fournisseur : le TNR sert de prix de travail et de base estimative. Le calcul réel du reste à charge nécessite le prix d’achat exact.';
  else $('implantPriceNote').textContent='Prix d’achat renseigné pour tous les dispositifs. La base remboursable estimée est plafonnée au TNR par ligne.';
  $('implantCoverNote').textContent=($('payer').value==='cnops'?'CNOPS : hypothèse 100 % du TNR admissible, sous réserve de la liste et de l’accord préalable.':$('payer').value==='cnss'?'CNSS/AMO : hypothèse 70 %, à confirmer pour le dossier.':$('payer').value==='payant'?'Payant : aucun remboursement simulé.':$('payer').value==='far'?'FAR : taux à confirmer dans le régime applicable.':'Assurance : taux à confirmer dans le contrat.')+' Le barème intégré est un repère daté, pas une garantie de remboursement.';
@@ -376,8 +376,8 @@ function summary(){
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
   'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
   'Forfait de référence : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
-  'Implants hors forfait : '+fmt(lastCalc.implantExtra),
-  'Total acte + implants en sus : '+fmt(lastCalc.totalAll),
+  'Coût global de référence (acte + implants en sus) : '+fmt(lastCalc.totalAll),
+  'Montant estimé à la charge du patient (acte + implants en sus) : '+amount(lastCalc.patient),
   'Honoraires chirurgien (calcul NGAP) : '+fmt(lastCalc.surgeon),
   'Honoraires anesthésiste (calcul NGAP) : '+fmt(lastCalc.anesthesia),
   'Bloc opératoire (NGAP art. 23) : '+fmt(lastCalc.block),
