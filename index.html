@@ -195,6 +195,7 @@ function setFacilityUI(force){
  if(force&&!tnrEdited)$('tnr').value='';
  if(val('careMode')!=='inpatient'&&!daysEdited)$('days').value='0';
  else if(val('careMode')==='inpatient'&&!daysEdited)$('days').value=String(selected?suggestedDays(selected):1);
+ applyAutomaticEstimate(selected);
  if(!pub)applyPrivateProfile();
  if(force&&!rateEdited)updateCoverageDefaults(true);else updateCoverageDefaults(false);
  updateTariffNote();calc();
