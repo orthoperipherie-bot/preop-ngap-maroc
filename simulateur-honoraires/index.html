@@ -30,7 +30,7 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants marqués « En sus » sont ajoutés séparément.</p></div>
-<div class="hero patient-highlight"><div class="sub">MONTANT À LA CHARGE DU PATIENT — APRÈS COUVERTURE ESTIMÉE, IMPLANTS EN SUS INCLUS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste final à la charge du patient après la couverture estimée, implants « En sus » inclus. Le volet « Détails estimés NGAP » conserve le tarif complet avant couverture. En mode « remboursement », le montant à avancer aujourd’hui est affiché séparément ; en paiement direct, aucune couverture n’est déduite.</div></div>
+<div class="hero patient-highlight"><div class="sub">RESTE FINAL À PAYER PAR LE PATIENT — ACTE + IMPLANTS « EN SUS »</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste final à la charge du patient après la couverture estimée, implants « En sus » inclus. Le volet « Détails estimés NGAP » conserve le tarif complet avant couverture. En mode « remboursement », le montant à avancer aujourd’hui est affiché séparément ; en paiement direct, aucune couverture n’est déduite.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div>
@@ -349,11 +349,11 @@ function calculate(){
  var unknownCoverage=coverageUnknown||implantUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
  var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
- $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste à charge de l’acte seul, hors implants':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
- $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
- $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
- $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
+ $('totalHeadline').textContent=grid?(unknownCoverage?'À confirmer':fmt(patientAll)):'— DH';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste à charge estimé du patient, implants « En sus » sélectionnés inclus':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
+ $('payerAmount').textContent=grid?(unknownCoverage?'À confirmer':fmt(coverAll)):'—';
+ $('patientAmount').textContent=grid?(typeof patientAll==='string'?patientAll:fmt(patientAll)):'—';
+ $('todayAmount').textContent=grid?(typeof todayAll==='string'?todayAll:fmt(todayAll)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('summaryAct').textContent=mainAct?mainAct.code+' · '+mainAct.title:'À sélectionner';
  $('summaryBasis').textContent=grid?grid.label:'—';
@@ -426,6 +426,10 @@ function summary(){
   'Part payeur simulée — acte seul, hors implants : '+amount(lastCalc.coverage),
   'Reste à payer par le patient — acte seul, hors implants : '+amount(lastCalc.patient),
   'À avancer aujourd’hui — acte seul, hors implants : '+amount(lastCalc.today),
+  'Coût de référence acte + implants « En sus » avant couverture : '+fmt(lastCalc.totalAll),
+  'Part payeur estimée — acte + implants « En sus » : '+amount(lastCalc.coverageAll),
+  'Reste final à la charge du patient — acte + implants « En sus » : '+amount(lastCalc.patientAll),
+  'À payer aujourd’hui — acte + implants « En sus » : '+amount(lastCalc.todayAll),
   'Honoraires bruts théoriques du chirurgien : '+fmt(lastCalc.surgeon),
   (lastCalc.surgeonStatus==='public'?'Net individuel du chirurgien public : non calculable à partir de la NGAP (rémunération statutaire/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
   (lastCalc.surgeonStatus==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur':'Net estimé du chirurgien libéral (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
