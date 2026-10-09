@@ -41,6 +41,7 @@ jobs:
         run: |
           mkdir -p site/simulateur-honoraires
           cp acts.json site/acts.json
+          cp orthopedie-actes.json site/orthopedie-actes.json
           cp index.html site/index.html
           cp manifest.webmanifest site/manifest.webmanifest
           cp sw.js site/sw.js
