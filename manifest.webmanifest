@@ -1,6 +1,6 @@
 {
-  "name": "Fiche préopératoire NGAP Maroc",
-  "short_name": "Fiche préop",
+  "name": "Estimateur de coûts orthopédiques Maroc",
+  "short_name": "Estimateur ortho",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
