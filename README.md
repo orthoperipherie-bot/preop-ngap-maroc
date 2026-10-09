@@ -62,3 +62,24 @@ Sources publiques consultées :
 Les coefficients de comparaison de secteur (clinique privée = 100 %, non lucratif = 80 %, public = 45 %) sont des hypothèses internes de simulation pour comparer des scénarios, **pas des tarifs officiels ni des moyennes nationales vérifiées**. Dans le secteur public, le budget économique calculé n’est pas forcément la facture réglée par le patient. La fourchette est plus fiable pour les catégories disposant de prix publiés ; les autres profils restent à forte incertitude.
 
 La base de remboursement/TNR est calculée par défaut comme **75 % du budget modélisé** uniquement pour permettre une simulation d’assurance sans saisie initiale. Ce n’est pas la TNR officielle propre à l’acte. Les taux CNOPS sont préproposés à titre de référence générale ; les valeurs CNSS sont des hypothèses à confirmer et les taux FAR/assurance/mutuelle sont illustratifs. Pour engager un patient ou facturer, comparer le résultat avec le devis détaillé, le tarif conventionnel de l’établissement et l’accord officiel du payeur.
+
+
+## Nouveau simulateur d’honoraires NGAP
+
+Application mobile distincte : **https://orthoperipherie-bot.github.io/preop-ngap-maroc/simulateur-honoraires/**
+
+- Recherche d’une intervention par libellé ou code ; coefficient principal prérempli depuis le catalogue NGAP.
+- Ajout de plusieurs gestes associés avec code et coefficient importés automatiquement.
+- Calcul live des honoraires chirurgicaux et anesthésiques au moyen des coefficients NGAP et de la valeur K/KC.
+- Estimation d’un tarif global à partir des tranches de la grille forfaitaire de chirurgie publiée dans l’arrêté n°1961-06, puis ventilation du résiduel entre bloc et établissement.
+- Simulation Payant / CNSS / CNOPS / FAR / assurance privée et Direct / PEC / Remboursement.
+
+### Hypothèses du simulateur
+
+La grille forfaitaire de chirurgie consultée provient de l’arrêté n°1961-06 publié en 2006 ; elle constitue une référence publiée à vérifier au regard des conventions et TNR effectivement appliquées en pratique. Pour les coefficients inférieurs à K30, qui ne figurent pas dans cette grille, le total est une estimation technique et non un forfait réglementaire.
+
+Le coefficient d’anesthésie lorsqu’il est indiqué dans la ligne NGAP est utilisé tel quel, multiplié par la même pondération appliquée à l’acte associé. En l’absence de coefficient anesthésique, le simulateur estime ce coefficient à 50 % du coefficient chirurgical correspondant ; cette approximation est signalée. Le partage du reliquat entre bloc opératoire (20 % par défaut, modifiable) et part clinique (solde) est une hypothèse de ventilation, car la grille consultée indique les éléments inclus dans le forfait mais ne publie pas une décomposition chiffrée bloc/clinique.
+
+Taux de couverture initialement suggérés pour faciliter le calcul : Payant 0 %, CNOPS 90 %, CNSS 70 %, FAR 90 %, assurance privée 80 %. Seul le repère CNOPS de 90 % en chirurgie privée s’appuie sur les indications publiées par la CNOPS ; les autres taux sont des hypothèses de simulation, modifiables. Pour une PEC ou un remboursement réels, il faut remplacer ces hypothèses par les droits, la TNR et la décision du payeur.
+
+Sources : NGAP marocaine, arrêté n°177-06 : https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf ; grille forfaitaire, arrêté n°1961-06 : https://www.sante.gov.ma/Reglementation/ASSURANCEMALADIE/1961-06.pdf ; CNOPS — hospitalisation et chirurgie : https://www.cnops.org.ma/fr/hospitalisation-et-chirurgie.
