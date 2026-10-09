@@ -330,7 +330,7 @@ function calculate(){
  var clinicKnown=!!grid&&careSetting==='hospitalisation'&&grid.global!==false&&rawClinic>=0;
  var clinic=clinicKnown?rawClinic:null;
  var payer=$('payer').value,mode=$('paymentType').value,rate=parseNum($('coverageRate').value);
- var eligible=payer!=='payant'&&mode!=='direct',coverageUnknown=eligible&&rate===null;
+ var eligible=payer!=='payant',coverageUnknown=eligible&&rate===null;
  if(rate!==null)rate=Math.max(0,Math.min(100,rate))/100;
  // Première page : calcul du patient pour l'acte seul. Aucun coût d'implant n'est affiché ici.
  var cover=eligible&&!coverageUnknown?total*rate:0;
