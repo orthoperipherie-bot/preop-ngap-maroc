@@ -8,16 +8,16 @@ Application interactive mobile pour estimer le budget d’une intervention ortho
 - Trois types d’établissement : hôpital public/ESH, clinique privée à but lucratif, clinique à but non lucratif/œuvre sociale.
 - Trois modes de soins : hospitalisation avec nuitées, ambulatoire sans nuitée, hôpital de jour.
 - Deux modes de tarification : détail par poste ou forfait global confirmé.
-- Devis détaillé : honoraires chirurgien, estimation des honoraires d’anesthésie à partir du coefficient associé lorsqu’il est disponible et à vérifier, bloc, pharmacie/consommables, nuitées, implants/dispositifs, frais d’établissement et autres frais.
+- Estimation automatique poste par poste : honoraires chirurgien, anesthésiste, bloc, pharmacie/consommables, nuitées, implants/dispositifs et frais d’établissement sont préremplis à partir de la catégorie d’intervention. Une fourchette basse/haute et un scénario central sont affichés. Les montants restent modifiables si un devis local est disponible.
 - Payeur : CNOPS, CNSS, FAR/régime militaire, assurance privée, patient direct ou autre organisme ; mode de règlement en tiers payant, avance puis remboursement, ou paiement intégral.
 - Calcul indicatif de la part payeur, du reste patient et de la somme à régler le jour des soins ; historique local, sauvegarde JSON, export TXT et impression/PDF.
 - Modèle local de tarifs d’établissement, pour éviter de ressaisir les mêmes frais.
 
 ## Règles de calcul et limites
 
-Le montant indicatif des honoraires chirurgicaux est calculé par **coefficient NGAP × valeur K/KC saisie** (valeur initiale 22,50 DH, modifiable). Si le libellé extrait du PDF est signalé « à vérifier », le calcul automatique des honoraires est désactivé pour cet acte. Le second coefficient n’est considéré que comme une estimation possible d’anesthésie et doit être vérifié acte par acte.
+Les honoraires et frais sont estimés automatiquement à partir d'un profil d'intervention et ventilés entre les postes du devis. Le coefficient NGAP et la valeur K/KC restent affichés comme référence, mais ne sont pas assimilés à un devis réel de clinique. La ventilation par poste est un modèle de budget, pas un barème réglementaire.
 
-La NGAP ne suffit pas à déterminer le prix de la nuitée, les tarifs de bloc, les prix d’implants, les frais de pharmacie, la convention propre à une clinique ou le forfait global d’un établissement : ces montants doivent être saisis depuis un devis ou un barème confirmé. Aucun forfait hospitalier n’est inféré automatiquement à partir du seul coefficient. En mode forfait global, les postes inclus ne sont pas ajoutés une seconde fois ; seuls les implants et autres frais explicitement hors forfait sont ajoutés.
+Les prix réels de bloc, de pharmacie, de nuitée, d’implants et d’établissement ne sont pas fournis par une grille nationale publique exhaustive comparable pour chaque acte et chaque établissement. L’application utilise donc des fourchettes de marché publiées pour certaines interventions (PTH, PTG, ligamentoplastie, arthroscopie) et des modèles indicatifs par catégorie pour les autres. Les parts par poste sont une décomposition estimative, pas des honoraires contractuels. En mode forfait global, les postes réputés inclus ne sont pas ajoutés une seconde fois ; ce mode ne doit être utilisé que si un forfait confirmé est disponible.
 
 Taux préproposés, **à vérifier avant toute décision** :
 - **CNOPS** : valeurs indicatives publiées de 80 % de la TNR pour certains actes ambulatoires, 90 % pour l’hospitalisation/chirurgie dans le secteur privé et 100 % dans le secteur public/militaire. Les forfaits de dispositifs médicaux/implants, exclusions, plafonds et conditions d’accord peuvent modifier le calcul.
@@ -38,3 +38,27 @@ Le catalogue texte contient des extractions automatiques du PDF ; certains libel
 ## Utilisation sur iPhone
 
 Ouvre le site publié dans Safari, puis **Partager → Sur l’écran d’accueil**. Le service worker tente de mettre en cache les fichiers de l’application après le premier chargement ; conserve une connexion disponible pour la première ouverture et exporte périodiquement les fiches que tu souhaites garder.
+
+
+## Modèle d’estimation automatique — version octobre 2026
+
+Le moteur classe l’acte NGAP sélectionné par code et libellé, puis applique un profil de prix et une ventilation poste par poste pour les catégories suivantes : prothèse totale de hanche, prothèse totale de genou, ligamentoplastie du LCA/LCP, suture méniscale, arthroscopie/gestes méniscaux, coiffe des rotateurs, canal carpien/chirurgie mineure de la main, ablation de matériel, chirurgie du rachis, fracture du fémur proximal, autres ostéosynthèses, chirurgie du pied/de la main et catégorie orthopédique générique.
+
+Repères de marché intégrés :
+- PTH : 30 000 à 110 000 DH (publication marocaine datée de septembre 2026).
+- PTG : 45 000 à 80 000 DH (publication marocaine datée de septembre 2026).
+- Ligamentoplastie du croisé : 15 000 à 30 000 DH.
+- Arthroscopie/ménisque : 6 000 à 14 000 DH.
+- La suture méniscale dispose aussi d’un repère publié en euros par un centre spécialisé, destiné à sa propre offre, pas à l’ensemble du marché.
+
+Sources publiques consultées :
+- CNOPS, règles de couverture et dispositifs médicaux : https://www.cnops.org.ma/fr/Reglementation_page
+- Guide de prix PTH (septembre 2026) : https://journalsantemaroc.com/prix-soins/chirurgie/prix-prothese-hanche-maroc-2026.html
+- Guide de prix chirurgie du genou (septembre 2026) : https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html
+- Centre orthopédique — tarifs indicatifs et prestations incluses : https://www.moroccoorthopaediccenter.com/tarifs
+
+### Limites importantes
+
+Les coefficients de comparaison de secteur (clinique privée = 100 %, non lucratif = 80 %, public = 45 %) sont des hypothèses internes de simulation pour comparer des scénarios, **pas des tarifs officiels ni des moyennes nationales vérifiées**. Dans le secteur public, le budget économique calculé n’est pas forcément la facture réglée par le patient. La fourchette est plus fiable pour les catégories disposant de prix publiés ; les autres profils restent à forte incertitude.
+
+La base de remboursement/TNR est calculée par défaut comme **75 % du budget modélisé** uniquement pour permettre une simulation d’assurance sans saisie initiale. Ce n’est pas la TNR officielle propre à l’acte. Les taux CNOPS sont préproposés à titre de référence générale ; les valeurs CNSS sont des hypothèses à confirmer et les taux FAR/assurance/mutuelle sont illustratifs. Pour engager un patient ou facturer, comparer le résultat avec le devis détaillé, le tarif conventionnel de l’établissement et l’accord officiel du payeur.
