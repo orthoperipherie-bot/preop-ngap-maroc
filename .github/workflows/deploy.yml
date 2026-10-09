@@ -8,7 +8,7 @@ permissions:
   pages: write
   id-token: write
 concurrency:
-  group: pages-fast
+  group: pages-data
   cancel-in-progress: true
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - name: Download NGAP source PDF
         run: |
           mkdir -p site
-          curl -fL --connect-timeout 10 --max-time 25 'https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf' -o /tmp/ngap.pdf || curl -fL --connect-timeout 10 --max-time 45 'https://data.gov.ma/data/fr/dataset/b8425cb6-828f-4fa9-9f02-cdd372d18f65/resource/f66d23ac-012f-4439-ac99-4beb129ce640/download/ngap-cnops-2014.pdf' -o /tmp/ngap.pdf
+          curl -fL --connect-timeout 8 --max-time 20 'https://data.gov.ma/data/fr/dataset/b8425cb6-828f-4fa9-9f02-cdd372d18f65/resource/f66d23ac-012f-4439-ac99-4beb129ce640/download/ngap-cnops-2014.pdf' -o /tmp/ngap.pdf || curl -fL --connect-timeout 8 --max-time 20 'https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf' -o /tmp/ngap.pdf
           test -s /tmp/ngap.pdf
           pdftotext -layout /tmp/ngap.pdf ngap_raw.txt
       - name: Build act catalogue
