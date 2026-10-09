@@ -5,7 +5,7 @@
 </style></head><body><main class="app">
 <div class="eyebrow">Clinique privée · Hôpital public · Maroc</div><h1>Fiche préopératoire</h1><p class="muted">Orthopédie · Traumatologie · Chirurgie du sport</p><p id="catalogue-status" class="muted">Chargement du catalogue NGAP…</p>
 <nav class="tabs"><button class="btn tab active" data-tab="fiche">Fiche & devis</button><button class="btn tab" data-tab="repartition">Répartition</button><button class="btn tab" data-tab="historique">Historique</button></nav>
-<section id="tab-fiche"><div class="metrics"><div class="metric"><small>Total estimé</small><strong id="grand">0 DH</strong></div><div class="metric"><small>Forfait public indicatif</small><strong id="publicForfaitMetric">—</strong></div><div class="metric"><small>Honoraires chirurgien simulés</small><strong id="surgeonTotal">—</strong></div><div class="metric"><small>Implants / consommables</small><strong id="implantsTotal">0 DH</strong></div><div class="metric"><small>Hospitalisation</small><strong id="stayTotal">0 DH</strong></div></div>
+<section id="tab-fiche"><div class="metrics"><div class="metric"><small>Total estimé</small><strong id="grand">0 DH</strong></div><div class="metric"><small>Forfait global saisi</small><strong id="publicForfaitMetric">—</strong></div><div class="metric"><small>Honoraires chirurgien simulés</small><strong id="surgeonTotal">—</strong></div><div class="metric"><small>Implants / consommables</small><strong id="implantsTotal">0 DH</strong></div><div class="metric"><small>Hospitalisation</small><strong id="stayTotal">0 DH</strong></div></div>
 <div class="panel"><h2>1 · Patient et intervention</h2><div class="grid"><div class="field"><label>Type d’établissement</label><select id="facility"><option value="private">Clinique privée à but lucratif</option><option value="public">Hôpital public / ESH / structure sanitaire de l’État</option><option value="nonprofit">Clinique à but non lucratif / œuvre sociale</option></select></div><div class="field"><label>Mode de soins</label><select id="careMode"><option value="inpatient">Hospitalisation avec nuitée(s)</option><option value="ambulatory">Ambulatoire — sans nuitée</option><option value="day">Hôpital de jour — sans nuitée</option></select></div><div class="field"><label>Mode de tarification</label><select id="billingMode"><option value="detail">Détail des postes</option><option value="package">Forfait global confirmé</option></select></div><div class="field"><label>Référence dossier (facultatif)</label><input id="patient" placeholder="Référence interne, éviter les données sensibles"></div><div class="field"><label>Date prévue</label><input id="date" type="date"></div><div class="field"><label>Établissement / clinique</label><input id="clinic" placeholder="Nom de l’établissement"></div><div class="field"><label>Chirurgien</label><input id="surgeon" placeholder="Nom du chirurgien"></div><div class="field"><label>Côté</label><select id="side"><option>À préciser</option><option>Droit</option><option>Gauche</option><option>Bilatéral</option><option>Sans objet</option></select></div><div class="field"><label>Discipline</label><select id="discipline"><option>Orthopédie</option><option>Traumatologie</option><option>Chirurgie du sport</option><option>Autre</option></select></div></div>
 <div class="field"><label>Recherche NGAP — suggestions dès la première lettre</label><input id="search" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, fracture, A143…"><div id="suggestions"></div></div><div class="row"><span>Acte sélectionné</span><strong id="actName">Aucun</strong></div><div class="row"><span>Code NGAP</span><strong id="actCode">—</strong></div><div class="row"><span>Valeur(s) relevée(s) dans le PDF</span><strong id="actCoef">À sélectionner</strong></div><div id="actNote" class="notice">Vérifie le libellé exact, la lettre-clé et les règles de cumul dans le PDF original avant facturation.</div><div id="tariffNote" class="auto-note">Choisis un acte et un type d’établissement : les valeurs de référence disponibles seront proposées automatiquement.</div><div class="field public-only"><label>Forfait global de l’établissement (DH, mode forfait uniquement)</label><input id="publicForfaitManual" type="number" min="0" step="1" placeholder="Saisir uniquement un forfait confirmé"><p class="muted">En mode forfait, le montant doit couvrir les postes inclus dans le forfait. Les implants et frais explicitement hors forfait restent ajoutés séparément.</p></div>
 <div class="grid"><div class="field private-only"><label>Valeur de K/KC (DH, valeur de référence modifiable)</label><input id="k" type="number" min="0" step=".5" placeholder="Valeur convenue"></div><div class="field private-only"><label>Honoraires chirurgien manuels (DH, optionnel)</label><input id="manual" type="number" min="0" placeholder="Remplace K × coefficient"></div></div><div class="field"><label>Gestes associés / observations</label><textarea id="details" rows="2"></textarea></div></div>
@@ -111,6 +111,7 @@ function setFacilityUI(force){
  if(force&&!tnrEdited)$('tnr').value='';
  if(val('careMode')!=='inpatient'&&!daysEdited)$('days').value='0';
  else if(val('careMode')==='inpatient'&&!daysEdited)$('days').value=String(selected?suggestedDays(selected):1);
+ if(!pub)applyPrivateProfile();
  if(force&&!rateEdited)updateCoverageDefaults(true);else updateCoverageDefaults(false);
  updateTariffNote();calc();
 }
@@ -231,12 +232,14 @@ function download(name,text,type){var a=document.createElement('a'),url=URL.crea
 function save(){history.unshift({savedAt:new Date().toISOString(),data:data()});history=history.slice(0,100);try{localStorage.setItem('preop-ngap-history',JSON.stringify(history));flash('Fiche enregistrée sur cet appareil.')}catch(e){flash('Stockage indisponible : exporte le résumé.')}renderHistory()}
 function renderHistory(){$('history').innerHTML='';if(!history.length){$('history').textContent='Aucune fiche enregistrée.';return}history.forEach(function(h,i){var d=h.data||{},r=document.createElement('div');r.className='history-item';var title=document.createElement('strong');title.textContent=(d.act&&d.act.code||'Sans code')+' · '+(d.details||(d.act&&d.act.title)||'Intervention');var meta=document.createElement('p');meta.className='muted';meta.textContent=(d.date||'Sans date')+' · '+(d.total||'');var open=document.createElement('button');open.className='btn';open.textContent='Ouvrir';open.onclick=function(){load(d)};var del=document.createElement('button');del.className='btn';del.textContent='Supprimer';del.onclick=function(){history.splice(i,1);localStorage.setItem('preop-ngap-history',JSON.stringify(history));renderHistory()};r.append(title,meta,open,del);$('history').appendChild(r)})}
 function load(d){
- ['patient','date','clinic','surgeon','facility','side','discipline','details','k','manual','publicForfaitManual','days','daily','clinicFee','bloc','anesth','pharmacy','other','tnr','rate','notes','pool'].forEach(function(id){if($(id))$(id).value=d[id]==null?'':d[id]});
+ ['patient','date','clinic','surgeon','facility','careMode','billingMode','payer','paymentMode','ald','side','discipline','details','k','manual','publicForfaitManual','days','daily','clinicFee','bloc','anesth','pharmacy','other','tnr','rate','notes','pool'].forEach(function(id){if($(id))$(id).value=d[id]==null?'':d[id]});
  selected=d.act||null;kEdited=val('k')!=='';daysEdited=val('days')!=='';publicForfaitEdited=val('publicForfaitManual')!=='';tnrEdited=val('tnr')!=='';rateEdited=val('rate')!=='';lastAutoDetails=selected&&d.details===selected.title?selected.title:'';
  costTouched={};costIds.forEach(function(id){costTouched[id]=false});
  lines=(d.lines||[]).map(function(x,i){return {id:i+1,name:x.name,qty:x.qty,price:x.price}});if(!lines.length)lines=[{id:1,name:'',qty:1,price:''}];autoImplantName='';
  (d.shares||[]).forEach(function(x){if($('pct-'+x.id))$('pct-'+x.id).value=x.pct});
- setFacilityUI(false);if(selected)choose(selected,true);else{ $('actName').textContent='Aucun';$('actCode').textContent='—';$('actCoef').textContent='À sélectionner';renderLines();calc()}
+ document.body.classList.toggle('facility-public',facilityPublic());document.body.classList.toggle('package-mode',val('billingMode')==='package');
+ if(selected)choose(selected,true);else{$('actName').textContent='Aucun';$('actCode').textContent='—';$('actCoef').textContent='À sélectionner';renderLines();calc()}
+ updateTariffNote();updateCoverageDefaults(false);calc();
  document.querySelector('[data-tab="fiche"]').click()
 }
 $('search').addEventListener('input',search);
@@ -249,11 +252,61 @@ $('backup').onclick=function(){download('sauvegarde-preop.json',JSON.stringify({
 $('restore').onchange=async function(e){try{var d=JSON.parse(await e.target.files[0].text());history=Array.isArray(d)?d:(d.history||[]);localStorage.setItem('preop-ngap-history',JSON.stringify(history));renderHistory()}catch(err){alert('Fichier JSON invalide')}};
 $('clear').onclick=function(){if(confirm('Effacer tout l’historique local ?')){history=[];localStorage.removeItem('preop-ngap-history');renderHistory()}};
 document.querySelectorAll('[data-tab]').forEach(function(b){b.onclick=function(){document.querySelectorAll('[data-tab]').forEach(function(x){x.classList.toggle('active',x===b)});['fiche','repartition','historique'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab)});if(b.dataset.tab==='historique')renderHistory()}});
-$('facility').addEventListener('change',function(){kEdited=false;publicForfaitEdited=false;if(facilityPublic()){rateEdited=false;tnrEdited=false;$('manual').value='';if(!costTouched.other)$('other').value='0';}else{if(!rateEdited)$('rate').value='';if(!tnrEdited)$('tnr').value='';}setFacilityUI(true);if(selected){if(!publicForfaitEdited){var p=facilityPublic()?publicRate(selected.coef):null;$('publicForfaitManual').value=p===null?'':String(p)}if(facilityPublic()&&!tnrEdited)$('tnr').value=publicRate(selected.coef)==null?'':String(publicRate(selected.coef));updateTariffNote();calc()}});
-$('publicForfaitManual').addEventListener('input',function(){publicForfaitEdited=true;if(facilityPublic()&&!tnrEdited)$('tnr').value=val('publicForfaitManual');calc()});
-$('saveProfile').onclick=function(){var profile={},complete=true;costIds.forEach(function(id){if(num(id)===null)complete=false;else profile[id]=num(id)});if(!complete){flash('Pour mémoriser le modèle, renseigne les six valeurs habituelles (utilise 0 lorsqu’un poste est sans frais).');return}privateProfile=profile;try{localStorage.setItem('preop-ngap-private-profile',JSON.stringify(privateProfile));costTouched={};flash('Modèle de tarifs enregistré sur cet appareil. Les prochaines fiches privées le réutiliseront.')}catch(e){flash('Impossible de sauvegarder le modèle sur cet appareil.')}};
-$('clearProfile').onclick=function(){privateProfile={};localStorage.removeItem('preop-ngap-private-profile');costTouched={};flash('Modèle tarifaire effacé.');};
-document.querySelectorAll('input,textarea').forEach(function(el){if(['search','restore','publicForfaitManual'].indexOf(el.id)>=0)return;el.addEventListener('input',function(){if(el.id==='k')kEdited=true;if(el.id==='days')daysEdited=true;if(el.id==='tnr')tnrEdited=true;if(el.id==='rate')rateEdited=true;if(costIds.indexOf(el.id)>=0)costTouched[el.id]=true;calc()})});
+$('facility').addEventListener('change',function(){
+ kEdited=false;publicForfaitEdited=false;tnrEdited=false;rateEdited=false;
+ $('publicForfaitManual').value='';$('tnr').value='';
+ setFacilityUI(true);
+});
+$('careMode').addEventListener('change',function(){
+ daysEdited=false;tnrEdited=false;rateEdited=false;
+ if(val('careMode')!=='inpatient')$('days').value='0';
+ else $('days').value=String(selected?suggestedDays(selected):1);
+ $('tnr').value='';
+ updateCoverageDefaults(true);updateTariffNote();calc();
+});
+$('billingMode').addEventListener('change',function(){
+ document.body.classList.toggle('package-mode',val('billingMode')==='package');
+ if(val('billingMode')==='package'&&!publicForfaitEdited)$('publicForfaitManual').value='';
+ updateTariffNote();calc();
+});
+$('payer').addEventListener('change',function(){
+ rateEdited=false;tnrEdited=false;
+ $('tnr').value=val('payer')==='self'?'0':'';
+ $('rate').value='';
+ if(val('payer')==='self')$('paymentMode').value='direct';
+ else if(val('paymentMode')==='direct')$('paymentMode').value='advance';
+ updateCoverageDefaults(true);calc();
+});
+$('ald').addEventListener('change',function(){rateEdited=false;updateCoverageDefaults(true);calc()});
+$('paymentMode').addEventListener('change',function(){
+ if(val('paymentMode')==='direct'){
+  $('payer').value='self';rateEdited=false;tnrEdited=false;$('rate').value='0';$('tnr').value='0';
+ }else if(val('payer')==='self'){
+  $('payer').value='cnops';rateEdited=false;tnrEdited=false;$('tnr').value='';
+  updateCoverageDefaults(true);
+ }
+ calc();
+});
+$('publicForfaitManual').addEventListener('input',function(){
+ publicForfaitEdited=true;
+ if(val('billingMode')==='package'&&!tnrEdited&&val('payer')!=='self')$('tnr').value=val('publicForfaitManual');
+ calc()
+});
+$('saveProfile').onclick=function(){
+ var profile={},complete=true;costIds.forEach(function(id){if(num(id)===null)complete=false;else profile[id]=num(id)});
+ if(!complete){flash('Pour mémoriser le modèle, renseigne les six tarifs habituels (saisis 0 si un poste est sans frais).');return}
+ privateProfile=profile;try{localStorage.setItem('preop-ngap-private-profile',JSON.stringify(privateProfile));costTouched={};flash('Modèle de tarifs enregistré sur cet appareil.')}catch(e){flash('Impossible de sauvegarder le modèle sur cet appareil.')}
+};
+$('clearProfile').onclick=function(){privateProfile={};localStorage.removeItem('preop-ngap-private-profile');costTouched={};flash('Modèle tarifaire effacé.')};
+document.querySelectorAll('input,textarea').forEach(function(el){
+ if(['search','restore','publicForfaitManual'].indexOf(el.id)>=0)return;
+ el.addEventListener('input',function(){
+  if(el.id==='k')kEdited=true;if(el.id==='days')daysEdited=true;if(el.id==='tnr')tnrEdited=true;if(el.id==='rate')rateEdited=true;
+  if(costIds.indexOf(el.id)>=0)costTouched[el.id]=true;
+  calc();
+ })
+});
+addLine();setFacilityUI(true);
 addLine();setFacilityUI(true);
 fetch('./acts.json').then(function(r){if(!r.ok)throw Error('catalogue');return r.json()}).then(function(d){if(!Array.isArray(d))throw Error('format');acts=d;$('catalogue-status').textContent='Catalogue chargé : '+acts.length.toLocaleString('fr-FR')+' références. Recherche instantanée.';search()}).catch(function(){$('catalogue-status').textContent='Catalogue non chargé. Recharge la page ; si le problème persiste, le déploiement du catalogue doit être vérifié.'});
 renderHistory();if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
