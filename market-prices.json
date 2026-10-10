@@ -38,19 +38,19 @@
       "marketMin": 45000,
       "marketMax": 100000,
       "sector": "Privé — prix global annoncé",
-      "scope": "Fourchette recoupée entre plusieurs pages marocaines; configuration et inclusion de l’implant à vérifier.",
+      "scope": "Fourchette large consolidée de tarifs globaux annoncés en clinique privée ; une source mentionne des forfaits inférieurs avec inclusions variables. Vérifier implant, séjour, médicaments et rééducation au devis.",
       "sources": [
+        {
+          "label": "Journal Santé Maroc — PTG 45 000–80 000 DH (septembre 2026)",
+          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
+        },
         {
           "label": "Sahha — prothèse de genou, mise à jour 21/07/2026 (55 000–100 000 DH)",
           "url": "https://sahha.ma/actes/prothese-genou"
         },
         {
-          "label": "Journal Santé Maroc — prix de l’opération du genou 2026 (45 000–80 000 DH)",
-          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
-        },
-        {
-          "label": "Morocco Orthopaedic Center — tarif à partir de 6 500 €",
-          "url": "https://www.moroccoorthopaediccenter.com/tarifs"
+          "label": "Sahha — forfait complet PTG et prix implant (article 2026)",
+          "url": "https://sahha.ma/articles/hospitalisation-prix-cliniques-privees-maroc-2026-cesarienne-appendicite-vesicule"
         }
       ]
     },
@@ -60,18 +60,22 @@
       "codes": [
         "C408"
       ],
-      "marketMin": 8000,
+      "marketMin": 6000,
       "marketMax": 25000,
       "sector": "Privé — prix global annoncé",
-      "scope": "Repère spécifique au genou ; la complexité et les gestes associés changent le prix.",
+      "scope": "Fourchette volontairement large : des publications marocaines 2026 donnent 6 000–14 000 DH pour certaines arthroscopies et jusqu’à 25 000 DH selon le geste, la clinique et les inclusions. Devis requis.",
       "sources": [
+        {
+          "label": "Journal Santé Maroc — prix du genou 2026 (6 000–14 000 DH arthroscopie, ménisque)",
+          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
+        },
         {
           "label": "Sahha — arthroscopie du genou à Casablanca, mise à jour 21/07/2026 (8 000–25 000 DH)",
           "url": "https://sahha.ma/actes/arthroscopie-genou/casablanca"
         },
         {
-          "label": "Traumatologie.ma — fourchettes arthroscopie au Maroc",
-          "url": "https://traumatologie.ma/prix-arthroscopie-genou-au-maroc/"
+          "label": "AlloMédecin — tarifs indicatifs à Casablanca 2026 (12 000–25 000 DH)",
+          "url": "https://allomedecin.com/traumatologue-maarif.html"
         }
       ]
     },
@@ -81,18 +85,22 @@
       "codes": [
         "N111"
       ],
-      "marketMin": 12000,
+      "marketMin": 7000,
       "marketMax": 18000,
       "sector": "Privé — prix global annoncé",
-      "scope": "Repère indicatif publié pour méniscectomie partielle; vérifier si l’hospitalisation et le matériel sont compris.",
+      "scope": "Les fourchettes publiées varient selon méniscectomie partielle versus réparation/suture méniscale et inclusions du forfait. Comparer le geste exact, notamment si des ancillaires all-inside sont nécessaires.",
       "sources": [
+        {
+          "label": "Journal Santé Maroc — prix genou 2026 : méniscectomie 7 000–14 000 DH",
+          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
+        },
         {
           "label": "Traumatologie.ma — prix arthroscopie / méniscectomie au Maroc",
           "url": "https://traumatologie.ma/prix-arthroscopie-genou-au-maroc/"
         },
         {
-          "label": "Sahha — arthroscopie du genou à Casablanca, mise à jour 21/07/2026",
-          "url": "https://sahha.ma/actes/arthroscopie-genou/casablanca"
+          "label": "Morocco Orthopaedic Center — suture méniscale arthroscopique à partir de 2 800 € (geste différent d’une méniscectomie)",
+          "url": "https://www.moroccoorthopaediccenter.com/tarifs"
         }
       ]
     },
@@ -103,17 +111,21 @@
         "N109"
       ],
       "marketMin": 15000,
-      "marketMax": 30000,
+      "marketMax": 40000,
       "sector": "Privé — prix global annoncé",
-      "scope": "Fourchette de marché annoncée pour le genou; greffon, fixation, hospitalisation et rééducation inclus ou non selon le devis.",
+      "scope": "Publications marocaines 2026 affichent environ 15 000–30 000 DH pour une ligamentoplastie LCA et jusqu’à 40 000 DH pour certains forfaits complets. Vérifier si greffon, boutons/vis, bloc, séjour et rééducation sont inclus.",
       "sources": [
         {
-          "label": "Journal Santé Maroc — prix de l’opération du genou 2026",
+          "label": "Journal Santé Maroc — ligamentoplastie LCA 15 000–30 000 DH (septembre 2026)",
           "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
         },
         {
-          "label": "Traumatologie.ma — prix arthroscopie et ligamentoplastie au Maroc",
-          "url": "https://traumatologie.ma/prix-arthroscopie-genou-au-maroc/"
+          "label": "Sahha — fourchettes orthopédie au Maroc",
+          "url": "https://sahha.ma/articles/hospitalisation-prix-cliniques-privees-maroc-2026-cesarienne-appendicite-vesicule"
+        },
+        {
+          "label": "Morocco Orthopaedic Center — reconstruction LCA à partir de 4 500 €, devis complet",
+          "url": "https://www.moroccoorthopaediccenter.com/tarifs"
         }
       ]
     }
