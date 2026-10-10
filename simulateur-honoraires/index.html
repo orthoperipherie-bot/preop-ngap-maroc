@@ -14,7 +14,7 @@
 .metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:clamp(18px,4vw,25px);margin-top:4px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.row span{color:var(--muted)}.row strong{text-align:right;font-variant-numeric:tabular-nums}.notice{padding:10px;border-radius:10px;background:var(--warn);font-size:12px;margin:9px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.actions .btn{flex:1}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted)}td.num,th.num{text-align:right;white-space:nowrap}a{color:var(--accent)}@media(max-width:420px){.app{padding:11px 8px 30px}.panel{padding:10px}.line{grid-template-columns:minmax(0,1fr) 70px 29px;gap:4px}.line .remove{width:29px}.tab{padding:9px 5px;font-size:12px}}
 </style></head><body><main class="app">
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → reste à payer estimé par le patient. Les implants sont calculés séparément dans l’onglet « Implants & TNR ». Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 36 — prix réel facturé facultatif, références de marché 2026 et catalogue élargi d’implants. Les implants sont gérés exclusivement dans l’onglet « Implants & TNR ». Le montant à avancer aujourd’hui est indiqué séparément.</p>
+<p class="muted" id="buildVersion">Version 37 — recherche par diagnostic/geste international, estimation de marché par fourchette, prix fournisseur réel et remboursement des implants séparés.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
@@ -30,10 +30,10 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants sont estimés uniquement dans l’onglet « Implants & TNR ».</p></div>
-<div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste net estimé pour l’intervention et les gestes associés après couverture. Aucun implant n’est ajouté dans la « Saisie rapide » : les implants et leur éventuel reste à charge sont calculés séparément dans l’onglet « Implants & TNR ». Le montant à avancer aujourd’hui dépend du mode de paiement et est affiché séparément ci-dessous.</div></div>
-<div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
+<div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Montant principal : reste net estimé à la charge du patient après couverture, en ajoutant les implants cochés « En sus ». Le coût complet facturé et le montant à avancer aujourd’hui sont détaillés séparément. Le prix fournisseur des implants doit être saisi depuis un devis réel ; le TNR n’est pas le prix d’achat.</div></div>
+<div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher par diagnostic, geste usuel/international, abréviation ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. fracture de jambe, ECM tibia, tibial IM nail, LCA, PTH…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small><div id="mainMarketPrice" class="muted"></div></div>
-<div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><div class="field"><label for="actualBilledPrice">Prix réellement facturé pour l’acte seul (DH, facultatif)</label><input id="actualBilledPrice" type="number" min="0" step="100" placeholder="Vide = forfait AMO de référence"></div><p class="muted">Si vous disposez d’un devis réel, saisissez ici le montant facturé pour l’acte seul. Le reste patient compare ce montant à la base de couverture de référence. Les prix globaux publiés peuvent inclure implants et séjour : ne cochez pas alors ce même implant « En sus ».</p>
+<div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><div class="field"><label for="actualBilledPrice">Montant facturé pour l’intervention / forfait (DH) — prix réel ou estimation</label><input id="actualBilledPrice" type="number" min="0" step="100" placeholder="Vide = forfait NGAP/AMO de référence"></div><p class="muted"><span id="priceEntryNote">Le montant saisi sert au calcul du reste patient. Si vous utilisez une fourchette de marché ci-dessous, il s’agit d’un prix global annoncé qui peut inclure implants, anesthésie et séjour : ne recomptez pas l’implant en « En sus » s’il est déjà compris.</span></p>
 <p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
 <div class="panel"><div class="row" style="align-items:center"><h2 style="margin:0">2 · Gestes associés</h2><button class="btn primary" id="addGesture">+ Ajouter</button></div><p class="muted">Ajoutez autant de gestes que nécessaire. Code et coefficient sont repris du catalogue ; le coefficient reste modifiable.</p><div id="gestures"></div><div class="field"><label for="cumulationMode">Règle de cumul des actes (NGAP, article 9 B)</label><select id="cumulationMode"><option value="standard" selected>Règle générale — coefficient le plus élevé à 100 %, 2e à 50 %, suivants non cotés</option><option value="exception75">Exception — traumatismes récents multiples ou territoires différents : 2e à 75 %</option><option value="thirdTrauma">Traumatismes multiples récents : 2e à 75 %, 3e exceptionnel à 50 %</option></select></div><p id="cumulationNote" class="muted">La pondération est appliquée au coefficient le plus élevé, puis au deuxième acte, selon la règle choisie. Les règles particulières et suppléments sélectionnés sont signalés dans les détails.</p><div class="field"><label for="a215Osteosynthesis">Exception A215 — fracture épiphysaire associée à une luxation</label><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input id="a215Osteosynthesis" type="checkbox" style="width:auto;margin:0" disabled> La fracture comporte une ostéosynthèse : autoriser le deuxième acte à 50 % selon A215.</label><div class="field"><label for="a211Applicable">Exception A211 — luxation ancienne</label><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input id="a211Applicable" type="checkbox" style="width:auto;margin:0" disabled> La luxation concerne le coude, l’épaule, le cou-de-pied, le genou ou la hanche : appliquer la majoration de 50 %.</label><p class="muted">Ne cochez cette option que si la localisation correspond au texte NGAP. Le code A207 couvre aussi la rotule, qui n’est pas citée dans la majoration A211.</p></div></div>
 <div class="panel"><h2>3 · Payeur et paiement</h2><div class="grid">
@@ -41,7 +41,7 @@
 <div class="field"><label for="paymentType">Type de paiement</label><select id="paymentType"><option value="direct">Direct — paiement immédiat</option><option value="pec" selected>PEC — prise en charge</option><option value="remboursement">Remboursement après avance</option></select></div>
 <div class="field"><label for="coverageRate">Taux de couverture simulé (%)</label><input id="coverageRate" type="number" min="0" max="100" step="1" value="90"></div>
 <div class="field"><label>Barème sectoriel</label><div id="payerSectorSummary" class="muted">Le secteur règle la valeur K/KC et la méthode de calcul du total.</div></div></div><div id="payerNote" class="notice">CNOPS : hypothèse de 90 % de la TNR pour la chirurgie en clinique privée. Le taux réel dépend des droits, du tarif reconnu et de l’accord préalable.</div></div>
-<div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte seul</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small>Montant à payer aujourd’hui (PEC : reste patient ; direct/remboursement : avance totale de l’acte)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
+<div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte seul</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small>Montant à payer aujourd’hui (acte + implants en sus ; PEC : reste patient, direct/remboursement : avance totale)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
 </section>
 <section id="tab-implants" class="hidden">
@@ -83,7 +83,118 @@ var num=function(s){if(s===null||s===undefined||String(s).trim()==='')return 0;v
 var parseNum=function(s){if(s===null||s===undefined||String(s).trim()==='')return null;var n=Number(String(s).replace(',','.'));return Number.isFinite(n)?n:null};
 var norm=function(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()};
 function isOrtho(a){var c=a.code||'',t=norm((a.title||'')+' '+(a.terms||''));return /^[AN]\d{3}$/.test(c)||/fracture|orthoped|osteosynth|arthroscop|arthroplast|prothese|menisque|ligament|tendon|rachis|hanche|genou|coude|epaule|poignet|cheville|pied|main|tibia|femur|humerus|clavicule|cotyle|bassin|metacarp|metatarse|calcan|scaphoide|coiffe|canal carpien|hallux/.test(t)}
-function score(a,q){var n=norm(q),c=norm(a.code),title=norm(a.title),all=norm((a.title||'')+' '+(a.terms||'')+' '+a.code);if(!n)return 0;if(c===n)return 2000;if(title===n)return 1800;if((n==='pth'||n==='prothese hanche')&&['C433','N117'].indexOf(a.code)>=0)return 1900;if((n==='ptg'||n==='prothese genou')&&['C434','N127'].indexOf(a.code)>=0)return 1900;if(n==='lca'&&a.code==='N109')return 1900;if(n==='canal carpien'&&['C609','C610'].indexOf(a.code)>=0)return 1900;if(c.indexOf(n)===0)return 1600;var words=n.split(' ').filter(Boolean),hits=words.filter(function(w){return all.indexOf(w)>=0}).length;return (all.indexOf(n)>=0?450:0)+(hits/Math.max(1,words.length))*250+(hits===words.length?120:0)+(isOrtho(a)?40:0)}
+var clinicalAliases={
+A100:['fracture fermee simple sans reduction main poignet avant bras clavicule pied cheville fibula','closed fracture no reduction hand wrist forearm clavicle foot ankle'],
+A101:['fracture fermee simple sans reduction coude bras epaule genou tibia jambe','closed fracture no reduction elbow shoulder knee tibia leg'],
+A102:['fracture fermee simple sans reduction rachis hanche cuisse','closed fracture no reduction spine hip femur'],
+A103:['reduction orthopedique fracture poignet radius styloide radius','closed reduction distal radius fracture'],
+A104:['reduction orthopedique fracture radius ulna avant bras','closed reduction forearm fracture radius ulna'],
+A105:['fracture deux os avant bras reduction orthopedique radius ulna','both bone forearm fracture'],
+A109:['fracture avant pied metatarsien reduction orthopedique','forefoot metatarsal fracture'],
+A110:['fracture talus astragale calcanéum calcaneus','talus calcaneus fracture'],
+A111:['fracture malleole cheville reduction orthopedique','ankle fracture closed reduction'],
+A112:['fracture bimalléolaire bimalleolar ankle fracture'],
+A113:['fracture de jambe fracture jambe tibia perone fibula reduction orthopedique fracture tibia fibula leg fracture','closed reduction tibia fibula leg fracture'],
+A115:['fracture de femur reduction orthopedique','femoral fracture closed reduction'],
+A116:['fracture vertebre rachis colonne vertebrale spine fracture'],
+A118:['fracture cotyle cotyloide acetabulum pelvis reduction','acetabular fracture reduction'],
+A120:['fracture phalange metacarpien fracture doigt main ORIF finger metacarpal fracture'],
+A123:['fracture scaphoide radius osteosynthese poignet scaphoid fracture distal radius ORIF'],
+A126:['fracture radius ulna deux os avant bras both bone forearm fracture ORIF plating'],
+A128:['fracture humerus diaphyse proximale supracondylienne ORIF','humeral shaft fracture fixation'],
+A132:['fracture clavicule osteosynthese plaque clavicle fracture ORIF plate fixation'],
+A138:['fracture de jambe fracture jambe tibia perone fibula ecm jambe ecm tibia enclouage centro medullaire tibia clou tibial clou verrouille tibia osteosynthese jambe tibial shaft fracture tibia fibula fracture intramedullary tibial nail IM nail tibia intramedullary nailing tibia','ECM de jambe','ECM de tibia'],
+A139:['fracture plateau tibial schatzker fracture articulaire tibia proximal tibial plateau fracture ORIF'],
+A140:['fracture plateau tibial schatzker multifragmentaire tibial plateau fracture ORIF'],
+A141:['fracture patella rotule osteosynthese patella fracture fixation'],
+A143:['fracture diaphyse femur clou centromedullaire femoral ecm femur clou femoral femoral shaft fracture intramedullary femoral nail IM nail femur','ECM de femur'],
+A144:['fracture proximale femur intertrochanterique pertrochanteric femoral fracture fracture col femur'],
+A145:['fracture distale femur condyle femoral distal femur fracture ORIF'],
+A146:['fracture distale femur multifragmentaire distal femur fracture fixation'],
+A147:['fracture rachis vertebre colonne vertebrale spine fracture vertebral fracture'],
+A149:['fracture cotyle acetabulum fracture rebord cotyloidien acetabular fracture ORIF'],
+A151:['fracture cotyle acetabulaire bassin un pilier acetabular fracture one column'],
+A152:['fracture cotyle acetabulum deux piliers both column acetabular fracture'],
+A153:['fracture ouverte jambe tibia fracture ouverte parage traitement orthopedique open fracture debridement'],
+A154:['fracture ouverte jambe tibia fracture ouverte osteosynthese parage open fracture debridement fixation'],
+A155:['pseudarthrose cal vicieux retard consolidation delayed union nonunion malunion osteotomie'],
+A200:['luxation epaule reduction fermee coude genou cheville closed reduction dislocation'],
+A201:['luxation hanche reduction fermee hip dislocation closed reduction'],
+A206:['luxation ancienne poignet cheville carpe reduction sanglante old dislocation ORIF'],
+A207:['luxation epaule coude genou reduction sanglante dislocation surgery'],
+A208:['luxation hanche reduction sanglante hip dislocation open reduction'],
+A212:['luxation recidivante epaule instabilite epaule butee bankart remplissage shoulder instability Latarjet Bankart'],
+A213:['instabilite rotulienne luxation recidivante rotule recurrent patellar dislocation MPFL stabilization'],
+A300:['plaie superficielle suture wound superficial laceration skin suture'],
+A301:['plaie profonde suture tendineuse nerveuse wound repair'],
+A308:['corps etranger profond extraction foreign body removal'],
+C209:['suture tendon primaire flexor extensor tendon repair primary'],
+C215:['suture secondaire tendon tenolyse transplantation tendon reconstruction'],
+C217:['transplantation tendineuse tendon transfer reconstruction'],
+C305:['greffe osseuse autogreffe curetage osseux bone graft bone biopsy curettage'],
+C408:['arthroscopie genou epaule cheville poignet arthroscopy knee shoulder ankle wrist'],
+C415:['arthrolyse genou coude epaule arthrolysis knee elbow shoulder synovectomy'],
+C416:['arthrolyse hanche hip arthrolysis synovectomy'],
+C418:['lavage arthroscopique prothese infection nettoyage debridement DAIR prosthetic joint infection'],
+C419:['lavage nettoyage prothese hanche infection DAIR hip prosthetic joint infection'],
+C424:['prothese epaule surface unique shoulder hemiarthroplasty'],
+C427:['prothese totale hanche pth arthroplastie totale hanche total hip arthroplasty total hip replacement THA','PTH','total hip replacement'],
+C433:['prothese totale hanche pth arthroplastie totale hanche total hip arthroplasty THA total hip replacement'],
+C434:['prothese totale genou ptg arthroplastie totale genou total knee arthroplasty TKA total knee replacement'],
+C436:['ablation prothese hanche explantation prothese totale hanche hip prosthesis removal revision arthroplasty'],
+C437:['ablation prothese articulaire genou epaule coude prosthesis removal revision arthroplasty'],
+C438:['arthrodese epaule coude genou sacro iliaque arthrodesis shoulder elbow knee'],
+C439:['arthrodese hanche hip fusion arthrodesis'],
+C440:['arthrodese poignet wrist fusion arthrodesis'],
+C441:['arthrodese cheville tibio tarsienne ankle fusion arthrodesis'],
+C442:['arthrodese multi etage multiple joint fusion'],
+C609:['canal carpien liberation nerf median carpal tunnel release decompression median nerve CTS'],
+C610:['canal carpien liberation nerf median carpal tunnel release median nerve decompression synovectomy'],
+F118:['hernie discale lombaire discectomie microdiscectomie lumbar disc herniation discectomy microdiscectomy'],
+F126:['stenose canal cervical laminectomie cervical spinal stenosis decompression laminectomy'],
+F128:['stenose canal lombaire lumbar spinal stenosis laminectomy decompression'],
+F133:['arthrodese rachis posterieure instrumentation spinal fusion posterior instrumentation'],
+F137:['scoliose correction vertebral instrumentation spinal deformity correction'],
+F139:['spondylolisthesis PLIF TLIF fusion intersomatique lumbar fusion reduction fixation'],
+G113:['suture primitive tendon extenseur main doigt extensor tendon repair primary'],
+G116:['suture primitive tendon flechisseur main doigt flexor tendon repair primary'],
+N105:['allongement tibia tibial lengthening limb lengthening'],
+N106:['allongement femur femoral lengthening limb lengthening'],
+N107:['suture ligament du genou rupture traumatique knee ligament repair'],
+N108:['plastie ligament lateral genou collateral ligament reconstruction'],
+N109:['lca ligament croise anterieur reconstruction ligamentoplastie acl anterior cruciate ligament reconstruction ACLR pivot central knee'],
+N111:['meniscectomie arthroscopique arthroscopic meniscectomy partial meniscectomy knee meniscus tear'],
+N115:['luxation congenitale hanche reduction chirurgicale DDH developmental dysplasia hip open reduction'],
+N117:['prothese totale hanche PTH arthroplastie hanche total hip arthroplasty THA total hip replacement'],
+N127:['prothese totale genou PTG total knee arthroplasty TKA knee replacement'],
+N128:['rupture tendon achille tendon rotulien Achilles tendon rupture patellar tendon repair'],
+N202:['hallux valgus osteotomie premier rayon bunion surgery hallux valgus correction'],
+N205:['hallux valgus metatarsal osteotomy first ray bunion correction'],
+N209:['orteils en griffe hammertoe correction interphalangeal arthrodesis toes'],
+N211:['hallux rigidus arthroplastie metatarsophalangienne first MTP arthroplasty'],
+N224:['fasciite plantaire fasciotomie aponevrectomie plantaire plantar fasciotomy plantar fasciitis'],
+N225:['luxation tendons peroniers instabilite peroniers peroneal tendon dislocation subluxation'],
+N229:['rupture ligament cheville ankle ligament repair lateral ligament'],
+N230:['instabilite cheville plastie ligamentaire ankle ligament reconstruction chronic instability']
+};
+function searchWords(s){return norm(s).split(' ').filter(function(w){return w.length>1&&['de','du','des','la','le','les','un','une','sur','pour','avec','sans','et','au','aux','en','par','the','of','for','and','or','to','in'].indexOf(w)<0;});}
+function score(a,q){
+ var n=norm(q),c=norm(a.code),title=norm(a.title),alias=(clinicalAliases[a.code]||[]).map(norm),aliasText=norm(alias.join(' ')),all=norm((a.title||'')+' '+(a.terms||'')+' '+(a.aliases||[]).join(' ')+' '+a.code+' '+aliasText);
+ if(!n)return 0;
+ if(c===n)return 2200;
+ if(title===n)return 1900;
+ var aq=searchWords(q).join(' ');
+ if(alias.some(function(x){return searchWords(x).join(' ')===aq;}))return 1850;
+ if((n==='pth'||aq==='prothese hanche'||aq==='total hip arthroplasty'||aq==='total hip replacement'||aq==='tha')&&['C433','N117','C427'].indexOf(a.code)>=0)return 2000;
+ if((n==='ptg'||aq==='prothese genou'||aq==='total knee arthroplasty'||aq==='total knee replacement'||aq==='tka')&&['C434','N127'].indexOf(a.code)>=0)return 2000;
+ if((n==='lca'||aq==='acl'||aq==='acl reconstruction'||aq==='ligamentoplastie lca')&&a.code==='N109')return 2000;
+ if((aq==='ecm jambe'||aq==='ecm tibia'||aq==='intramedullary nail tibia'||aq==='tibial im nail')&&a.code==='A138')return 2050;
+ if((aq==='ecm femur'||aq==='intramedullary nail femur')&&a.code==='A143')return 2050;
+ if((aq==='canal carpien'||aq==='carpal tunnel release'||aq==='carpal tunnel')&&['C609','C610'].indexOf(a.code)>=0)return 1950;
+ if(c.indexOf(n)===0)return 1600;
+ var words=searchWords(q),hits=words.filter(function(w){return all.indexOf(w)>=0}).length,aliasHits=words.filter(function(w){return aliasText.indexOf(w)>=0}).length;
+ return (all.indexOf(n)>=0?450:0)+(hits/Math.max(1,words.length))*250+(hits===words.length?120:0)+(aliasHits/Math.max(1,words.length))*180+(isOrtho(a)?40:0);
+}
 function matches(q){var n=norm(q);if(!n)return [];return acts.map(function(a){return {a:a,s:score(a,q)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s||String(a.a.code).localeCompare(String(b.a.code))}).slice(0,9).map(function(x){return x.a})}
 function buildSuggestion(a,onPick){var b=document.createElement('button');b.type='button';b.className='match';var st=document.createElement('strong');st.textContent=a.code+' · '+a.title;var sm=document.createElement('small');sm.textContent=(a.category||'Orthopédie-traumatologie')+' · '+(a.kind==='rule'?'Règle / majoration — voir note':a.kind==='supplement'?'Supplément NGAP':a.kind==='nonop'?'Appareillage assimilé':'Coeff. '+((a.coeffs||[]).join(' / ')||'à vérifier'));b.append(st,sm);b.onclick=function(){onPick(a)};return b}
 function renderMainSuggestions(){var q=$('mainSearch').value.trim(),box=$('mainSuggestions');box.innerHTML='';if(!q)return;var list=matches(q);if(!list.length){box.textContent='Aucune correspondance. Essayez le code exact ou un terme plus court.';return}list.forEach(function(a){box.appendChild(buildSuggestion(a,selectMain))})}
@@ -91,9 +202,20 @@ function marketRefForAct(a){if(!marketReferences||!a)return null;return (marketR
 function renderMarketPrice(a){
  var root=$('mainMarketPrice');if(!root)return;root.innerHTML='';
  var p=marketRefForAct(a);
- if(!p){var msg=document.createElement('small');msg.textContent='Prix de marché 2026 : aucune fourchette publique suffisamment spécifique trouvée pour cet acte NGAP précis. Le montant reste calculé depuis le forfait conventionnel, sauf saisie d’un prix réel facturé.';root.appendChild(msg);return}
- var strong=document.createElement('strong');strong.textContent='Repère de marché privé annoncé : '+fmt(p.marketMin)+' à '+fmt(p.marketMax)+' DH — '+p.title;root.appendChild(strong);
- var note=document.createElement('small');note.textContent=p.scope+' Ce prix global ne remplace pas la cotation NGAP/TNR et peut comprendre des postes différents selon le devis.';root.appendChild(note);
+ if(!p){var msg=document.createElement('small');msg.textContent='Prix public de cette intervention non trouvé dans une source suffisamment précise. Le forfait NGAP reste une référence, pas un prix réel. Saisissez le montant du devis/facture dans « Montant facturé ».';root.appendChild(msg);return;}
+ var strong=document.createElement('strong');strong.textContent='Prix global privé annoncé publiquement : '+fmt(p.marketMin)+' à '+fmt(p.marketMax)+' — '+p.title;root.appendChild(strong);
+ var note=document.createElement('small');note.textContent=p.scope+' Fourchette indicative, pas un devis individuel ni un tarif opposable. Elle peut déjà inclure implant, bloc, anesthésie et séjour : ne pas ajouter ces postes deux fois.';root.appendChild(note);
+ var choices=document.createElement('div');choices.className='actions';
+ [{label:'Prix bas',value:p.marketMin},{label:'Prix médian',value:Math.round((p.marketMin+p.marketMax)/2)},{label:'Prix haut',value:p.marketMax}].forEach(function(item){
+  var btn=document.createElement('button');btn.type='button';btn.className='btn';btn.textContent=item.label+' · '+fmt(item.value);
+  btn.addEventListener('click',function(){
+   $('actualBilledPrice').value=String(item.value);
+   $('priceEntryNote').textContent='Prix global de marché appliqué comme estimation : '+item.label.toLowerCase()+' ('+fmt(item.value)+'). Vérifiez les inclusions du devis. Les implants cochés « En sus » sont ajoutés séparément ; décochez-les s’ils sont inclus dans le prix global.';
+   calculate();
+  });
+  choices.appendChild(btn);
+ });
+ root.appendChild(choices);
  (p.sources||[]).forEach(function(src){var line=document.createElement('small'),lnk=document.createElement('a');lnk.href=src.url;lnk.target='_blank';lnk.rel='noopener';lnk.textContent=src.label;line.appendChild(lnk);root.appendChild(line)});
 }
 function renderMarketSources(){
@@ -124,7 +246,7 @@ function renderMarketSources(){
  });
  var dis=document.createElement('p');dis.className='muted';dis.textContent='La présence d’une marque sur un site ne confirme pas le stock, l’autorisation de chaque référence ni la disponibilité à la date de l’intervention. Demander un devis récent à un distributeur agréé au Maroc.';bRoot.appendChild(dis);
 }
-function selectMain(a){mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;renderMarketPrice(a);calculate()}
+function selectMain(a){if(mainAct&&mainAct.code!==a.code){$('actualBilledPrice').value='';$('priceEntryNote').textContent='Le montant saisi sert au calcul du reste patient. Si vous utilisez une fourchette de marché, il s’agit d’un prix global annoncé pouvant inclure implants et séjour.';}mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;renderMarketPrice(a);calculate()}
 function weight(i){return i===0?.75:.5}
 function renderGestures(){var root=$('gestures');root.innerHTML='';if(!gestures.length){root.textContent='Aucun geste associé.';root.className='muted';return}root.className='';gestures.forEach(function(g,i){var line=document.createElement('div');line.className='line';var sw=document.createElement('div');sw.className='field';var lab=document.createElement('label');lab.textContent='Geste '+(i+1)+' — code et libellé';var inp=document.createElement('input');inp.type='text';inp.autocomplete='off';inp.placeholder='Rechercher code ou acte';inp.value=g.act?g.act.code+' · '+g.act.title:g.query||'';var sug=document.createElement('div');sw.append(lab,inp,sug);var cw=document.createElement('div');cw.className='field';var cl=document.createElement('label');cl.textContent='Coeff. K';var ci=document.createElement('input');ci.type='number';ci.min='0';ci.step='.1';ci.placeholder='Coeff.';ci.value=g.coef==null?'':g.coef;cw.append(cl,ci);var rm=document.createElement('button');rm.type='button';rm.className='btn danger remove';rm.textContent='×';rm.onclick=function(){gestures=gestures.filter(function(x){return x.id!==g.id});renderGestures();calculate()};line.append(sw,cw,rm);root.appendChild(line);inp.addEventListener('input',function(){g.query=inp.value;g.act=null;g.coef='';sug.innerHTML='';if(!inp.value.trim())return;matches(inp.value).forEach(function(a){sug.appendChild(buildSuggestion(a,function(act){g.act=act;g.query=act.code+' · '+act.title;g.coef=act.coef==null?'':act.coef;renderGestures();calculate()}))});calculate()});ci.addEventListener('input',function(){g.coef=parseNum(ci.value);calculate()})})}
 function roundTo10(n){return Math.round((Number(n)||0)/10)*10}
@@ -399,11 +521,11 @@ function calculate(){
  var unknownCoverage=coverageUnknown||implantUnknown||extraUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
  var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):(extraUnknown?'À confirmer':totalAll);
- $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient net (acte seul)':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
+ $('totalHeadline').textContent=grid?(unknownCoverage?'À confirmer':fmt(patientAll)):'— DH';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient net (acte + implants cochés en sus)':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
  $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
- $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
+ $('todayAmount').textContent=grid?(typeof todayAll==='string'?todayAll:fmt(todayAll)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
  $('summaryAct').textContent=mainAct?mainAct.code+' · '+mainAct.title:'À sélectionner';
  $('summaryBasis').textContent=grid?grid.label:'—';
@@ -473,11 +595,14 @@ function summary(){
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
   'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
   'Tarif de référence de l’acte avant couverture : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
-  'Prix réel/estimé facturé pour l’acte seul : '+(lastCalc.grid?fmt(lastCalc.billedTotal):'non calculable'),
+  'Prix réel/estimé facturé pour l’intervention : '+(lastCalc.grid?fmt(lastCalc.billedTotal):'non calculable'),
+  'Prix réel des implants sélectionnés : '+(lastCalc.implantPurchaseTotal===undefined?'à vérifier':amount(lastCalc.implantPurchaseTotal)),
+  'Remboursement estimé implants, calcul séparé : '+(lastCalc.implantCoverage===undefined?'à vérifier':amount(lastCalc.implantCoverage)),
+  'Reste net total patient (acte + implants en sus) : '+amount(lastCalc.patientAll),
   'Implants : non inclus dans cette saisie rapide ; consulter l’onglet « Implants & TNR ».',
   'Part du payeur estimée — acte seul : '+amount(lastCalc.coverage),
   'Reste net à la charge du patient — acte seul : '+amount(lastCalc.patient),
-  'Montant à payer aujourd’hui pour l’acte selon le mode choisi : '+amount(lastCalc.today),
+  'Montant à payer aujourd’hui pour l’acte + implants en sus selon le mode choisi : '+amount(lastCalc.todayAll),
   'Honoraires bruts théoriques du chirurgien : '+fmt(lastCalc.surgeon),
   (lastCalc.surgeonStatus==='public'?'Net individuel du chirurgien public : non calculable à partir de la NGAP (rémunération statutaire/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
   (lastCalc.surgeonStatus==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur':'Net estimé du chirurgien libéral (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
