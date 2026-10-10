@@ -327,12 +327,105 @@ function implantSearchAliases(x){
  if(t.indexOf('genou')>=0||t.indexOf('tibia')>=0)a.push('genou plateau tibial ptg condyle condylien');
  return [x.code,x.title,x.category,implantCategoryLabel(x.category),x.searchTerms||'',a.join(' ')].join(' ');
 }
-function estimateImplantPrice(x){
- var source='https://sahha.ma/articles/hospitalisation-prix-cliniques-privees-maroc-2026-cesarienne-appendicite-vesicule';
- if(x&&x.code==='MAR-HIP-001')return {center:20000,low:15000,high:25000,confidence:'Fourchette publique indicative — set complet',basis:'Fourchette publique marocaine publiée le 8 mai 2026 pour un implant PTH complet (15 000–25 000 DH). La valeur centrale de 20 000 DH est un repère de travail, pas le devis d’un fournisseur ni un prix officiel.',sourceUrl:source,unit:'set complet'};
- if(x&&x.code==='MAR-KNEE-001')return {center:17000,low:12000,high:22000,confidence:'Fourchette publique indicative — set complet',basis:'Fourchette publique marocaine publiée le 8 mai 2026 pour un implant PTG complet (12 000–22 000 DH). La valeur centrale de 17 000 DH est un repère de travail, pas le devis d’un fournisseur ni un prix officiel.',sourceUrl:source,unit:'set complet'};
- return {center:null,low:null,high:null,confidence:'Prix fournisseur requis',basis:'Aucune fourchette publique fiable et suffisamment précise n’a été vérifiée pour cette référence. Saisir le prix TTC exact sur un devis fournisseur daté ; ne pas déduire le prix d’achat du TNR.',sourceUrl:null,unit:'unité / kit selon référence'};
+{"KE120301":{"eur":252.47,"basis":"PLV public France 2025, composant glénoïdien (TTC)","sourceType":"public-benchmark"},"KE130201":{"eur":1163.66,"basis":"PLV public France 2025, implant fémoral de genou bicondylien cimenté (TTC)","sourceType":"public-benchmark"},"KE140201":{"eur":754.26,"basis":"PLV public France 2025, tige anatomique de hanche cimentée (TTC)","sourceType":"public-benchmark"},"KE140202":{"eur":882.17,"basis":"PLV public France 2025, tige anatomique de hanche non cimentée (TTC)","sourceType":"public-benchmark"},"KE310001":{"eur":300,"basis":"Marché public UE 2025 : plaque d’ostéosynthèse avec vis, repère unitaire indicatif","sourceType":"public-benchmark"},"KE310002":{"eur":350,"basis":"Repère de famille UE pour plaque d’ostéotomie de hanche","sourceType":"family-estimate"},"KE350101":{"eur":84.58,"basis":"PLV public France 2025, vis d’interférence non résorbable (TTC)","sourceType":"public-benchmark"},"KE350201":{"eur":201.8,"basis":"PLV public France 2025, vis d’interférence résorbable (TTC)","sourceType":"public-benchmark"},"KE360101":{"eur":500,"basis":"Repère de famille UE — clou centromédullaire, modèle exact non public","sourceType":"family-estimate"},"KE360201":{"eur":500,"basis":"Repère de famille UE — clou centromédullaire, modèle exact non public","sourceType":"family-estimate"},"KE360301":{"eur":650,"basis":"Repère de famille UE — clou huméral, modèle exact non public","sourceType":"family-estimate"},"ORH-ACL-FEM-BUTTON":{"eur":120,"basis":"Repère de famille — bouton cortical de fixation ligamentaire","sourceType":"family-estimate"},"ORH-ACL-INTERFERENCE-PEEK":{"eur":201.8,"basis":"PLV public France 2025, vis d’interférence résorbable/composite (TTC)","sourceType":"public-benchmark"},"ORH-ACL-TIB-BUTTON":{"eur":120,"basis":"Repère de famille — bouton cortical de fixation ligamentaire","sourceType":"family-estimate"},"ORH-ANCHOR-ROTATOR-CUFF":{"eur":110.03,"basis":"PLV public France 2025, ancrage tendineux/ligamentaire non résorbable (TTC)","sourceType":"public-benchmark"},"ORH-SHOULDER-GLENOSPHERE":{"eur":416,"basis":"Repère PLV France 2025 pour composant métallique d’épaule; glénosphère exacte à confirmer","sourceType":"family-estimate"},"ORH-SHOULDER-HUMERAL-INSERT":{"eur":151.57,"basis":"PLV public France 2025, tête/calotte polyéthylène (TTC)","sourceType":"public-benchmark"},"ORH-SHOULDER-REVERSE-BASE":{"eur":415.98,"basis":"PLV public France 2025, embase métallique glénoïdienne (TTC)","sourceType":"public-benchmark"},"ORH-THA-CUP":{"eur":532.12,"basis":"PLV public France 2025, cupule de hanche métal-back (TTC)","sourceType":"public-benchmark"},"ORH-THA-HEAD":{"eur":171.87,"basis":"PLV public France 2025, tête fémorale métallique (TTC)","sourceType":"public-benchmark"},"ORH-THA-LINER":{"eur":81.81,"basis":"PLV public France 2025, insert acétabulaire polyéthylène (TTC)","sourceType":"public-benchmark"},"ORH-TKA-INSERT":{"eur":323.65,"basis":"PLV public France 2025, insert tibial polyéthylène (TTC)","sourceType":"public-benchmark"},"ORH-TKA-PATELLA":{"eur":214.39,"basis":"PLV public France 2025, composant patellaire de genou (TTC)","sourceType":"public-benchmark"},"ORH-TKA-TIBIAL-TRAY":{"eur":675.69,"basis":"PLV public France 2025, embase tibiale de genou (TTC)","sourceType":"public-benchmark"}};
+function marketReferenceForDevice(d){
+ var t=norm(d.title||''),cat=d.category||'trauma',priced=implantImportBenchmarks[d.code];
+ if(priced)return {eur:priced.eur,basis:priced.basis,public:priced.sourceType==='public-benchmark',sourceType:priced.sourceType};
+ function ref(eur,basis){basis=basis||'Hypothèse par famille, modèle exact non publié';var isPublic=/^(PLV public France 2025|Repère public France 2025|Marché public UE 2025)/i.test(basis);return {eur:eur,basis:basis,public:isPublic,sourceType:isPublic?'public-benchmark':'family-estimate'};}
+ if(/allongement osseux|clou d allongement/.test(t))return ref(12000,'Hypothèse de famille — clou d’allongement motorisé haut de gamme');
+ if(/megaprothese|reconstruction tumorale|implant orthopedique personnalise|sur mesure|3d/.test(t))return ref(6000,'Hypothèse de famille — reconstruction tumorale/personnalisée');
+ if(/set de prothese totale primaire/.test(t)&&cat==='hip')return ref(2200,'Hypothèse de famille — set complet PTH primaire');
+ if(/set de prothese totale primaire/.test(t)&&cat==='knee')return ref(2800,'Hypothèse de famille — set complet PTG primaire');
+ if(/prothese totale inversee/.test(t))return ref(3000,'Hypothèse de famille — prothèse totale inversée d’épaule');
+ if(/prothese totale anatomique/.test(t))return ref(2300,'Hypothèse de famille — prothèse anatomique d’épaule');
+ if(/prothese totale de revision|prothese totale de reprise/.test(t))return ref(4000,'Hypothèse de famille — prothèse de révision');
+ if(/prothese contrainte|charniere rotatoire|prothese contrainte condylienne/.test(t))return ref(4200,'Hypothèse de famille — prothèse de genou contrainte/charnière');
+ if(/prothese totale de cheville/.test(t))return ref(2500,'Hypothèse de famille — prothèse de cheville');
+ if(/systeme posterieur vis pediculaires|fixation occipito cervicale/.test(t))return ref(2200,'Hypothèse de famille — système rachidien complet');
+ if(/systeme de distraction|transport osseux externe/.test(t))return ref(3000,'Hypothèse de famille — dispositif de transport osseux');
+ if(/hexapode|correction tridimensionnelle/.test(t))return ref(3500,'Hypothèse de famille — fixateur externe hexapode');
+ if(/fixateur externe circulaire|ilizarov/.test(t))return ref(1400,'Hypothèse de famille — fixateur circulaire Ilizarov');
+ if(/fixateur externe|fixator/.test(t)&&!/broche|fiche d ancrage|barre|clamp|connecteur/.test(t))return ref(850,'Hypothèse de famille — montage de fixateur externe');
+ if(/prothese totale du poignet/.test(t))return ref(1800,'Hypothèse de famille — prothèse totale du poignet');
+ if(/prothese totale humero ulnaire/.test(t))return ref(1600,'Hypothèse de famille — prothèse de coude');
+ if(/prothese de tete radiale/.test(t))return ref(650,'Hypothèse de famille — tête radiale prothétique');
+ if(/implant d articulation mcp|implant trapezo metacarpien/.test(t))return ref(400,'Hypothèse de famille — petit implant articulaire de la main');
+ if(/reparation meniscale tout en un|all inside|fixation de racine meniscale/.test(t))return ref(/racine/.test(t)?400:300,'Hypothèse de famille — réparation méniscale');
+ if(/kit de reparation percutanee du tendon d achille/.test(t))return ref(350,'Hypothèse de famille — kit de réparation tendineuse');
+ if(/ancre|anchor/.test(t))return ref(110,'Repère public France 2025 pour ancrage tendineux/ligamentaire non résorbable');
+ if(/bouton cortical|button/.test(t))return ref(120,'Hypothèse de famille — bouton cortical ligamentaire');
+ if(/vis d interference peek|vis d interference resorbable/.test(t))return ref(202,'Repère public France 2025 pour vis d’interférence résorbable');
+ if(/vis d interference/.test(t))return ref(85,'Repère public France 2025 pour vis d’interférence non résorbable');
+ if(/patch de renfort tendineux|matrice de reparation/.test(t))return ref(345,'Repère public France 2025 pour renfort tendineux (famille)');
+ if(/greffon tendineux|allogreffe/.test(t))return ref(850,'Hypothèse de famille — greffon tendineux/allogreffe');
+ if(/suture tape|sutures et fils a haute resistance/.test(t))return ref(150,'Hypothèse de famille — suture renforcée');
+ if(/cage de remplacement vertebral|corpectomie/.test(t))return ref(1200,'Hypothèse de famille — cage de remplacement vertébral');
+ if(/prothese discale/.test(t))return ref(2400,'Hypothèse de famille — prothèse discale');
+ if(/kit de cyphoplastie/.test(t))return ref(1200,'Hypothèse de famille — kit de cyphoplastie');
+ if(/vertebroplastie|ciment vertebral/.test(t))return ref(550,'Hypothèse de famille — kit de vertébroplastie');
+ if(/cage intersomatique.*titane poreux|cage intersomatique expansible/.test(t))return ref(900,'Hypothèse de famille — cage intersomatique spécialisée');
+ if(/cage intersomatique|interbody cage/.test(t))return ref(600,'Hypothèse de famille — cage intersomatique');
+ if(/vis pediculaire/.test(t))return ref(220,'Hypothèse de famille — vis pédiculaire');
+ if(/tige de connexion|spine rod/.test(t))return ref(150,'Hypothèse de famille — tige de connexion rachidienne');
+ if(/prothese unicompartimentale/.test(t))return ref(1800,'Hypothèse de famille — prothèse unicompartimentale');
+ if(/femoro patellaire/.test(t))return ref(1400,'Hypothèse de famille — prothèse fémoro-patellaire');
+ if(/glenosphere|baseplate/.test(t))return ref(416,'Repère public France 2025 pour embase glénoïdienne métallique');
+ if(/insert|polyethylene|bouton rotulien|composant patellaire/.test(t))return ref(215,'Repère public France 2025 pour insert/composant polymère');
+ if(/cupule|acetabulaire|cage|anneau de reconstruction|augment acetabulaire/.test(t))return ref(532,'Repère public France 2025 pour cupule acétabulaire');
+ if(/tige femorale longue|tige longue modulaire|modulaire a col interchangeable|tige de reconstruction/.test(t))return ref(850,'Hypothèse de famille — tige longue/modulaire');
+ if(/tige humerale/.test(t))return ref(993,'Repère public France 2025 pour tige humérale standard');
+ if(/tige femorale|tige anatomique|tige cimentee|tige non cimentee/.test(t))return ref(754,'Repère public France 2025 pour tige anatomique de hanche');
+ if(/tete femorale|couple de frottement/.test(t))return ref(172,'Repère public France 2025 pour tête fémorale métallique');
+ if(/plateau tibial|cone metaphysaire|manchon metaphysaire|tige d extension/.test(t))return ref(/cone|manchon/.test(t)?650:676,'Repère public France 2025 pour composant de genou');
+ if(/ciment osseux charge en antibiotique/.test(t))return ref(180,'Hypothèse de famille — ciment osseux avec antibiotique');
+ if(/ciment osseux|ciment pmma|bouchon de ciment|restrictor/.test(t))return ref(60,'Hypothèse de famille — ciment osseux/accessoire');
+ if(/substitut osseux|matrice osseuse|greffe osseuse|allogreffe structurale|materiau de comblement/.test(t))return ref(/structurale/.test(t)?500:300,'Hypothèse de famille — greffe/substitut osseux');
+ if(/plaque/.test(t)&&/bassin|cotyle|pelvis|acetabul/.test(t))return ref(450,'Marché public UE — plaque d’ostéosynthèse avec vis, repère de famille bassin');
+ if(/plaque/.test(t)&&/verrouillee|verrouillage|anatomique|compression|radius distal|clavicule|tibia proximal|femur distal/.test(t))return ref(350,'Marché public UE 2025 — plaque d’ostéosynthèse avec vis, repère de famille');
+ if(/plaque|lame plaque|vis plaque|clou plaque|agrafe/.test(t))return ref(300,'Marché public UE 2025 — plaque d’ostéosynthèse avec vis, repère de famille');
+ if(/clou centromedullaire|clou cervico|clou de/.test(t))return ref(500,'Hypothèse de famille — clou centromédullaire');
+ if(/clou d arthrodese|clou de fusion/.test(t))return ref(550,'Hypothèse de famille — clou d’arthrodèse');
+ if(/vis|broche|fil de cerclage|cable|fiche d ancrage|kirschner|steinmann|rondelle|pin/.test(t))return ref(/vis/.test(t)?35:25,'Repère de famille UE pour petite vis/broche/câble');
+ if(/orthese|implant de stabilisation lisfranc|syndesmose/.test(t))return ref(180,'Hypothèse de famille — fixation pied/cheville');
+ if(cat==='hip')return ref(600,'Hypothèse de famille — composant de hanche');
+ if(cat==='knee')return ref(650,'Hypothèse de famille — composant de genou');
+ if(cat==='shoulder')return ref(650,'Hypothèse de famille — composant épaule/coude');
+ if(cat==='spine')return ref(600,'Hypothèse de famille — implant rachidien');
+ if(cat==='external')return ref(850,'Hypothèse de famille — fixateur externe');
+ if(cat==='sport')return ref(180,'Hypothèse de famille — implant de chirurgie du sport');
+ if(cat==='bone')return ref(300,'Hypothèse de famille — greffe/substitut osseux');
+ if(cat==='foot')return ref(250,'Hypothèse de famille — implant pied/cheville');
+ if(cat==='tumor')return ref(6000,'Hypothèse de famille — implant tumoral/personnalisé');
+ return ref(300,'Hypothèse de famille — dispositif d’ostéosynthèse courant');
 }
+function estimateImplantPrice(x){
+ var m=marketReferenceForDevice(x);
+ var fx=11.0448,freight=.05,duty=.025,tpi=.0025,vat=.20;
+ var cif=m.eur*fx*(1+freight);
+ var dutyValue=cif*duty,tpiValue=cif*tpi;
+ var pc=cif+dutyValue+tpiValue;
+ var md=0,mex=0;
+ if(pc<300){md=pc*.05;mex=pc*.10}
+ else if(pc<1000){md=pc*.03;mex=pc*.07}
+ else if(pc<=10000){md=pc*.02;mex=pc*.05}
+ else {md=200;mex=500}
+ var ht=pc+md+mex,vatValue=ht*vat,ttc=ht+vatValue;
+ var basis=m.basis||'Repère de famille européen, modèle exact à confirmer';
+ var sourceUrl=/PLV public France|Repère public France/i.test(basis)
+   ?'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000052050107'
+   :/Marché public UE/i.test(basis)
+     ?'https://op.europa.eu/fr/web/public-procurement/procurement-details/-/procurement/9c626422-0f08-44f7-87e5-d200851888ce'
+     :null;
+ return {
+  center:Math.round(ttc*100)/100,low:null,high:null,
+  confidence:m.sourceType==='public-benchmark'?'Repère public Europe/France 2025':'Estimation indicative par famille — pas un devis fournisseur',
+  basis:basis+' Calcul indicatif au Maroc : cours '+fx.toLocaleString('fr-FR')+' DH/€, fret + assurance 5 %, droits hypothétiques 2,5 %, TPI 0,25 %, marges de calcul de classe III par tranche, TVA supposée 20 %. Le classement douanier, la classe réglementaire et le prix de cession officiel peuvent modifier le résultat.',
+  sourceUrl:sourceUrl,unit:'unité / kit selon référence',
+  marketEUR:m.eur,marketBasis:basis,sourceType:m.sourceType,
+  breakdown:{fx:fx,cif:cif,customsDuty:dutyValue,tpi:tpiValue,preMargin:pc,distributionMargin:md,operatorMargin:mex,vat:vatValue,ttc:ttc}
+ };
+}
+
 function implantCategoryOrder(cat){return ({hip:1,knee:2,shoulder:3,trauma:4,external:5,misc:6,sport:7,foot:8,spine:9,bone:10,tumor:11})[cat]||99;}
 function implantMatches(q){
  var n=norm(q);
@@ -386,7 +479,7 @@ function renderImplantSearch(){
   var title=document.createElement('strong');title.textContent=x.code+' · '+implantDisplayTitle(x);
   var est=estimateImplantPrice(x);
   var meta=document.createElement('small');
-  meta.textContent=(typeof est.center==='number'?est.confidence+' : '+fmt(est.low)+'–'+fmt(est.high)+' DH, '+(est.unit||'prix de référence'):'Prix fournisseur à saisir — pas de repère fiable vérifié')+' · TNR historique '+(typeof x.tnr==='number'?fmt(x.tnr)+' DH':'non renseigné')+(x.tnrSource?' · '+x.tnrSource:'');
+  meta.textContent=(typeof est.center==='number'?'Repère '+Number(est.marketEUR).toLocaleString('fr-FR',{maximumFractionDigits:2})+' € → TTC estimé '+fmt(est.center)+' · '+est.confidence:'Prix fournisseur à saisir')+' · TNR historique '+(typeof x.tnr==='number'?fmt(x.tnr)+' DH':'non renseigné')+(x.tnrSource?' · '+x.tnrSource:'');
   btn.append(title,meta);
   var already=selectedImplants.some(function(it){return it.device.code===x.code;});
   if(already){btn.disabled=true;meta.textContent+=' · Déjà ajouté';}
@@ -417,7 +510,7 @@ function renderImplants(){
   var reference=implantDisplayReference(it.device);if(reference){var meta=document.createElement('small');meta.className='implant-meta';meta.textContent='Référence : '+reference;title.appendChild(meta);}tr.appendChild(title);
   var tdQty=document.createElement('td');tdQty.className='num';var qty=document.createElement('input');qty.type='number';qty.min='1';qty.step='1';qty.value=it.qty;qty.style.width='60px';qty.setAttribute('aria-label','Quantité de '+implantDisplayTitle(it.device));qty.addEventListener('input',function(){it.qty=Math.max(1,parseInt(qty.value||'1',10)||1);calculateImplants();});tdQty.appendChild(qty);tr.appendChild(tdQty);
   var tdPrice=document.createElement('td');tdPrice.className='num';var priceInput=document.createElement('input');priceInput.type='number';priceInput.min='0';priceInput.step='1';priceInput.className='implant-price-input';priceInput.value=it.purchase===null||it.purchase===undefined?'':String(it.purchase);priceInput.setAttribute('aria-label','Prix estimatif TTC par unité de '+implantDisplayTitle(it.device)+' en DH');priceInput.addEventListener('input',function(){it.purchase=priceInput.value===''?null:priceInput.value;calculateImplants();});tdPrice.appendChild(priceInput);
-  var estimate=it.estimate||estimateImplantPrice(it.device),estimateNote=document.createElement('small');estimateNote.className='implant-price-estimate';estimateNote.textContent=typeof estimate.center==='number'?'Repère initial '+fmt(estimate.center)+' DH · fourchette '+fmt(estimate.low)+'–'+fmt(estimate.high)+' DH · '+(estimate.unit||'à confirmer')+' · remplacez par le devis fournisseur.':'Prix fournisseur requis : aucun prix public unitaire fiable vérifié pour cette référence. Le TNR ne vaut pas prix d’achat.';tdPrice.appendChild(estimateNote);tr.appendChild(tdPrice);
+  var estimate=it.estimate||estimateImplantPrice(it.device),estimateNote=document.createElement('small');estimateNote.className='implant-price-estimate';estimateNote.textContent=typeof estimate.center==='number'?'Repère Europe '+Number(estimate.marketEUR).toLocaleString('fr-FR',{maximumFractionDigits:2})+' € ('+estimate.confidence+') → prix TTC estimé '+fmt(estimate.center)+'. Import (CAF + droits/TPI) '+fmt(estimate.breakdown.preMargin)+' + marges '+fmt(estimate.breakdown.distributionMargin+estimate.breakdown.operatorMargin)+' + TVA '+fmt(estimate.breakdown.vat)+'. '+estimate.marketBasis+'. À confirmer par un devis réel fournisseur/importateur.':'Prix fournisseur requis : aucun repère disponible ; le TNR ne vaut pas prix d’achat.';tdPrice.appendChild(estimateNote);tr.appendChild(tdPrice);
   var tdTnr=document.createElement('td');tdTnr.className='num';
   var tnrValue=deviceTnrValue(it),checkLabel=document.createElement('label');checkLabel.style.display='inline-flex';checkLabel.style.alignItems='center';checkLabel.style.justifyContent='center';checkLabel.style.gap='5px';checkLabel.style.fontSize='12px';checkLabel.style.whiteSpace='nowrap';
   var check=document.createElement('input');check.type='checkbox';check.style.width='auto';check.style.minWidth='auto';check.style.padding='0';check.style.margin='0';check.checked=tnrValue!==null&&it.applyTnr!==false;check.disabled=tnrValue===null;check.setAttribute('aria-label','Appliquer le TNR unitaire pour '+implantDisplayTitle(it.device));check.addEventListener('change',function(){it.applyTnr=check.checked;calculateImplants();});
@@ -479,12 +572,12 @@ function calculateImplants(){
   }else if(typeof patientAll!=='number'){
    $('combinedHeadlineNote').textContent='Total combiné non chiffrable avec précision : vérifiez le prix fournisseur de chaque implant, les TNR applicables et le taux du payeur.';
   }else{
-   $('combinedHeadlineNote').textContent='Reste patient de l’acte seul + reste patient estimé de '+selectedImplants.length+' dispositif(s). Les TNR sont historiques ; seuls les sets complets PTH/PTG ont un repère public indicatif prérempli.';
+   $('combinedHeadlineNote').textContent='Reste patient de l’acte seul + reste patient estimé de '+selectedImplants.length+' dispositif(s). Les prix TTC des implants sont indicatifs : repères européens publics lorsqu’ils existent, sinon estimation par famille ; remplacez-les par les prix confirmés du fournisseur.';
   }
  }
  var sector=$('sector').value,care=$('careSetting').value;
  var payNote=payer==='payant'?'Payant : aucune prise en charge simulée.':payer==='cnops'?(sector==='public'?'CNOPS : référence du secteur public sélectionné ; droits et barème à confirmer.':care==='ambulatoire'?'CNOPS : hypothèse de 80 % en ambulatoire ; confirmer le TNR et l’éligibilité.':'CNOPS : hypothèse de référence selon le secteur sélectionné ; confirmer le TNR et les droits.') :payer==='cnss'?'CNSS/AMO : taux indicatif issu de la saisie rapide, à confirmer selon acte, TNR et droits.':payer==='far'?'FAR : le taux renseigné dans la saisie rapide est utilisé ; vérifiez le régime et l’accord.':'Assurance privée : le taux de saisie rapide est utilisé ; plafonds, exclusions et franchises restent à vérifier au contrat.';
- $('implantPriceNote').textContent=!selectedImplants.length?'Sélectionnez un dispositif : saisissez le prix fournisseur TTC lorsqu’aucun repère public vérifié n’est disponible.':'Les prix des sets PTH/PTG sont des repères publics indicatifs ; les autres dispositifs exigent le prix fournisseur. Les TNR affichés sont historiques et doivent être vérifiés.';
+ $('implantPriceNote').textContent=!selectedImplants.length?'Sélectionnez un dispositif : le prix TTC estimé sera prérempli à partir d’un repère européen ou d’une estimation de famille.':'Les prix préremplis sont des estimations TTC rendues au Maroc à partir de repères publics européens ou de valeurs de famille. La plupart ne sont pas des devis fournisseur. Hypothèses de calcul : 11,0448 DH/€, fret + assurance 5 %, droit de douane 2,5 %, TPI 0,25 %, marges de calcul par tranche et TVA estimée 20 %. Remplacez le prix par le devis du fournisseur/importateur dès qu’il est disponible. Le TNR est indépendant du prix d’achat et reste à vérifier.';
  if(unknownTnr&&payer!=='payant'&&rate!==0)$('implantPriceNote').textContent+=' '+unknownTnr+' dispositif(s) sans TNR dans ce catalogue : remboursement non chiffrable avec précision.';
  $('implantCoverNote').textContent=(rate===null?'Taux commun de la saisie rapide non renseigné : part payeur et reste patient à confirmer.':'Taux commun appliqué aux actes et implants : '+($('coverageRate').value||'0')+' %.')+' '+payNote+' Le TNR demeure une référence historique à revérifier.';
 }
