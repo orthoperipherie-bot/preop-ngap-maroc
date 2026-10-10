@@ -682,7 +682,7 @@ $('cumulationMode').addEventListener('change',function(){
 });
 $('a215Osteosynthesis').addEventListener('change',calculate);
 $('a211Applicable').addEventListener('change',calculate);
-$('coverageRate').addEventListener('input',function(){calculate();calculateImplants();});
+$('coverageRate').addEventListener('input',function(){updateDeviceCoverageDefault();calculate();calculateImplants();});
 $('surgeonRetention').addEventListener('input',calculate);
 $('payer').addEventListener('change',function(){updateCoverageDefault();updateDeviceCoverageDefault();calculate();calculateImplants();});
 $('sector').addEventListener('change',updateSector);
