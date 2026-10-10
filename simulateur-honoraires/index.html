@@ -99,8 +99,7 @@
 <div class="panel"><h2>Implants pour l’intervention sélectionnée</h2>
 <p class="muted"><strong>Calcul synchronisé avec l’intervention saisie ci-dessus :</strong> l’acte, les gestes associés, le secteur, le payeur, le taux et le mode de paiement ne sont pas ressaisis ici. Le total acte seul et le total patient acte + implants sont affichés en haut de la saisie rapide. Recherchez ensuite par articulation, intervention ou type de dispositif. Les libellés sont simplifiés pour faciliter le choix. Le tableau affiche le TNR de référence lorsqu’il est connu (barème historique à vérifier). Pour une prothèse totale de hanche, vérifiez le couple de frottement (métal/polyéthylène, céramique/polyéthylène, céramique-céramique) et distinguez la double mobilité, qui correspond à une conception de stabilité.</p><div class="implant-tnr-control" style="border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;">
 <p class="muted"><strong>TNR et remboursement automatiques.</strong> Le TNR de référence et la déduction estimée sont affichés sans activation manuelle. Les barèmes peuvent être historiques : confirmez la valeur et l’éligibilité du dispositif avant facturation.</p>
-<div class="field"><label for="implantCoverageRate">Taux de prise en charge des implants / dispositifs médicaux (%)</label><input id="implantCoverageRate" type="number" min="0" max="100" step="1" value="100"><small id="implantCoverageNote" class="muted">CNOPS : 100 % de la base TNR selon la règle publiée ; pour CNSS, FAR et assurance privée, saisir le taux validé pour le dispositif.</small></div>
-<p class="muted"><strong>Taux distinct pour les implants.</strong> Il ne reprend pas automatiquement le taux appliqué aux honoraires et au forfait opératoire.</p>
+<p class="muted" id="implantCoverageNote">Le taux de prise en charge saisi dans « Saisie rapide » sera repris automatiquement pour les implants. Aucun second taux n’est nécessaire.</p>
 <p class="muted" id="tnrOptionNote">Base estimée = minimum entre le prix d’achat TTC saisi et le TNR appliqué. En l’absence de prix fournisseur ou de taux confirmé, le calcul est indiqué « à confirmer ».</p>
 </div>
 </div>
@@ -261,7 +260,7 @@ function updateSector(){
  $('kNote').textContent='La valeur monétaire K/KC est préremplie selon l’établissement et reste modifiable. La grille forfaitaire hospitalière est distincte de K × coefficient ; changer K/KC ajuste la ventilation théorique chirurgien/anesthésie mais ne change pas le forfait global de référence.';
  $('payerSectorSummary').textContent=pub?'Secteur public / CHU : K/KC = 13 DH ; grille de référence AMO des établissements publics.':nonprofit?'Hôpital privé à but non lucratif : hypothèse par défaut du secteur privé (K/KC = 22,50 DH et grille privée), à confirmer dans la convention de l’établissement.':'Secteur privé / clinique : K/KC = 22,50 DH et grille forfaitaire AMO privée de référence.';
  $('careSettingNote').textContent=$('careSetting').value==='ambulatoire'?'Ambulatoire / sans nuitée : estimation NGAP des honoraires + bloc, hors éventuel forfait d’établissement, consommables et pharmacie. Vérifiez la convention applicable au secteur choisi.':'Hospitalisation : forfait global de référence selon le secteur sélectionné, sous réserve de la convention effectivement appliquée.';
- updateCoverageDefault();calculate();
+ updateCoverageDefault();calculate();calculateImplants();
 }
 function defaultCoverage(p,sector,careSetting){
  if(p==='payant')return 0;
@@ -363,14 +362,13 @@ function implantMatches(q){
 function deviceTnrValue(it){if(it&&it.tnrOverride!==undefined)return parseNum(it.tnrOverride);return it&&it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;}
 function deviceUnitPurchase(it){return it?parseNum(it.purchase):null;}
 function deviceTnrBasis(it){if(it&&it.applyTnr===false)return null;var t=deviceTnrValue(it),actual=deviceUnitPurchase(it);if(t===null||actual===null)return null;return Math.min(actual,t);}
-function deviceCoverageRate(){var p=$('payer').value;if(p==='payant')return 0;var v=parseNum($('implantCoverageRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100;}
+function deviceCoverageRate(){var p=$('payer').value;if(p==='payant')return 0;var v=parseNum($('coverageRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100;}
 function updateDeviceCoverageDefault(){
- var p=$('payer').value,input=$('implantCoverageRate'),note=$('implantCoverageNote');
- if(p==='payant'){input.value='0';note.textContent='Payant : aucune prise en charge implant n’est soustraite.';}
- else if(p==='cnops'){input.value='100';note.textContent='CNOPS : 100 % de la base remboursable du dispositif selon la règle publiée ; certains dispositifs exigent un accord préalable. Vérifier le TNR actuel et les droits.';}
- else if(p==='cnss'){input.value='';note.textContent='CNSS/AMO : taux implant non prérempli faute de validation d’un taux unique pour toutes les références. Saisir le taux/base confirmé par la CNSS ou la convention.';}
- else if(p==='far'){input.value='';note.textContent='FAR / régime militaire : saisir le taux et la base confirmés par le régime ou l’accord applicable.';}
- else {input.value='';note.textContent='Assurance privée : saisir le taux, plafond et franchise prévus au contrat pour le dispositif concerné.';}
+ var p=$('payer').value,note=$('implantCoverageNote'),v=parseNum($('coverageRate').value);
+ if(!note)return;
+ if(p==='payant')note.textContent='Payant : aucune prise en charge n’est déduite ; le patient supporte le prix du dispositif.';
+ else if(v===null)note.textContent='Le taux commun de la saisie rapide n’est pas renseigné. La part payeur et le reste à charge des implants restent à confirmer.';
+ else note.textContent='Taux commun utilisé pour les actes et les implants : '+v+' %. Il est repris de « Saisie rapide » et appliqué à la base remboursable estimée (dans la limite du prix fournisseur et du TNR applicable).';
 }
 function renderImplantSearch(){
  var box=$('implantSuggestions');if(!box)return;
@@ -488,7 +486,7 @@ function calculateImplants(){
  var payNote=payer==='payant'?'Payant : aucune prise en charge simulée.':payer==='cnops'?(sector==='public'?'CNOPS : référence du secteur public sélectionné ; droits et barème à confirmer.':care==='ambulatoire'?'CNOPS : hypothèse de 80 % en ambulatoire ; confirmer le TNR et l’éligibilité.':'CNOPS : hypothèse de référence selon le secteur sélectionné ; confirmer le TNR et les droits.') :payer==='cnss'?'CNSS/AMO : taux indicatif issu de la saisie rapide, à confirmer selon acte, TNR et droits.':payer==='far'?'FAR : le taux renseigné dans la saisie rapide est utilisé ; vérifiez le régime et l’accord.':'Assurance privée : le taux de saisie rapide est utilisé ; plafonds, exclusions et franchises restent à vérifier au contrat.';
  $('implantPriceNote').textContent=!selectedImplants.length?'Sélectionnez un dispositif : saisissez le prix fournisseur TTC lorsqu’aucun repère public vérifié n’est disponible.':'Les prix des sets PTH/PTG sont des repères publics indicatifs ; les autres dispositifs exigent le prix fournisseur. Les TNR affichés sont historiques et doivent être vérifiés.';
  if(unknownTnr&&payer!=='payant'&&rate!==0)$('implantPriceNote').textContent+=' '+unknownTnr+' dispositif(s) sans TNR dans ce catalogue : remboursement non chiffrable avec précision.';
- $('implantCoverNote').textContent=(rate===null?'Taux implant non renseigné : part payeur et reste patient à confirmer.':'Taux implant appliqué : '+($('implantCoverageRate').value||'0')+' %.')+' '+payNote+' Le TNR demeure une référence historique à revérifier.';
+ $('implantCoverNote').textContent=(rate===null?'Taux commun de la saisie rapide non renseigné : part payeur et reste patient à confirmer.':'Taux commun appliqué aux actes et implants : '+($('coverageRate').value||'0')+' %.')+' '+payNote+' Le TNR demeure une référence historique à revérifier.';
 }
 function calculate(){
  var k=parseNum($('keyValue').value);if(k===null)k=sectorKeyValue();
@@ -670,7 +668,7 @@ $('copyImplantSummary').addEventListener('click',function(){
   return implantDisplayTitle(it.device)+(implantDisplayReference(it.device)?' | '+implantDisplayReference(it.device):'')+' | quantité '+it.qty+' | TNR '+(tnr===null?'non renseigné':fmt(tnr)+' DH (valeur historique)')+' | '+(applies?('TNR appliqué ; base remboursable '+(base===null?'à confirmer':fmt(base)+' DH')):'TNR non appliqué ; coût à charge du patient')+' | taux utilisé '+($('coverageRate').value||'non renseigné')+' %';
  });
  var actLine=mainAct?mainAct.code+' · '+mainAct.title:'Acte non sélectionné dans Saisie rapide';
- var txt=['Récapitulatif implants — estimation indicative, non devis','Intervention utilisée pour le calcul : '+actLine,'Secteur : '+$('sector').value+' | Payeur : '+$('payer').value+' | Paiement : '+$('paymentType').value,'Taux acte : '+($('coverageRate').value||'non renseigné')+' % ; taux implant : '+($('implantCoverageRate').value||'non renseigné')+' %.','Reste patient acte seul : '+$('totalHeadline').textContent,'Reste patient total acte + implants : '+$('combinedPatientHeadline').textContent,'Montant à avancer aujourd’hui acte + implants : '+$('combinedTodayHeadline').textContent,'Coût de marché total estimé des implants : '+$('implantMarketTotal').textContent,'Prix de marché indicatifs, à remplacer par le prix fournisseur confirmé.','',lines.join('\n')].concat(tnrOn?['Somme des TNR cochés : '+$('implantTnrTotal').textContent,'Base remboursable estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée sur implants : '+$('implantCoverTotal').textContent,'Source des TNR historiques : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.']:[]).concat(['Reste patient estimé sur les implants : '+$('implantPatientTotal').textContent,'TNR et prise en charge calculés automatiquement ; les valeurs historiques restent à vérifier.']).join('\n');
+ var txt=['Récapitulatif implants — estimation indicative, non devis','Intervention utilisée pour le calcul : '+actLine,'Secteur : '+$('sector').value+' | Payeur : '+$('payer').value+' | Paiement : '+$('paymentType').value,'Taux commun actes + implants : '+($('coverageRate').value||'non renseigné')+' %.','Reste patient acte seul : '+$('totalHeadline').textContent,'Reste patient total acte + implants : '+$('combinedPatientHeadline').textContent,'Montant à avancer aujourd’hui acte + implants : '+$('combinedTodayHeadline').textContent,'Coût de marché total estimé des implants : '+$('implantMarketTotal').textContent,'Prix de marché indicatifs, à remplacer par le prix fournisseur confirmé.','',lines.join('\n')].concat(tnrOn?['Somme des TNR cochés : '+$('implantTnrTotal').textContent,'Base remboursable estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée sur implants : '+$('implantCoverTotal').textContent,'Source des TNR historiques : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.']:[]).concat(['Reste patient estimé sur les implants : '+$('implantPatientTotal').textContent,'TNR et prise en charge calculés automatiquement ; les valeurs historiques restent à vérifier.']).join('\n');
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt);});else alert(txt);
 });
 $('mainSearch').addEventListener('input',renderMainSuggestions);
@@ -684,7 +682,7 @@ $('cumulationMode').addEventListener('change',function(){
 });
 $('a215Osteosynthesis').addEventListener('change',calculate);
 $('a211Applicable').addEventListener('change',calculate);
-$('coverageRate').addEventListener('input',calculate);$('implantCoverageRate').addEventListener('input',calculateImplants);
+$('coverageRate').addEventListener('input',function(){calculate();calculateImplants();});
 $('surgeonRetention').addEventListener('input',calculate);
 $('payer').addEventListener('change',function(){updateCoverageDefault();updateDeviceCoverageDefault();calculate();calculateImplants();});
 $('sector').addEventListener('change',updateSector);
@@ -694,9 +692,9 @@ $('careSetting').addEventListener('change',function(){
  $('careSettingNote').textContent=care==='ambulatoire'?
  'Ambulatoire / sans nuitée : le forfait global de chirurgie en hospitalisation n’est pas réutilisé. Le total affiché est une estimation NGAP des honoraires + bloc ; les frais d’établissement, pharmacie, consommables et tout forfait ambulatoire spécifique sont à confirmer. Le taux CNOPS par défaut passe à 80 %, modifiable.':
  'Hospitalisation : forfait global de référence selon le secteur, intégrant le séjour et les éléments mentionnés dans la convention. Le taux CNOPS par défaut est de 90 % en privé ou 100 % en public, modifiable selon le dossier.';
- updateCoverageDefault();calculate();
+ updateCoverageDefault();calculate();calculateImplants();
 });
-$('paymentType').addEventListener('change',calculate);
+$('paymentType').addEventListener('change',function(){calculate();calculateImplants();});
 $('addGesture').addEventListener('click',addGesture);
 $('copySummary').addEventListener('click',function(){
  var t=summary();
