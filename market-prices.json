@@ -216,9 +216,10 @@
         "Stryker",
         "Smith+Nephew",
         "Groupe Lépine",
-        "Amplitude (présence à vérifier selon modèle)"
+        "Amplitude (à confirmer selon modèle)",
+        "Symbios (présence actuelle à confirmer)"
       ],
-      "evidence": "Zimmer Biomet, Stryker et Smith+Nephew sont explicitement cités par un centre orthopédique basé à Casablanca. Groupe Lépine dispose d’une présence commerciale marocaine dédiée aux prothèses orthopédiques. Amplitude apparaît dans une source universitaire sur les fournisseurs marocains, mais l’information est historique : confirmer la distribution actuelle et les références disponibles.",
+      "evidence": "Zimmer Biomet, Stryker et Smith+Nephew sont cités par un centre orthopédique marocain pour les prothèses de hanche. Groupe Lépine et d’autres marques ont des traces commerciales/scientifiques au Maroc, mais la disponibilité de chaque gamme et modèle 2026 reste à confirmer.",
       "sources": [
         {
           "label": "Morocco Orthopaedic Center — implants cités",
@@ -245,7 +246,7 @@
         "Zimmer Biomet",
         "Groupe Lépine"
       ],
-      "evidence": "Fabricants internationaux à demander aux fournisseurs locaux ; les modèles et représentants marocains précis n’ont pas tous pu être confirmés par source publique. Ne pas interpréter la liste comme une garantie de stock ou de distribution agréée pour chaque implant.",
+      "evidence": "Fabricants pertinents pour l’ostéosynthèse ; leur disponibilité exacte par référence ne peut pas être déduite de la seule liste AMMPS. Demander la preuve d’enregistrement du modèle et le devis du distributeur.",
       "sources": [
         {
           "label": "AMMPS — base des sociétés de dispositifs médicaux",
@@ -256,17 +257,97 @@
     "sports": {
       "brands": [
         "Arthrex",
+        "CONMED",
         "Smith+Nephew",
-        "Stryker"
+        "Stryker",
+        "DePuy Synthes"
       ],
-      "evidence": "Marques internationales de chirurgie du sport à demander au distributeur local ; disponibilité de chaque kit/référence au Maroc non confirmée publiquement dans cette recherche.",
+      "evidence": "Arthrex et CONMED sont mentionnés dans les activités orthopédiques marocaines de Metec (congrès SMA/SMACOT et produits CONMED). Les autres gammes sont des pistes possibles ; leur disponibilité au Maroc pour la référence exacte est à vérifier.",
       "sources": [
         {
-          "label": "Morocco Orthopaedic Center — marques citées en prothèse (source locale)",
-          "url": "https://www.moroccoorthopaediccenter.com/chirurgie-de-la-hanche"
+          "label": "Metec Maroc — activités Arthrex / Zimmer Biomet / CONMED en chirurgie orthopédique",
+          "url": "https://metec.ma/post/participation-metec-93"
         },
         {
-          "label": "AMMPS — base des sociétés de dispositifs médicaux",
+          "label": "Metec Maroc — produit CONMED, demande de devis au Maroc",
+          "url": "https://metec.ma/product/d4000a-systeme-de-resection-arthroscopique-100-56"
+        },
+        {
+          "label": "AMMPS — registre des sociétés de dispositifs médicaux",
+          "url": "https://www.ammps.gov.ma/basesdedonnes/societes-dispositifs-medicaux?page=49"
+        }
+      ]
+    },
+    "spine": {
+      "brands": [
+        "Medtronic",
+        "NuVasive",
+        "DePuy Synthes",
+        "Stryker",
+        "Zimmer Biomet"
+      ],
+      "evidence": "Une thèse hospitalo-universitaire marocaine décrit l’utilisation de systèmes NuVasive/Medtronic et cite des systèmes Stryker/DePuy en instrumentation rachidienne. Cette référence documente un usage hospitalier, pas une disponibilité 2026 garantie : demander l’enregistrement AMMPS et un devis actuel.",
+      "sources": [
+        {
+          "label": "Thèse universitaire marocaine — instrumentation rachidienne, systèmes NuVasive, Medtronic, Stryker et DePuy",
+          "url": "https://cdim.fmp-usmba.ac.ma/e_theses/161-24.pdf"
+        },
+        {
+          "label": "AMMPS — registre des sociétés de dispositifs médicaux",
+          "url": "https://www.ammps.gov.ma/basesdedonnes/societes-dispositifs-medicaux?page=49"
+        }
+      ]
+    },
+    "externalFixation": {
+      "brands": [
+        "Gexfix",
+        "DePuy Synthes",
+        "Stryker",
+        "Zimmer Biomet"
+      ],
+      "evidence": "Gexfix était cité parmi les partenaires d’un congrès orthopédique marocain historique ; les autres marques sont des gammes à demander. La disponibilité commerciale et le modèle exact au Maroc doivent être vérifiés en 2026.",
+      "sources": [
+        {
+          "label": "Programme SMACOT 2016 — liste historique des partenaires, dont Gexfix et DePuy Synthes",
+          "url": "https://smacot.ma/images/pdfprogrammearchive/Programme-SMACOT-2016.pdf"
+        },
+        {
+          "label": "AMMPS — registre des sociétés de dispositifs médicaux",
+          "url": "https://www.ammps.gov.ma/basesdedonnes/societes-dispositifs-medicaux?page=49"
+        }
+      ]
+    },
+    "handFoot": {
+      "brands": [
+        "Arthrex",
+        "DePuy Synthes",
+        "Stryker",
+        "Zimmer Biomet",
+        "Groupe Lépine",
+        "Ceraver"
+      ],
+      "evidence": "Répertoire indicatif des fabricants de gammes d’extrémités/ostéosynthèse. Certains sont cités dans des programmes professionnels marocains historiques ; demander confirmation du fournisseur, de l’enregistrement et de la disponibilité de la référence.",
+      "sources": [
+        {
+          "label": "Programme SMACOT 2016 — partenaires orthopédiques",
+          "url": "https://smacot.ma/images/pdfprogrammearchive/Programme-SMACOT-2016.pdf"
+        },
+        {
+          "label": "Metec Maroc — activités orthopédiques/Arthrex",
+          "url": "https://metec.ma/post/participation-metec-93"
+        }
+      ]
+    },
+    "boneGraft": {
+      "brands": [
+        "Zimmer Biomet",
+        "Stryker",
+        "Groupe Lépine"
+      ],
+      "evidence": "Famille à contrôler selon le produit précis (ciment PMMA, ciment antibiotique, hydroxyapatite, phosphate tricalcique, matrice de greffe). Les sources publiques ne permettent pas de garantir une liste exhaustive ni un stock par modèle au Maroc.",
+      "sources": [
+        {
+          "label": "AMMPS — registre des sociétés de dispositifs médicaux",
           "url": "https://www.ammps.gov.ma/basesdedonnes/societes-dispositifs-medicaux?page=49"
         }
       ]
