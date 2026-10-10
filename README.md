@@ -89,11 +89,15 @@ Application mobile distincte : **https://orthoperipherie-bot.github.io/preop-nga
 
 Sources de référence : [NGAP marocaine, arrêté n°177-06](https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf) ; [grille privée de chirurgie, arrêté n°1961-06](https://www.sante.gov.ma/Reglementation/ASSURANCEMALADIE/1961-06.pdf) ; [grille n°1 AMO publique, convention de mai 2007 — K = 13 DH](https://anam.ma/anam/wp-content/uploads/2021/09/Grille1_2007.pdf) ; [grille forfaitaire publique de chirurgie — convention AMO de mai 2007](https://anam.ma/anam/wp-content/uploads/2021/09/Grille2_2007.pdf).
 
-### Module « Implants & TNR » ajouté en octobre 2026
+### Module « Implants & TNR » mis à jour en octobre 2026
 
-Le simulateur inclut un sous-module de 44 lignes TNR historiques d’implants et dispositifs orthopédiques extraites du barème officiel n°2314-08 (2008) : composants de prothèses de hanche/genou/épaule, fixateurs, plaques, vis, clous et broches. Pour chaque ligne, l’outil distingue le TNR historique, le prix d’achat fournisseur (facultatif), la base de remboursement estimée plafonnée au TNR et le statut « facturé en sus du forfait opératoire ». Le coût d’implant n’est ajouté au total de l’intervention que si la case « En sus » est cochée, afin d’éviter le double comptage.
+Le catalogue de l’onglet « Implants & TNR » contient **225 références de travail**. Parmi elles, **44 lignes portent un TNR chiffré issu du barème historique n°2314-08 (2008)** ; 181 autres références n’ont pas de TNR chiffré identifié dans ce catalogue. Ces valeurs de 2008 ne sont pas présentées comme des TNR actuels vérifiés.
 
-**Avertissement de mise à jour :** l’arrêté n°3207-15 a remplacé certains tarifs de la classe III. Les valeurs orthopédiques importées sont donc affichées avec leur source et leur date, et doivent être confirmées à partir du barème applicable / accord du payeur avant de les considérer comme les TNR actuels. La CNOPS indique qu’un accord préalable peut être nécessaire et que la base de remboursement d’un dispositif est plafonnée au forfait réglementaire ou au prix d’achat s’il est inférieur. Les taux d’implants CNOPS (100 %) et CNSS/AMO reste à renseigner pour les dispositifs, car leur prise en charge dépend du barème TNR et des règles propres aux implants ; ne pas transposer automatiquement le taux général des prestations médicales. 
+Le TNR marocain, le coût d’importation estimé et le prix d’achat local confirmé sont maintenant **trois champs distincts**. Vingt-quatre références de prix externes sont conservées dans une table indépendante, et les autres coûts importés sont des estimations de famille. Ces montants externes ne sont ni des prix marocains homologués ni des TNR. Deux correspondances erronées entre vis de verrouillage et composants prothétiques ont été retirées.
+
+**Règle importante du calcul de remboursement :** le coût importé estimé ne sert jamais à déterminer la base remboursable. La base reste « à confirmer » tant qu’un prix d’achat local confirmé et un TNR applicable ne sont pas disponibles ensemble ; lorsqu’ils le sont, la simulation retient le plus faible des deux. Les coûts d’implant ne s’ajoutent au reste patient de l’acte que si « En sus » est coché.
+
+**Avertissement réglementaire :** l’arrêté n°3207-15 abroge et remplace les TNR de la classe III de l’arrêté n°2314-08. Les TNR historiques de 2008 doivent donc être vérifiés pour toute référence concernée. La CNOPS précise que le remboursement des dispositifs se base sur le forfait réglementaire, plafonné au prix d’achat lorsque celui-ci est inférieur ; certains dispositifs nécessitent un accord préalable. Les taux et l’éligibilité doivent être confirmés auprès de l’organisme payeur.
 
 
 ## Catalogue spécialisé NGAP (octobre 2026)
