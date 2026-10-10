@@ -1,4 +1,4 @@
-const CACHE='preop-ngap-v66';;;
+const CACHE='preop-ngap-v67';;;
 const CORE=['./','./index.html','./acts.json','./orthopedie-actes.json','./market-prices.json','./simulateur-honoraires/index.html','./manifest.webmanifest'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
