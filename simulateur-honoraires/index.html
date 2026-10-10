@@ -63,7 +63,7 @@
 .implant-inline{border-top:2px solid var(--line);margin-top:20px;padding-top:12px}.implant-tnr-control label{display:flex;align-items:flex-start;gap:8px;color:var(--ink);font-weight:650;margin:0}.implant-tnr-control input[type=checkbox]{width:auto;min-width:auto;margin:3px 0 0}.implant-inline .implant-price-input{width:110px;max-width:100%;padding:8px;font-size:13px}.implant-inline .implant-price-estimate{display:block;font-size:11px;color:var(--muted);margin-top:4px;white-space:normal}
 </style></head><body><main class="app">
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Saisissez l’intervention et les gestes associés, puis consultez le reste estimé à payer par le patient. Le volet implants permet de rechercher les dispositifs par code ou libellé ; le troisième volet détaille l’estimation NGAP. Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 49 — case TNR par dispositif et taux commun ; catalogue orthopédique complet.</p>
+<p class="muted" id="buildVersion">Version 50 — fiche « Implants & TNR » indépendante de la saisie rapide ; acte + tous les implants.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants &amp; TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
@@ -921,8 +921,7 @@ $('reset').addEventListener('click',function(){
  mainAct=null;gestures=[];nextId=1;$('surgeonRetention').value='0';$('surgeonStatus').value='liberal';
  $('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('mainActNote').textContent='';
  $('payer').value='cnops';$('paymentType').value='pec';$('careSetting').value='hospitalisation';$('careSettingNote').textContent='Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';$('coverageRate').value=String(defaultCoverage('cnops',$('sector').value,$('careSetting').value));$('cumulationMode').value='standard';$('a215Osteosynthesis').checked=false;$('a211Applicable').checked=false;
- selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplantSearch();
- renderGestures();renderImplants();renderImplantSearch();calculate();
+ renderGestures();calculate();
 });
 document.querySelectorAll('[data-tab]').forEach(function(b){
  b.onclick=function(){
