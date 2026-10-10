@@ -49,7 +49,7 @@
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
 </section>
 <section id="tab-implants" class="hidden">
-<div class="panel implant-price-settings"><h2>Prix d’importation estimé — paramètres</h2>
+<div class="panel implant-price-settings"><h2>Repères d’importation — filière Europe uniquement</h2>
 <p class="muted">Le TNR de remboursement et le prix du dispositif sont deux informations distinctes. Les repères européens servent uniquement à une estimation budgétaire indicative ; ils ne sont ni des TNR ni des prix d’achat marocains. Pour les implants importés d’Inde, de Chine, du Pakistan ou de Turquie, choisissez le pays sur la ligne puis saisissez le prix fournisseur/importateur confirmé en DH TTC. Aucun prix par pays n’est inventé. Le TNR dépend de la référence exacte et du régime de prise en charge, pas uniquement du pays d’origine.</p>
 <div class="grid implant-price-inputs">
 <div class="field"><label for="implantFxEur">Cours EUR/MAD</label><input id="implantFxEur" type="number" min="0" step="0.0001" value="11.0448"></div>
@@ -98,15 +98,6 @@ function score(a,q){var n=norm(q),c=norm(a.code),title=norm(a.title),all=norm((a
 function matches(q){var n=norm(q);if(!n)return [];return acts.map(function(a){return {a:a,s:score(a,q)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s||String(a.a.code).localeCompare(String(b.a.code))}).slice(0,9).map(function(x){return x.a})}
 function buildSuggestion(a,onPick){var b=document.createElement('button');b.type='button';b.className='match';var st=document.createElement('strong');st.textContent=a.code+' · '+a.title;var sm=document.createElement('small');sm.textContent=(a.category||'Orthopédie-traumatologie')+' · '+(a.kind==='rule'?'Règle / majoration — voir note':a.kind==='supplement'?'Supplément NGAP':a.kind==='nonop'?'Appareillage assimilé':'Coeff. '+((a.coeffs||[]).join(' / ')||'à vérifier'));b.append(st,sm);b.onclick=function(){onPick(a)};return b}
 function renderMainSuggestions(){var q=$('mainSearch').value.trim(),box=$('mainSuggestions');box.innerHTML='';if(!q)return;var list=matches(q);if(!list.length){box.textContent='Aucune correspondance. Essayez le code exact ou un terme plus court.';return}list.forEach(function(a){box.appendChild(buildSuggestion(a,selectMain))})}
-function marketRefForAct(a){if(!marketReferences||!a)return null;return (marketReferences.procedures||[]).find(function(p){return (p.codes||[]).indexOf(a.code)>=0})||null}
-function renderMarketPrice(a){
- var root=$('mainMarketPrice');if(!root)return;root.innerHTML='';
- var p=marketRefForAct(a);
- if(!p){var msg=document.createElement('small');msg.textContent='Prix de marché 2026 : aucune fourchette publique suffisamment spécifique trouvée pour cet acte NGAP précis. Le montant reste calculé depuis le forfait conventionnel, sauf saisie d’un prix réel facturé.';root.appendChild(msg);return}
- var strong=document.createElement('strong');strong.textContent='Repère de marché privé annoncé : '+fmt(p.marketMin)+' à '+fmt(p.marketMax)+' DH — '+p.title;root.appendChild(strong);
- var note=document.createElement('small');note.textContent=p.scope+' Ce prix global ne remplace pas la cotation NGAP/TNR et peut comprendre des postes différents selon le devis.';root.appendChild(note);
- (p.sources||[]).forEach(function(src){var line=document.createElement('small'),lnk=document.createElement('a');lnk.href=src.url;lnk.target='_blank';lnk.rel='noopener';lnk.textContent=src.label;line.appendChild(lnk);root.appendChild(line)});
-}
 function renderMarketSources(){
  var root=$('marketSourceList');if(!root||!marketReferences)return;root.innerHTML='';
  (marketReferences.procedures||[]).forEach(function(p){
