@@ -102,7 +102,7 @@
 <p id="implantPriceNote" class="muted">Le prix estimé est un repère de famille, pas un devis fournisseur.</p><p id="implantCoverNote" class="muted">Taux de remboursement estimatif selon le payeur sélectionné.</p></div>
 <div class="panel"><h2>Implants sélectionnés — prix TTC et reste patient</h2>
 <p class="muted">La sélection affiche le prix de marché indicatif et une fourchette par famille. Saisissez le prix TTC réel du fournisseur dans le détail de chaque implant pour obtenir un calcul plus fiable. Le TNR est facultatif et s’active en bas de cette rubrique.</p>
-<div class="tablewrap"><table><thead><tr><th>Dispositif / code</th><th class="num">Qté</th><th class="num tnr-only hidden" id="implantTnrHeader">TNR (DH)</th><th class="num">Prix TTC retenu / unité</th><th class="num tnr-only hidden" id="implantBaseHeader">Base remboursable estimée</th><th class="num">En sus</th><th></th></tr></thead><tbody id="implantTable"><tr><td colspan="7">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr></tbody></table></div>
+<div class="tablewrap"><table><thead><tr><th>Dispositif / code</th><th class="num">Qté</th><th class="num">Prix TTC retenu / unité</th><th class="num">En sus</th><th></th></tr></thead><tbody id="implantTable"><tr><td colspan="5">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr></tbody></table></div>
 <h3>Prix estimé de chaque dispositif sélectionné</h3>
 <div id="implantPriceDetails" class="implant-price-detail-list"><p class="muted">Sélectionnez un dispositif pour afficher son prix TTC estimé.</p></div>
 <div class="row"><span>Coût estimé des implants cochés « En sus »</span><strong id="implantExtraTotal">0 DH</strong></div>
@@ -480,16 +480,14 @@ function renderImplantPriceDetails(){
 }
 function renderImplants(){
  var tb=$('implantTable');tb.innerHTML='';
- if(!selectedImplants.length)tb.innerHTML='<tr><td colspan="7">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr>';
+ if(!selectedImplants.length)tb.innerHTML='<tr><td colspan="5">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr>';
  selectedImplants.forEach(function(it){
   var tr=document.createElement('tr'),title=document.createElement('td'),titleText=document.createElement('div');
   titleText.textContent=it.device.code+' · '+it.device.title;title.appendChild(titleText);
   var meta=document.createElement('small');meta.className='implant-meta';meta.textContent=implantCategoryLabel(it.device.category);
   title.appendChild(meta);tr.appendChild(title);
   var tdQty=document.createElement('td');tdQty.className='num';var qty=document.createElement('input');qty.type='number';qty.min='1';qty.step='1';qty.value=it.qty;qty.style.width='60px';qty.setAttribute('aria-label','Quantité de '+it.device.title);qty.addEventListener('input',function(){it.qty=Math.max(1,parseInt(qty.value||'1',10)||1);calculate();});tdQty.appendChild(qty);tr.appendChild(tdQty);
-  var tdTnr=document.createElement('td');tdTnr.className='num tnr-only hidden';var tn=document.createElement('input');tn.type='number';tn.min='0';tn.step='0.01';tn.style.width='100px';tn.setAttribute('aria-label','TNR DH');tn.value=it.tnrOverride!==undefined?(it.tnrOverride===null?'':it.tnrOverride):(typeof it.device.tnr==='number'?String(it.device.tnr):'');tn.placeholder='À vérifier';tn.addEventListener('input',function(){it.tnrOverride=tn.value===''?null:tn.value;updateImplantRowSummary(it);calculate();});tdTnr.append(tn);tr.appendChild(tdTnr);
   var tdUnit=document.createElement('td');tdUnit.className='num';var out=document.createElement('strong');out.className='implant-price-out';out.id='implant-unit-'+it.id;tdUnit.appendChild(out);var note=document.createElement('small');note.id='implant-unit-note-'+it.id;note.className='implant-estimate-label';tdUnit.appendChild(note);tr.appendChild(tdUnit);
-  var tdBase=document.createElement('td');tdBase.className='num tnr-only hidden';var baseOut=document.createElement('strong');baseOut.id='implant-base-'+it.id;tdBase.appendChild(baseOut);tr.appendChild(tdBase);
   var tdSep=document.createElement('td');tdSep.className='num';var sep=document.createElement('input');sep.type='checkbox';sep.checked=it.separate;sep.setAttribute('aria-label','Inclure '+it.device.title+' en sus du forfait');sep.addEventListener('change',function(){it.separate=sep.checked;calculate();});tdSep.appendChild(sep);tr.appendChild(tdSep);
   var tdDel=document.createElement('td');var del=document.createElement('button');del.type='button';del.className='btn danger remove';del.textContent='×';del.setAttribute('aria-label','Supprimer '+it.device.title);del.addEventListener('click',function(){selectedImplants=selectedImplants.filter(function(z){return z.id!==it.id;});renderImplants();renderImplantSearch();calculate();});tdDel.appendChild(del);tr.appendChild(tdDel);
   tb.appendChild(tr);updateImplantRowSummary(it);
