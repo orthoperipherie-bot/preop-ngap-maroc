@@ -563,7 +563,7 @@ function calculateImplants(){
   // If an implant's TNR/taux is unknown but its purchase price is known, include that full price rather than hiding the total.
   var actPatientKnown=typeof lastCalc.patient==='number';
   var actPatientForTotal=actPatientKnown?lastCalc.patient:lastCalc.total;
-  var patientAll=actPatientForTotal+patient;
+  var patientAll=actPatientForTotal+marketTotal;
   var todayAll=$('paymentType').value==='pec'?patientAll:(lastCalc.total+marketTotal);
   var partialPriceNote=missingPrice?(' + prix à saisir pour '+missingPrice+' implant(s)'):'';
   $('combinedPatientHeadline').textContent=fmt(patientAll)+' DH'+partialPriceNote;
@@ -577,7 +577,7 @@ function calculateImplants(){
    if(patientUnknown) caveats.push('TNR et/ou taux de couverture inconnu pour au moins un implant : son prix estimé complet est inclus par prudence dans le montant à prévoir ; le reste réel pourra diminuer après validation du TNR et de la PEC.');
    if(!actPatientKnown) caveats.push('Taux de couverture de l’acte non renseigné : le tarif de l’acte est inclus provisoirement sans déduction de prise en charge.');
    if(missingPrice) caveats.push('Le total est partiel : saisissez le prix TTC de chaque implant non chiffré.');
-   $('combinedHeadlineNote').textContent='Montant prévisionnel à la charge / à avancer : '+(actPatientKnown?'reste patient estimé pour l’acte':'tarif complet de l’acte, prise en charge non confirmée')+' + '+selectedImplants.length+' dispositif(s). '+caveats.join(' ');
+   $('combinedHeadlineNote').textContent='Montant prévisionnel à la charge du patient = '+(actPatientKnown?'reste patient estimé pour l’acte':'tarif complet de l’acte, prise en charge non confirmée')+' + coût TTC estimé total des '+selectedImplants.length+' implant(s), ajouté intégralement indépendamment du TNR. '+caveats.join(' ');
   }
  }
  var sector=$('sector').value,care=$('careSetting').value;
