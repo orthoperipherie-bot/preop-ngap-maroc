@@ -91,7 +91,7 @@ Sources de référence : [NGAP marocaine, arrêté n°177-06](https://cnops.org.
 
 ### Module « Implants & TNR » — révision du 10 octobre 2026
 
-Le catalogue du simulateur comprend **253 références d’implants et dispositifs** : **72 lignes KE** portant une valeur historique issue du barème n°2314-08 (2008), et **181 références** pour lesquelles aucun TNR actuel n’est vérifié dans cette base. Les lignes KE sont explicitement marquées comme historiques ; la valeur doit être confirmée dans le service TNR actuel de l’organisme payeur avant d’en déduire un remboursement. Les codes KE ajoutés et la correction de catégories améliorent la couverture des plaques, du coude, des ciments et de certains dispositifs rachidiens.
+Le catalogue du simulateur comprend **252 références d’implants et dispositifs** : **71 lignes KE** portant une valeur historique issue du barème n°2314-08 (2008), et **181 références** pour lesquelles aucun TNR actuel n’est vérifié dans cette base. Les lignes KE sont explicitement marquées comme historiques ; la valeur doit être confirmée dans le service TNR actuel de l’organisme payeur avant d’en déduire un remboursement. Les codes KE ajoutés et la correction de catégories améliorent la couverture des plaques, du coude, des ciments et de certains dispositifs rachidiens.
 
 Les prix d’achat sont désormais séparés du TNR :
 - Les deux seuls repères de prix automatiquement préremplis sont les fourchettes publiques marocaines publiées pour **un set complet de PTH (15 000–25 000 DH)** et **un set complet de PTG (12 000–22 000 DH)**. La valeur centrale affichée est une hypothèse de travail, pas un devis ni un prix officiel.
