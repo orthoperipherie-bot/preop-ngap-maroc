@@ -19,7 +19,7 @@
 .implant-estimate-label{display:block;margin-top:3px;font-size:.75rem;font-weight:400;color:var(--muted,#626b76)}
 </style></head><body><main class="app">
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → reste final estimé à payer par le patient. Les implants sont saisis dans l’onglet « Implants & TNR » et ne s’ajoutent au reste patient que lorsque « En sus » est coché. Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 40 — séparation des TNR marocains historiques et des estimations de coût d’importation des implants.</p>
+<p class="muted" id="buildVersion">Version 41 — prix importés séparés des TNR ; base de remboursement calculée uniquement avec un prix d’achat local confirmé.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
@@ -346,7 +346,7 @@ function renderImplantSearch(){
 }
 function addImplant(x){selectedImplants.push({id:nextImplantId++,device:x,qty:1,purchase:'',separate:false});$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplants();calculate()}
 function deviceUnitPurchase(it){return implantPriceForCase(it)}
-function deviceTnrBasis(it){var t=it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;if(t===null)return null;var p=deviceUnitPurchase(it);return p===null?null:Math.min(p,t)}
+function deviceTnrBasis(it){var t=it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;var actual=parseNum(it.purchase);if(t===null||actual===null)return null;return Math.min(actual,t)}
 function deviceCoverageRate(){var v=parseNum($('implantRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100}
 function updateImplantRate(){
  var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:null;
@@ -390,13 +390,13 @@ function calculateImplants(){
  });
  $('implantCount').textContent=String(selectedImplants.length);
  $('implantTnrTotal').textContent=fmt(tnrTotal)+(unknownTnr?' · '+unknownTnr+' ligne(s) sans TNR confirmé':'');
- $('implantBaseTotal').textContent=!selectedImplants.length?'—':(unknownTnr?'Partielle — certains TNR absents':fmt(baseTotal));
+ $('implantBaseTotal').textContent=!selectedImplants.length?'—':(unknownTnr?'Partielle — certains TNR absents':estimatedCount?'À confirmer — prix d’achat local requis':fmt(baseTotal));
  $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rate===null||coverageUnknown?'À confirmer':fmt(cover));
  $('implantPatientTotal').textContent=!selectedImplants.length?'—':(patientUnknown?'TNR/couverture à confirmer':fmt(patient));
  $('implantExtraTotal').textContent=extraUnknown?'À confirmer':fmt(extra);
  $('totalWithImplants').textContent=lastCalc&&lastCalc.grid?(typeof lastCalc.patientAll==='number'?fmt(lastCalc.patientAll):lastCalc.patientAll):'Sélectionnez d’abord un acte';
  $('implantPriceNote').textContent=(estimatedCount?estimatedCount+' dispositif(s) utilisent un benchmark externe ou une hypothèse de famille pour estimer le coût d’import, faute de prix d’achat local confirmé. ':'Prix d’achat local confirmé saisi pour chaque ligne. ')+
- 'Le coût d’import estimé est distinct du TNR réglementaire : il ne remplace jamais cette valeur. La base simulée compare à titre indicatif le prix utilisé (prix local confirmé ou, à défaut, coût d’import estimé) au TNR historique disponible. '+(unknownTnr?'Les lignes sans TNR identifiable restent sans base de remboursement chiffrable.':'Pour les dispositifs de classe III, vérifier le TNR actuel au regard de l’arrêté 3207-15 avant toute conclusion de remboursement.');
+ 'Le coût d’import estimé sert uniquement à budgéter le coût du dispositif. Il n’est jamais utilisé pour calculer la base de remboursement. Cette base exige un prix d’achat local confirmé et un TNR applicable identifié ; sinon elle reste « à confirmer ». '+(unknownTnr?'Les lignes sans TNR identifiable restent sans base de remboursement chiffrable.':'Pour les dispositifs de classe III, vérifier le TNR actuel au regard de l’arrêté 3207-15 avant toute conclusion de remboursement.');
  var payerNote=$('payer').value==='cnops'?'CNOPS : couverture simulée uniquement sur la base TNR disponible, à confirmer.':$('payer').value==='cnss'?'CNSS/AMO : taux saisi = hypothèse du dossier.':$('payer').value==='payant'?'Payant : aucun remboursement calculé.':$('payer').value==='far'?'FAR : règles spécifiques à confirmer.':'Assurance privée : taux et plafond contractuels à vérifier.';
  $('implantCoverNote').textContent=payerNote+' L’estimation ne garantit ni admissibilité ni accord préalable.';
  var fx=Math.max(0,parseNum($('implantFxEur').value)||0),freight=num($('implantFreightPct').value),duty=num($('implantCustomsPct').value),tpi=num($('implantTpiPct').value),vat=num($('implantVatPct').value),regime=$('implantMarginRegime').value;
