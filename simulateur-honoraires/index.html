@@ -497,11 +497,11 @@ function renderImplants(){
  syncTnrDisplay();calculateImplants();
 }
 function updateImplantRate(){
- var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:null;
+ var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:p==='cnss'?70:null;
  $('implantRate').value=rate===null?'':String(rate);
  var note=p==='cnops'?'CNOPS : taux, TNR actuel, liste du dispositif, droits et accord préalable à confirmer.':
  p==='payant'?'Payant : aucune prise en charge simulée.':
- p==='cnss'?'CNSS/AMO : saisir le taux confirmé pour le produit et le dossier; aucun taux uniforme n’est supposé.':
+ p==='cnss'?'CNSS/AMO : hypothèse indicative de 70 % de la base TNR pour une première estimation ; vérifier le taux réellement reconnu pour le dossier et le dispositif.':
  p==='far'?'FAR : règles et taux spécifiques à confirmer auprès du régime.':'Assurance privée : taux, plafond, exclusions et accord à vérifier dans le contrat.';
  $('implantCoverNote').textContent=note;
 }
