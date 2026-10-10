@@ -61,8 +61,8 @@
 .implant-suggestion-title{display:block;font-weight:700;line-height:1.3}
 .implant-suggestion-meta{display:block;margin-top:3px;color:var(--muted,#68737e);font-size:.79rem;line-height:1.35}
 </style></head><body><main class="app">
-<div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → reste final estimé à payer par le patient pour l’acte seul. Les implants sont calculés exclusivement dans l’onglet « Implants & TNR » ; ils ne sont jamais ajoutés au total de la page « Saisie rapide ». Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 43 — catalogue complet organisé par famille ; TNR séparé du prix d’achat ; comparaison du coût rendu des offres d’importation.</p>
+<div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → reste patient estimé pour l’acte seul. Les prix des implants et leur comparaison facultative au TNR sont regroupés dans l’onglet « Implants & TNR ». Ce n’est pas un devis.</p>
+<p class="muted" id="buildVersion">Version 44 — prix de marché des implants séparés de la saisie rapide ; comparaison au TNR facultative.</p>
 <div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants & TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
@@ -78,7 +78,7 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants sont estimés uniquement dans l’onglet « Implants & TNR ».</p></div>
-<div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE + IMPLANTS FACTURÉS EN SUS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond à la part restant réellement à la charge du patient après couverture pour l’acte et les implants cochés « En sus ». Les implants inclus au forfait ne sont pas ajoutés une seconde fois. Le montant à avancer aujourd’hui est affiché séparément selon le mode de paiement.</div></div>
+<div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant concerne uniquement l’intervention et les gestes associés. Les coûts des implants sont affichés dans l’onglet dédié et ne modifient pas ce total. Le montant à avancer aujourd’hui pour l’acte seul est affiché séparément selon le mode de paiement.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
@@ -88,27 +88,27 @@
 <div class="field"><label for="paymentType">Type de paiement</label><select id="paymentType"><option value="direct">Direct — paiement immédiat</option><option value="pec" selected>PEC — prise en charge</option><option value="remboursement">Remboursement après avance</option></select></div>
 <div class="field"><label for="coverageRate">Taux de couverture simulé (%)</label><input id="coverageRate" type="number" min="0" max="100" step="1" value="90"></div>
 <div class="field"><label>Barème sectoriel</label><div id="payerSectorSummary" class="muted">Le secteur règle la valeur K/KC et la méthode de calcul du total.</div></div></div><div id="payerNote" class="notice">CNOPS : hypothèse de 90 % de la TNR pour la chirurgie en clinique privée. Le taux réel dépend des droits, du tarif reconnu et de l’accord préalable.</div></div>
-<div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte seul</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small>Montant à payer aujourd’hui (acte + implants « En sus » ; PEC : reste patient, direct/remboursement : avance totale)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
+<div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte seul</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small>Montant à payer aujourd’hui — acte seul (PEC : reste patient ; direct/remboursement : avance totale)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
 </section>
 <section id="tab-implants" class="hidden">
 <div class="panel"><h2>Rechercher un implant / dispositif orthopédique</h2>
-<p class="muted">Les 225 implants et dispositifs sont réunis dans une seule recherche par code, nom, articulation ou technique. Le prix TTC affiché est une estimation de marché par famille, non un prix homologué ; le TNR de remboursement reste distinct.</p>
+<p class="muted">La recherche permet de retrouver les implants par code, nom, articulation ou technique. Le catalogue complet ne s’affiche pas en liste : seules quelques suggestions apparaissent après la saisie. Le prix TTC est un repère de marché par famille, non un devis ni un prix homologué. Le TNR reste masqué tant que vous n’activez pas son utilisation en option en bas de cette rubrique.</p>
 <div class="field"><label for="implantSearch">Rechercher un implant / dispositif</label><input id="implantSearch" autocomplete="off" placeholder="Tapez une lettre ou le début du nom / code…"></div>
-<p id="implantCatalogCount" class="muted">Catalogue complet : tapez une lettre pour afficher les suggestions.</p>
+<p id="implantCatalogCount" class="muted">Saisissez un nom ou un code pour afficher quelques suggestions.</p>
 <div id="implantSuggestions" class="implant-catalog-browser" aria-live="polite">Tapez une lettre pour afficher les suggestions.</div>
 <div class="row"><span>Dispositifs ajoutés</span><strong id="implantCount">0</strong></div>
-<div class="metrics"><div class="metric"><small>Somme des TNR utilisés — valeurs historiques par défaut, modifiables</small><strong id="implantTnrTotal">0 DH</strong></div><div class="metric"><small>Base remboursable estimée</small><strong id="implantBaseTotal">À confirmer</strong></div><div class="metric"><small>Part du payeur estimée</small><strong id="implantCoverTotal">À confirmer</strong></div><div class="metric patient-highlight"><small>Reste estimé sur implants</small><strong id="implantPatientTotal">À confirmer</strong></div></div>
+<div class="metrics"><div class="metric"><small>Prix de marché estimé — tous les implants sélectionnés</small><strong id="implantMarketTotal">0 DH</strong></div><div class="metric tnr-only hidden"><small>Somme des TNR sélectionnés (valeurs historiques à vérifier)</small><strong id="implantTnrTotal">0 DH</strong></div><div class="metric tnr-only hidden"><small>Base remboursable estimée</small><strong id="implantBaseTotal">À confirmer</strong></div><div class="metric tnr-only hidden"><small>Part du payeur estimée sur implants</small><strong id="implantCoverTotal">À confirmer</strong></div><div class="metric patient-highlight"><small id="implantPatientLabel">Reste estimé sur les implants sélectionnés</small><strong id="implantPatientTotal">À confirmer</strong></div></div>
 <p id="implantPriceNote" class="muted">Le prix estimé est un repère de famille, pas un devis fournisseur.</p><p id="implantCoverNote" class="muted">Taux de remboursement estimatif selon le payeur sélectionné.</p></div>
 <div class="panel"><h2>Implants sélectionnés — prix TTC et reste patient</h2>
-<p class="muted">Dès qu’un dispositif est sélectionné, son prix TTC estimé, sa fourchette et une note explicative apparaissent ici. Le prix estimé est prérempli et modifiable : remplacez-le par le prix TTC communiqué par le fournisseur dès que vous l’avez. Le TNR reste indépendant du prix de vente.</p>
-<div class="tablewrap"><table><thead><tr><th>Dispositif / code</th><th class="num">Qté</th><th class="num">TNR (DH)</th><th class="num">Prix TTC retenu / unité</th><th class="num">Base remboursable estimée</th><th class="num">En sus</th><th></th></tr></thead><tbody id="implantTable"><tr><td colspan="7">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr></tbody></table></div>
+<p class="muted">La sélection affiche le prix de marché indicatif et une fourchette par famille. Saisissez le prix TTC réel du fournisseur dans le détail de chaque implant pour obtenir un calcul plus fiable. Le TNR est facultatif et s’active en bas de cette rubrique.</p>
+<div class="tablewrap"><table><thead><tr><th>Dispositif / code</th><th class="num">Qté</th><th class="num tnr-only hidden" id="implantTnrHeader">TNR (DH)</th><th class="num">Prix TTC retenu / unité</th><th class="num tnr-only hidden" id="implantBaseHeader">Base remboursable estimée</th><th class="num">En sus</th><th></th></tr></thead><tbody id="implantTable"><tr><td colspan="7">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr></tbody></table></div>
 <h3>Prix estimé de chaque dispositif sélectionné</h3>
 <div id="implantPriceDetails" class="implant-price-detail-list"><p class="muted">Sélectionnez un dispositif pour afficher son prix TTC estimé.</p></div>
 <div class="row"><span>Coût estimé des implants cochés « En sus »</span><strong id="implantExtraTotal">0 DH</strong></div>
 <div class="row patient-row"><span>Reste patient estimé (acte + implants « En sus »)</span><strong id="totalWithImplants">—</strong></div>
-<div class="field" style="margin-top:10px"><label for="implantRate">Taux de remboursement des implants (%)</label><input id="implantRate" type="number" min="0" max="100" step="1" value="100"></div>
 <div class="actions"><button class="btn" id="clearImplants">Effacer les implants</button><button class="btn" id="copyImplantSummary">Copier le récapitulatif implants</button></div></div>
+<div class="panel"><h3>Option facultative — comparaison au TNR</h3><label style="display:flex;align-items:flex-start;gap:10px;font-weight:500"><input id="useTnrComparison" type="checkbox" style="width:auto;margin-top:4px"> Comparer le prix de marché au TNR et estimer le remboursement des implants</label><p class="muted">Par défaut, l’application calcule le coût à partir du prix de marché estimé ou du prix fournisseur saisi, sans déduire de remboursement sur l’implant. Cochez cette option pour afficher les TNR dans le tableau et simuler la part du payeur. Les TNR historiques doivent être vérifiés avant utilisation.</p><div class="field tnr-only hidden" id="implantRateField"><label for="implantRate">Taux de remboursement des implants (%) — à confirmer selon le payeur et le dispositif</label><input id="implantRate" type="number" min="0" max="100" step="1" value="100"></div><p class="muted tnr-only hidden" id="tnrOptionNote">La base estimée est limitée au plus petit du prix TTC retenu et du TNR renseigné. La prise en charge effective dépend de l’éligibilité du dispositif, des droits et d’un éventuel accord préalable.</p></div>
 <div class="panel"><h2>Prix TTC estimé et cadre légal</h2>
 <p class="muted">Pour les dispositifs sans prix fournisseur connu, l’application préremplit une estimation TTC par famille et une fourchette indicative. Ce n’est pas un devis et ce n’est pas un prix de vente homologué. La marque/référence commerciale, le contenu exact du kit, le prix de cession HT, la classe réglementaire et le distributeur peuvent faire varier sensiblement le prix réel.</p>
 <p class="muted">Pour les dispositifs médicaux de classe III, l’AMMPS prévoit une procédure de fixation/révision sur dossier. L’arrêté n°4217-15 décrit la construction du prix à partir du prix de cession HT, des marges réglementaires et de la TVA applicable. Sans la référence commerciale précise et le prix officiellement déclaré/fixé, un prix « légal TTC » exact ne peut pas être déduit d’un nom générique. Avant facturation, confirmer le prix exact auprès de l’importateur/distributeur ou de l’AMMPS.</p>
@@ -415,8 +415,8 @@ function renderImplantSearch(){
  var box=$('implantSuggestions');if(!box)return;box.innerHTML='';
  var q=$('implantSearch').value.trim();
  if(!q){
-  $('implantCatalogCount').textContent=implantCatalog.length.toLocaleString('fr-FR')+' références disponibles. Saisissez une lettre pour voir les suggestions.';
-  box.textContent='Commencez à taper une lettre, un code NGAP/TNR ou le début du nom de l’implant.';
+  $('implantCatalogCount').textContent='Recherche à la demande — aucune liste complète affichée.';
+  box.textContent='Commencez à saisir le nom, le code, l’articulation ou la technique.';
   return;
  }
  var found=implantMatches(q),limit=8,shown=found.slice(0,limit);
@@ -433,7 +433,7 @@ function renderImplantSearch(){
   var title=document.createElement('span');title.className='implant-suggestion-title';title.textContent=x.code+' · '+x.title;
   var est=estimateImplantPrice(x);
   var meta=document.createElement('span');meta.className='implant-suggestion-meta';
-  meta.textContent=implantCategoryLabel(x.category)+' · '+(typeof x.tnr==='number'?'TNR historique '+fmt(x.tnr)+' DH':'TNR à confirmer')+' · Prix TTC estimé '+fmt(est.center)+' DH'+(already?' · Déjà ajouté':'');
+  meta.textContent=implantCategoryLabel(x.category)+' · Prix TTC de marché estimé '+fmt(est.center)+' DH'+(already?' · Déjà ajouté':'');
   btn.append(title,meta);
   btn.addEventListener('click',function(){addImplant(x);});
   box.appendChild(btn);
@@ -484,12 +484,12 @@ function renderImplants(){
  selectedImplants.forEach(function(it){
   var tr=document.createElement('tr'),title=document.createElement('td'),titleText=document.createElement('div');
   titleText.textContent=it.device.code+' · '+it.device.title;title.appendChild(titleText);
-  var meta=document.createElement('small');meta.className='implant-meta';meta.textContent=implantCategoryLabel(it.device.category)+' · '+(typeof it.device.tnr==='number'?'TNR historique : '+fmt(it.device.tnr)+' DH. Vérifier la valeur actuelle.':'Aucun TNR identifié dans le catalogue : prise en charge et accord à confirmer.');
+  var meta=document.createElement('small');meta.className='implant-meta';meta.textContent=implantCategoryLabel(it.device.category);
   title.appendChild(meta);tr.appendChild(title);
   var tdQty=document.createElement('td');tdQty.className='num';var qty=document.createElement('input');qty.type='number';qty.min='1';qty.step='1';qty.value=it.qty;qty.style.width='60px';qty.setAttribute('aria-label','Quantité de '+it.device.title);qty.addEventListener('input',function(){it.qty=Math.max(1,parseInt(qty.value||'1',10)||1);calculate();});tdQty.appendChild(qty);tr.appendChild(tdQty);
-  var tdTnr=document.createElement('td');tdTnr.className='num';var tn=document.createElement('input');tn.type='number';tn.min='0';tn.step='0.01';tn.style.width='100px';tn.setAttribute('aria-label','TNR DH');tn.value=it.tnrOverride!==undefined?(it.tnrOverride===null?'':it.tnrOverride):(typeof it.device.tnr==='number'?String(it.device.tnr):'');tn.placeholder='À vérifier';tn.addEventListener('input',function(){it.tnrOverride=tn.value===''?null:tn.value;updateImplantRowSummary(it);calculate();});tdTnr.append(tn);tr.appendChild(tdTnr);
+  var tdTnr=document.createElement('td');tdTnr.className='num tnr-only hidden';var tn=document.createElement('input');tn.type='number';tn.min='0';tn.step='0.01';tn.style.width='100px';tn.setAttribute('aria-label','TNR DH');tn.value=it.tnrOverride!==undefined?(it.tnrOverride===null?'':it.tnrOverride):(typeof it.device.tnr==='number'?String(it.device.tnr):'');tn.placeholder='À vérifier';tn.addEventListener('input',function(){it.tnrOverride=tn.value===''?null:tn.value;updateImplantRowSummary(it);calculate();});tdTnr.append(tn);tr.appendChild(tdTnr);
   var tdUnit=document.createElement('td');tdUnit.className='num';var out=document.createElement('strong');out.className='implant-price-out';out.id='implant-unit-'+it.id;tdUnit.appendChild(out);var note=document.createElement('small');note.id='implant-unit-note-'+it.id;note.className='implant-estimate-label';tdUnit.appendChild(note);tr.appendChild(tdUnit);
-  var tdBase=document.createElement('td');tdBase.className='num';var baseOut=document.createElement('strong');baseOut.id='implant-base-'+it.id;tdBase.appendChild(baseOut);tr.appendChild(tdBase);
+  var tdBase=document.createElement('td');tdBase.className='num tnr-only hidden';var baseOut=document.createElement('strong');baseOut.id='implant-base-'+it.id;tdBase.appendChild(baseOut);tr.appendChild(tdBase);
   var tdSep=document.createElement('td');tdSep.className='num';var sep=document.createElement('input');sep.type='checkbox';sep.checked=it.separate;sep.setAttribute('aria-label','Inclure '+it.device.title+' en sus du forfait');sep.addEventListener('change',function(){it.separate=sep.checked;calculate();});tdSep.appendChild(sep);tr.appendChild(tdSep);
   var tdDel=document.createElement('td');var del=document.createElement('button');del.type='button';del.className='btn danger remove';del.textContent='×';del.setAttribute('aria-label','Supprimer '+it.device.title);del.addEventListener('click',function(){selectedImplants=selectedImplants.filter(function(z){return z.id!==it.id;});renderImplants();renderImplantSearch();calculate();});tdDel.appendChild(del);tr.appendChild(tdDel);
   tb.appendChild(tr);updateImplantRowSummary(it);
@@ -505,50 +505,55 @@ function updateImplantRate(){
  p==='far'?'FAR : règles et taux spécifiques à confirmer auprès du régime.':'Assurance privée : taux, plafond, exclusions et accord à vérifier dans le contrat.';
  $('implantCoverNote').textContent=note;
 }
+function tnrComparisonEnabled(){var el=$('useTnrComparison');return !!(el&&el.checked);}
+function syncTnrDisplay(){
+ var on=tnrComparisonEnabled();
+ document.querySelectorAll('.tnr-only').forEach(function(el){el.classList.toggle('hidden',!on);});
+ var label=$('implantPatientLabel');
+ if(label)label.textContent=on?'Reste patient estimé après prise en charge TNR':'Reste estimé sur les implants sélectionnés — sans remboursement TNR déduit';
+ var searchCount=$('implantCatalogCount');
+ if(searchCount&&!$('implantSearch').value.trim())searchCount.textContent='Recherche à la demande — aucune liste complète affichée.';
+}
 function calculateImplants(){
- var rate=deviceCoverageRate(),tnrTotal=0,baseTotal=0,cover=0,patient=0,extra=0,unknownTnr=0,missingPrice=0,extraUnknown=false,patientUnknown=false,coverageUnknown=false,separatePatient=0,separatePatientUnknown=false;
+ var tnrOn=tnrComparisonEnabled(),rate=tnrOn?deviceCoverageRate():0,tnrTotal=0,baseTotal=0,cover=0,patient=0,marketTotal=0,extra=0,unknownTnr=0,missingPrice=0,marketUnknown=0,extraUnknown=false,patientUnknown=false,coverageUnknown=false,separatePatient=0,separatePatientUnknown=false;
  selectedImplants.forEach(function(it){
-  var q=num(it.qty),unit=deviceUnitPurchase(it),basis=deviceTnrBasis(it),tnr=deviceTnrValue(it);
-  if(tnr!==null)tnrTotal+=q*tnr;else unknownTnr++;
-  if(basis!==null)baseTotal+=q*basis;
-  if(unit===null)missingPrice++;
-  if(rate===null){coverageUnknown=true;patientUnknown=true;}
-  else if(rate>0&&basis===null){coverageUnknown=true;patientUnknown=true;}
-  else if(rate>0&&basis!==null)cover+=q*basis*rate;
+  var q=num(it.qty),unit=deviceUnitPurchase(it),basis=tnrOn?deviceTnrBasis(it):null,tnr=tnrOn?deviceTnrValue(it):null;
+  if(unit!==null)marketTotal+=q*unit;else{missingPrice++;marketUnknown++;}
+  if(tnrOn){if(tnr!==null)tnrTotal+=q*tnr;else unknownTnr++;if(basis!==null)baseTotal+=q*basis;}
+  if(tnrOn&&rate===null){coverageUnknown=true;patientUnknown=true;}
+  else if(tnrOn&&rate>0&&basis===null){coverageUnknown=true;patientUnknown=true;}
+  else if(tnrOn&&rate>0&&basis!==null)cover+=q*basis*rate;
   if(unit===null)patientUnknown=true;
-  else if(rate!==null&&(rate===0||basis!==null))patient+=q*Math.max(0,unit-(basis===null?0:basis*rate));
+  else if(!tnrOn||rate===0)patient+=q*unit;
+  else if(rate!==null&&basis!==null)patient+=q*Math.max(0,unit-basis*rate);
   if(it.separate){
    if(unit===null)extraUnknown=true;else extra+=q*unit;
-   if(rate===null||unit===null)separatePatientUnknown=true;
-   else if(rate===0)separatePatient+=q*unit;
-   else if(basis===null)separatePatientUnknown=true;
+   if(unit===null)separatePatientUnknown=true;
+   else if(!tnrOn||rate===0)separatePatient+=q*unit;
+   else if(rate===null||basis===null)separatePatientUnknown=true;
    else separatePatient+=q*Math.max(0,unit-basis*rate);
   }
   updateImplantRowSummary(it);
  });
  $('implantCount').textContent=String(selectedImplants.length);
+ $('implantMarketTotal').textContent=!selectedImplants.length?'0 DH':(marketUnknown?'Partiel — prix à préciser':fmt(marketTotal));
  $('implantTnrTotal').textContent=fmt(tnrTotal)+(unknownTnr?' · '+unknownTnr+' ligne(s) sans TNR renseigné':'');
  $('implantBaseTotal').textContent=!selectedImplants.length?'—':(unknownTnr?'Partielle — TNR à compléter pour certaines lignes':missingPrice?'À confirmer — prix d’achat manquant':fmt(baseTotal));
- $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rate===null||coverageUnknown?'À confirmer':fmt(cover));
+ $('implantCoverTotal').textContent=!selectedImplants.length?'—':(!tnrOn?'Cochez la comparaison TNR':rate===null||coverageUnknown?'À confirmer':fmt(cover));
  $('implantPatientTotal').textContent=!selectedImplants.length?'—':(patientUnknown?'À confirmer : prix/TNR/couverture manquant(e)':fmt(patient));
- $('implantExtraTotal').textContent=extraUnknown?'À confirmer — offre en sus incomplète':fmt(extra);
+ $('implantExtraTotal').textContent=extraUnknown?'À confirmer — prix fournisseur manquant':fmt(extra);
  var patientAct=lastCalc?lastCalc.patient:'À confirmer',totalImplantPatient,todayAll,patientAllValue,extraValue;
  if(!lastCalc||!lastCalc.grid){
   totalImplantPatient='Sélectionnez d’abord un acte';
-  $('totalHeadline').textContent='— DH';
-  $('todayAmount').textContent='— DH';
   patientAllValue='À confirmer';todayAll='À confirmer';extraValue=extraUnknown?'À confirmer':extra;
  }else{
   var finalPatientUnknown=typeof patientAct!=='number'||separatePatientUnknown||extraUnknown;
   totalImplantPatient=finalPatientUnknown?'À confirmer':fmt(patientAct+separatePatient);
-  $('totalHeadline').textContent=totalImplantPatient;
   patientAllValue=finalPatientUnknown?'À confirmer':patientAct+separatePatient;
   if(lastCalc.mode==='pec'){
    todayAll=finalPatientUnknown?'À confirmer':patientAct+separatePatient;
-   $('todayAmount').textContent=typeof todayAll==='number'?fmt(todayAll):todayAll;
   }else{
    todayAll=extraUnknown?'À confirmer':(lastCalc.billedTotal===undefined?lastCalc.total:lastCalc.billedTotal)+extra;
-   $('todayAmount').textContent=typeof todayAll==='number'?fmt(todayAll):todayAll;
   }
   extraValue=extraUnknown?'À confirmer':extra;
  }
@@ -556,15 +561,20 @@ function calculateImplants(){
   lastCalc.patientAll=patientAllValue;
   lastCalc.implantPatient=separatePatientUnknown?'À confirmer':separatePatient;
   lastCalc.implantExtra=extraValue;
-  lastCalc.totalAll=(typeof extraValue==='number'&&typeof lastCalc.total==='number')?lastCalc.total+extraValue:'À confirmer';
+  lastCalc.totalAll=patientAllValue;
   lastCalc.todayAll=todayAll;
  }
  $('totalWithImplants').textContent=totalImplantPatient;
- $('implantPriceNote').textContent=(missingPrice?missingPrice+' dispositif(s) ont un prix retenu manquant; saisir le prix fournisseur TTC réel. ':'')+'La base remboursable est estimée au minimum du prix TTC retenu et du TNR renseigné. Les TNR historiques doivent être vérifiés; une estimation de prix n’est jamais une PVP homologuée.';
- if(unknownTnr)$('implantPriceNote').textContent+=' '+unknownTnr+' ligne(s) sans TNR connu : saisir une valeur vérifiée uniquement si le dispositif est effectivement éligible.';
+ if(!selectedImplants.length){
+  $('implantPriceNote').textContent='Recherchez un dispositif pour consulter son prix de marché indicatif. Le catalogue affiche uniquement les résultats de votre recherche.';
+ }else if(!tnrOn){
+  $('implantPriceNote').textContent=(missingPrice?missingPrice+' prix manquant(s). Saisissez le prix TTC fournisseur. ':'')+'Le coût indiqué utilise le prix de marché estimé ou le prix fournisseur saisi. Aucun remboursement TNR n’est déduit tant que l’option de comparaison située en bas n’est pas cochée.';
+ }else{
+  $('implantPriceNote').textContent=(missingPrice?missingPrice+' dispositif(s) ont un prix retenu manquant; saisir le prix fournisseur TTC réel. ':'')+'La base remboursable estimée est limitée au plus petit du prix TTC retenu et du TNR renseigné. Les TNR historiques doivent être vérifiés; une estimation de prix n’est jamais une PVP homologuée.';
+  if(unknownTnr)$('implantPriceNote').textContent+=' '+unknownTnr+' ligne(s) sans TNR connu : saisir une valeur vérifiée uniquement si le dispositif est effectivement éligible.';
+ }
  var payNote=$('payer').value==='cnops'?'CNOPS : taux à confirmer pour le produit, la liste, les droits et l’accord éventuel.':$('payer').value==='cnss'?'CNSS/AMO : taux à confirmer pour le dossier.':$('payer').value==='payant'?'Payant : aucun remboursement calculé.':$('payer').value==='far'?'FAR : règles propres au régime à confirmer.':'Assurance privée : taux, plafonds et franchises du contrat à vérifier.';
- $('implantCoverNote').textContent=payNote+' Le pays de vente ne détermine pas à lui seul le TNR ou le taux de remboursement.';
- 
+ $('implantCoverNote').textContent=!tnrOn?'Comparaison TNR désactivée : aucun remboursement n’est déduit du prix d’achat de l’implant. '+payNote:'Comparaison TNR activée : simulation basée sur min(prix TTC retenu, TNR) × taux configuré. '+payNote+' Le taux effectif et le TNR courant doivent être confirmés.';
 }
 function calculate(){
  var k=parseNum($('keyValue').value);if(k===null)k=sectorKeyValue();
@@ -743,14 +753,16 @@ function summary(){
  ].join('\n');
 }
 $('implantSearch').addEventListener('input',renderImplantSearch);
+$('useTnrComparison').addEventListener('change',function(){syncTnrDisplay();renderImplants();calculate();});
 $('implantRate').addEventListener('input',function(){calculate();calculateImplants();});
 $('clearImplants').addEventListener('click',function(){selectedImplants=[];renderImplants();calculate();});
 $('copyImplantSummary').addEventListener('click',function(){
+ var tnrOn=tnrComparisonEnabled();
  var lines=selectedImplants.map(function(it){
   var est=it.estimate||estimateImplantPrice(it.device),base=deviceTnrBasis(it),price=deviceUnitPurchase(it),tnr=deviceTnrValue(it);
-  return it.device.code+' · '+it.device.title+' | quantité '+it.qty+' | prix TTC estimé '+fmt(est.center)+' DH (fourchette '+fmt(est.low)+'–'+fmt(est.high)+') | prix retenu '+(price===null?'à confirmer':fmt(price)+' DH/unité')+' | TNR '+(tnr===null?'non identifié/à confirmer':fmt(tnr)+' DH, historique')+' | base remboursable '+(base===null?'à confirmer':fmt(base))+' | '+(it.separate?'en sus':'hors sus');
+  return it.device.code+' · '+it.device.title+' | quantité '+it.qty+' | prix TTC estimé '+fmt(est.center)+' DH (fourchette '+fmt(est.low)+'–'+fmt(est.high)+') | prix retenu '+(price===null?'à confirmer':fmt(price)+' DH/unité')+' | '+(tnrOn?('TNR '+(tnr===null?'non identifié/à confirmer':fmt(tnr)+' DH, historique')+' | base remboursable '+(base===null?'à confirmer':fmt(base))):'comparaison TNR désactivée')+' | '+(it.separate?'en sus':'hors sus');
  });
- var txt=['Récapitulatif implants — estimation indicative, non devis','Les prix par famille ne sont pas homologués. Pour une référence de classe III, confirmer le prix officiel exact auprès du distributeur/AMMPS.','',lines.join('\n'),'Somme des TNR disponibles : '+$('implantTnrTotal').textContent,'Base remboursable estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée : '+$('implantCoverTotal').textContent,'Reste patient estimé sur implants : '+$('implantPatientTotal').textContent,'Source des TNR historiques : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.'].join('\n');
+ var txt=['Récapitulatif implants — estimation indicative, non devis','Comparaison TNR : '+(tnrOn?'activée':'désactivée')+'.','Les prix par famille ne sont pas homologués. Pour une référence de classe III, confirmer le prix officiel exact auprès du distributeur/AMMPS.','',lines.join('\n'),'Somme des TNR disponibles : '+$('implantTnrTotal').textContent,'Base remboursable estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée : '+$('implantCoverTotal').textContent,'Reste patient estimé sur implants : '+$('implantPatientTotal').textContent,'Source des TNR historiques : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.'].join('\n');
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt);});else alert(txt);
 });
 $('mainSearch').addEventListener('input',renderMainSuggestions);
@@ -802,6 +814,6 @@ fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalog
  $('tariffBasisHeadline').textContent='Catalogue orthopédique non chargé : vérifier le déploiement de orthopedie-actes.json.';
 });
 fetch('../market-prices.json').then(function(r){if(!r.ok)throw Error('marché non chargé');return r.json()}).then(function(d){marketReferences=d;renderMarketSources()}).catch(function(){});
-updateSector();renderGestures();renderImplants();renderImplantSearch();calculate();
+updateSector();syncTnrDisplay();renderGestures();renderImplants();renderImplantSearch();calculate();
 })();
 </script></body></html>
