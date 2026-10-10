@@ -64,7 +64,7 @@
 </style></head><body><main class="app">
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Intervention et gestes associés → estimation du reste à payer par le patient. En bas de la saisie, sélectionnez les implants ; la case TNR active leur comparaison et actualise automatiquement le reste patient. Ce n’est pas un devis.</p>
 <p class="muted" id="buildVersion">Version 46 — actes orthopédiques et implants intégrés à la saisie ; reste patient calculé automatiquement.</p>
-<div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
+<div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button><button class="btn tab" data-tab="implants">Implants &amp; TNR</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
 <div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Secteur privé — clinique</option><option value="public">Secteur public — CHU</option><option value="nonprofit">Hôpital privé à but non lucratif</option></select></div>
@@ -91,7 +91,8 @@
 <div class="field"><label>Barème sectoriel</label><div id="payerSectorSummary" class="muted">Le secteur règle la valeur K/KC et la méthode de calcul du total.</div></div></div><div id="payerNote" class="notice">CNOPS : hypothèse de 90 % de la TNR pour la chirurgie en clinique privée. Le taux réel dépend des droits, du tarif reconnu et de l’accord préalable.</div></div>
 <div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small>Reste net du patient après couverture — acte seul</small><strong id="patientAmount">—</strong></div><div class="metric patient-highlight"><small id="todayAmountLabel">Montant à payer aujourd’hui — acte seul (PEC : reste patient ; direct/remboursement : avance totale)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
-<div id="tab-implants" class="implant-inline">
+</section>
+<section id="tab-implants" class="hidden">
 <div class="panel"><h2>4 · Implants orthopédiques — optionnel</h2>
 <p class="muted">Recherchez par articulation, intervention ou type de dispositif. Les libellés sont simplifiés pour faciliter le choix. Le tableau affiche le TNR de référence lorsqu’il est connu (barème historique à vérifier). Pour une prothèse totale de hanche, vérifiez le couple de frottement (métal/polyéthylène, céramique/polyéthylène, céramique-céramique) et distinguez la double mobilité, qui correspond à une conception de stabilité.</p><div class="implant-tnr-control" style="border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;"><label style="display:flex;align-items:flex-start;gap:10px;font-weight:500"><input id="useTnrComparison" type="checkbox" style="width:auto;margin-top:4px"> Afficher les TNR et déduire automatiquement la prise en charge estimée des implants</label><p class="muted">Le TNR unitaire est affiché dans le tableau lorsqu’il est disponible. Cette option active uniquement le calcul indicatif de la base remboursable et de la part du payeur. Les valeurs du catalogue proviennent d’un barème historique et doivent être vérifiées avant utilisation.</p><div class="field tnr-only hidden" id="implantRateField"><label for="implantRate">Taux de remboursement des implants (%) — à confirmer selon le payeur et le dispositif</label><input id="implantRate" type="number" min="0" max="100" step="1" value="100"></div><p class="muted tnr-only hidden" id="tnrOptionNote">La base estimée est limitée au plus petit du prix TTC retenu et du TNR renseigné. La prise en charge effective dépend de l’éligibilité du dispositif, des droits et d’un éventuel accord préalable.</p></div>
 <div class="field"><label for="implantSearch">Rechercher un implant / dispositif</label><input id="implantSearch" autocomplete="off" placeholder="Tapez une lettre ou le début du nom / code…"></div>
@@ -111,7 +112,7 @@
 <p class="muted">Pour les dispositifs médicaux de classe III, l’AMMPS prévoit une procédure de fixation/révision sur dossier. L’arrêté n°4217-15 décrit la construction du prix à partir du prix de cession HT, des marges réglementaires et de la TVA applicable. Sans la référence commerciale précise et le prix officiellement déclaré/fixé, un prix « légal TTC » exact ne peut pas être déduit d’un nom générique. Avant facturation, confirmer le prix exact auprès de l’importateur/distributeur ou de l’AMMPS.</p>
 <p class="muted">Les TNR du catalogue proviennent du barème n°2314-08 (2008) et peuvent être historiques ; l’arrêté n°3207-15 a révisé une partie des TNR de classe III. Vérifier le TNR actuel et l’éligibilité du dispositif exact auprès du payeur.</p>
 <p class="muted">Sources : <a href="https://www.ammps.gov.ma/note-information/mise-en-service-dune-adresse-electronique-dediee-au-depot-des-demandes-de-fixation-et-de-revision-des-prix-des-dispositifs-medicaux-de-classe-iii" target="_blank" rel="noopener">AMMPS — fixation/révision des prix des dispositifs médicaux de classe III (12 mai 2026)</a> · <a href="https://fr.scribd.com/document/900039966/Ma-Bulletin-Officiel-Dated-2016-02-04-No-6436" target="_blank" rel="noopener">Bulletin officiel n°6436 — arrêté n°4217-15</a> · <a href="https://www.sante.gov.ma/Reglementation/Cov_Med/Documents/AMO/arretes/Arr%C3%AAt%C3%A9%20n%C2%B0%202314-08.pdf" target="_blank" rel="noopener">arrêté n°2314-08 — TNR historiques</a> · <a href="https://pharmacie.ma/uploads/pdfs/BO_6422_Fr-DM.pdf" target="_blank" rel="noopener">arrêté n°3207-15 — révision des TNR</a>.</p></div>
-</div></section>
+</section>
 <section id="tab-details" class="hidden">
 <div class="panel"><h2>Ventilation estimée</h2><p class="muted">Chirurgien : coefficient opératoire pondéré × valeur K/KC de l’établissement. Anesthésie : coefficient secondaire NGAP lorsqu’il est indiqué ; à défaut, l’article 22 prévoit K15 sans dépasser le coefficient de l’acte. Bloc : 50 % de la cotation opératoire selon l’article 23. La part établissement est un résiduel estimatif et peut être indiquée « à confirmer » si la ventilation et le forfait de référence ne sont pas compatibles.</p>
 <p class="muted">Le statut du chirurgien et la retenue/commission se règlent dans la première rubrique. Le détail ci-dessous affiche les honoraires bruts théoriques puis le net estimé si le chirurgien exerce en libéral. Pour un chirurgien public, le salaire net individuel ne peut pas être déduit de la NGAP.</p>
@@ -406,6 +407,7 @@ function estimateImplantPrice(x){
  var f={hip:[14000,8000,25000],knee:[18000,10000,32000],shoulder:[15000,9000,28000],misc:[9000,4000,18000],external:[9000,5000,16000],trauma:[2500,1200,5000],sport:[3000,1500,6500],bone:[5000,2500,12000],foot:[3000,1500,6500],spine:[8000,4500,18000],tumor:[70000,40000,130000]}[cat]||[3000,1000,8000];
  return p(f[0],f[1],f[2],'Fourchette large','Estimation générique de la famille; vérifier marque, code exact, contenu du kit et prix TTC du fournisseur.');
 }
+function implantCategoryOrder(cat){return ({hip:1,knee:2,shoulder:3,trauma:4,external:5,misc:6,sport:7,foot:8,spine:9,bone:10,tumor:11})[cat]||99;}
 function implantMatches(q){
  var n=norm(q);
  if(!n)return [];
@@ -817,7 +819,7 @@ $('reset').addEventListener('click',function(){
 document.querySelectorAll('[data-tab]').forEach(function(b){
  b.onclick=function(){
   document.querySelectorAll('[data-tab]').forEach(function(x){x.classList.toggle('active',x===b);});
-  ['saisie','details'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',b.dataset.tab!==t);});
+  ['saisie','details','implants'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',b.dataset.tab!==t);});
  };
 });
 fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalogue orthopédique inaccessible');return r.json();}).then(function(d){
