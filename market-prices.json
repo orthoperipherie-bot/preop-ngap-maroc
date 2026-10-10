@@ -26,7 +26,8 @@
           "label": "Morocco Orthopaedic Center — tarif à partir de 6 000 €",
           "url": "https://www.moroccoorthopaediccenter.com/tarifs"
         }
-      ]
+      ],
+      "includesImplants": true
     },
     {
       "id": "PTG",
@@ -52,7 +53,8 @@
           "label": "Sahha — forfait complet PTG et prix implant (article 2026)",
           "url": "https://sahha.ma/articles/hospitalisation-prix-cliniques-privees-maroc-2026-cesarienne-appendicite-vesicule"
         }
-      ]
+      ],
+      "includesImplants": true
     },
     {
       "id": "ARTHRO-GENOU",
@@ -77,7 +79,8 @@
           "label": "AlloMédecin — tarifs indicatifs à Casablanca 2026 (12 000–25 000 DH)",
           "url": "https://allomedecin.com/traumatologue-maarif.html"
         }
-      ]
+      ],
+      "includesImplants": null
     },
     {
       "id": "MENISCECTOMIE",
@@ -102,7 +105,8 @@
           "label": "Morocco Orthopaedic Center — suture méniscale arthroscopique à partir de 2 800 € (geste différent d’une méniscectomie)",
           "url": "https://www.moroccoorthopaediccenter.com/tarifs"
         }
-      ]
+      ],
+      "includesImplants": null
     },
     {
       "id": "LCA",
@@ -111,9 +115,9 @@
         "N109"
       ],
       "marketMin": 15000,
-      "marketMax": 40000,
+      "marketMax": 45000,
       "sector": "Privé — prix global annoncé",
-      "scope": "Publications marocaines 2026 affichent environ 15 000–30 000 DH pour une ligamentoplastie LCA et jusqu’à 40 000 DH pour certains forfaits complets. Vérifier si greffon, boutons/vis, bloc, séjour et rééducation sont inclus.",
+      "scope": "Fourchette publique observée pour une ligamentoplastie du LCA. Elle varie avec la technique, les implants de fixation, les honoraires et la clinique ; la source ne précise pas systématiquement si tous les implants sont inclus.",
       "sources": [
         {
           "label": "Journal Santé Maroc — ligamentoplastie LCA 15 000–30 000 DH (septembre 2026)",
@@ -126,6 +130,81 @@
         {
           "label": "Morocco Orthopaedic Center — reconstruction LCA à partir de 4 500 €, devis complet",
           "url": "https://www.moroccoorthopaediccenter.com/tarifs"
+        },
+        {
+          "label": "Sahha — tarifs publics d’actes d’orthopédie à Rabat : ligamentoplastie 15 000–45 000 DH",
+          "url": "https://sahha.ma/orthopediste/rabat"
+        }
+      ],
+      "includesImplants": null
+    },
+    {
+      "id": "OSTEOSYNTHESE-FRACTURE",
+      "title": "Ostéosynthèse d’une fracture d’un membre (fourchette générique)",
+      "codes": [
+        "A120",
+        "A121",
+        "A122",
+        "A123",
+        "A124",
+        "A125",
+        "A126",
+        "A127",
+        "A128",
+        "A129",
+        "A130",
+        "A131",
+        "A132",
+        "A133",
+        "A134",
+        "A135",
+        "A136",
+        "A137",
+        "A138",
+        "A139",
+        "A140",
+        "A141",
+        "A142",
+        "A143",
+        "A144",
+        "A145",
+        "A146",
+        "A147",
+        "A148",
+        "A149",
+        "A150",
+        "A151",
+        "A152"
+      ],
+      "marketMin": 10000,
+      "marketMax": 40000,
+      "sector": "Privé — estimation générique publiée",
+      "includesImplants": null,
+      "scope": "Fourchette très large pour ostéosynthèse d’une fracture, sans précision constante de l’os, de la complexité, du matériel ni des inclusions. Une partie des cliniques peut facturer l’implant séparément. Il faut préférer un devis détaillé pour le cas exact.",
+      "sources": [
+        {
+          "label": "AlloMédecin — tarifs indicatifs d’orthopédie à Casablanca 2026 : ostéosynthèse (fracture) 10 000–40 000 DH",
+          "url": "https://allomedecin.com/traumatologue-maarif.html"
+        }
+      ]
+    },
+    {
+      "id": "CHIRURGIE-PIED",
+      "title": "Chirurgie corrective du pied (ex. hallux valgus)",
+      "codes": [
+        "N202",
+        "N205",
+        "N211"
+      ],
+      "marketMin": 15000,
+      "marketMax": 30000,
+      "sector": "Privé — estimation générique publiée",
+      "includesImplants": null,
+      "scope": "Fourchette publiée pour chirurgie du pied, incluant différentes indications et techniques. Ne pas la considérer comme un devis spécifique d’hallux valgus ou d’hallux rigidus.",
+      "sources": [
+        {
+          "label": "AlloMédecin — tarifs indicatifs d’orthopédie à Casablanca 2026 : chirurgie du pied 15 000–30 000 DH",
+          "url": "https://allomedecin.com/traumatologue-maarif.html"
         }
       ]
     }
@@ -206,5 +285,36 @@
       "name": "Prix fournisseur de l’implant",
       "description": "Prix unitaire réel à saisir depuis un devis daté d’un distributeur. Il n’existe pas, dans les sources publiques consultées, de tarif 2026 stable par modèle/marque pour chaque dispositif orthopédique."
     }
-  ]
+  ],
+  "implantSets": [
+    {
+      "id": "PTG-SET",
+      "title": "Implant / set de prothèse totale de genou (ensemble)",
+      "marketMin": 12000,
+      "marketMax": 22000,
+      "unit": "DH par set complet indicatif, pas par composant",
+      "scope": "Fourchette d’un guide de prix public marocain. Le modèle, la marque, la gamme, le ciment, les options de reprise et le détail exact des composants ne sont pas précisés pour chaque devis. À utiliser uniquement comme repère général, puis remplacer par le devis fournisseur.",
+      "sources": [
+        {
+          "label": "Sahha — guide prix des cliniques privées, rubrique orthopédie : implant PTG 12 000–22 000 DH",
+          "url": "https://sahha.ma/articles/hospitalisation-prix-cliniques-privees-maroc-2026-cesarienne-appendicite-vesicule"
+        }
+      ]
+    },
+    {
+      "id": "PTH-SET",
+      "title": "Implant / set de prothèse totale de hanche (ensemble)",
+      "marketMin": 15000,
+      "marketMax": 25000,
+      "unit": "DH par set complet indicatif, pas par composant",
+      "scope": "Fourchette d’un guide de prix public marocain pour le poste implant. Le montant varie selon la tige, le cotyle, le couple de frottement, la marque et le ciment. Ne pas appliquer ce montant à chaque code composant de l’implant.",
+      "sources": [
+        {
+          "label": "Sahha — guide prix des cliniques privées, rubrique orthopédie : implant PTH 15 000–25 000 DH",
+          "url": "https://sahha.ma/articles/hospitalisation-prix-cliniques-privees-maroc-2026-cesarienne-appendicite-vesicule"
+        }
+      ]
+    }
+  ],
+  "implantPriceDisclaimer": "Les fourchettes d’implants sont des références publiques indicatives pour des sets complets et non des prix d’achat fournisseur par code produit. Le prix unitaire réel requis pour les calculs détaillés doit être issu d’un devis daté."
 }
