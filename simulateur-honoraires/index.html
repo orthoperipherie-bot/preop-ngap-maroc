@@ -438,27 +438,35 @@ function deviceUnitPurchase(it){return it?parseNum(it.purchase):null;}
 function deviceTnrBasis(it){var t=deviceTnrValue(it),actual=deviceUnitPurchase(it);if(t===null||actual===null)return null;return Math.min(actual,t);}
 function deviceCoverageRate(){var v=parseNum($('implantRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100;}
 function renderImplantSearch(){
- var box=$('implantSuggestions');if(!box)return;box.innerHTML='';
+ var box=$('implantSuggestions');if(!box)return;
+ box.innerHTML='';
  var query=$('implantSearch').value.trim();
  if(!query){
-  $('implantCatalogCount').textContent=implantCatalog.length+' dispositifs disponibles — catalogue masqué pour garder l’écran léger.';
-  box.textContent='Saisissez un code, un nom ou une articulation (ex. plaque tibia, PTH, clou fémoral) pour afficher les correspondances.';
+  box.classList.add('hidden');
+  $('implantCatalogCount').textContent='Recherche à la demande : aucun catalogue n’est affiché.';
+  return;
+ }
+ if(query.length<2){
+  box.classList.add('hidden');
+  $('implantCatalogCount').textContent='Saisissez au moins 2 caractères pour rechercher un implant.';
   return;
  }
  var allFound=implantMatches(query);
  if(!allFound.length){
-  $('implantCatalogCount').textContent='Aucun résultat pour « '+query+' » parmi '+implantCatalog.length+' dispositifs.';
-  box.textContent='Aucune référence trouvée. Essayez le code exact, une articulation ou un terme plus court.';
+  box.classList.remove('hidden');
+  $('implantCatalogCount').textContent='Aucune correspondance pour « '+query+' ».';
+  box.textContent='Aucun résultat. Essayez un autre code, une articulation ou un terme plus précis.';
   return;
  }
- var found=allFound.slice(0,10);
- $('implantCatalogCount').textContent=(allFound.length>found.length?'Affichage des 10 premiers résultats sur ':'')+allFound.length.toLocaleString('fr-FR')+' correspondance(s) parmi '+implantCatalog.length+' dispositifs pour « '+query+' ». Précisez votre recherche pour affiner.';
+ box.classList.remove('hidden');
+ var found=allFound.slice(0,6);
+ $('implantCatalogCount').textContent=found.length+' suggestion(s) affichée(s) pour « '+query+' ». Affinez la recherche pour cibler un autre dispositif.';
  var list=document.createElement('div');list.className='implant-device-list';
  found.forEach(function(x){
   var row=document.createElement('div');row.className='implant-catalog-item';
   var desc=document.createElement('div'),title=document.createElement('div');title.className='implant-catalog-title';title.textContent=x.code+' · '+implantDisplayTitle(x);desc.appendChild(title);
   var est=estimateImplantPrice(x),priceMeta=typeof est.center==='number'?'Prix estimatif : '+fmt(est.center)+' DH'+(typeof est.low==='number'&&typeof est.high==='number'?' (fourchette '+fmt(est.low)+'–'+fmt(est.high)+' DH)':''):'Prix fournisseur à préciser';
-  var tnrMeta=tnrComparisonEnabled()?(typeof x.tnr==='number'?'TNR historique : '+fmt(x.tnr)+' DH ('+(x.tnrSource||x.source||'source à confirmer')+') — valeur actuelle à vérifier.':'TNR non renseigné — ne pas présumer d’une prise en charge.'):'TNR masqué : cochez l’option de comparaison TNR ci-dessus pour afficher la référence de remboursement.';
+  var tnrMeta=tnrComparisonEnabled()?(typeof x.tnr==='number'?'TNR de référence : '+fmt(x.tnr)+' DH — valeur actuelle à vérifier.':'TNR non renseigné — ne pas présumer d’une prise en charge.'):'Les détails TNR restent masqués tant que l’option de comparaison n’est pas activée.';
   var meta=document.createElement('small');meta.className='implant-catalog-meta';meta.textContent=priceMeta+' · '+tnrMeta;desc.appendChild(meta);
   if(implantDisplayReference(x)){var ref=document.createElement('small');ref.className='implant-catalog-meta';ref.textContent='Référence : '+implantDisplayReference(x);desc.appendChild(ref);}
   var btn=document.createElement('button');btn.type='button';btn.className='btn primary';
