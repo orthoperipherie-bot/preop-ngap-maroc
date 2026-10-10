@@ -691,6 +691,6 @@ fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalog
  $('tariffBasisHeadline').textContent='Catalogue orthopédique non chargé : vérifier le déploiement de orthopedie-actes.json.';
 });
 fetch('../market-prices.json').then(function(r){if(!r.ok)throw Error('marché non chargé');return r.json()}).then(function(d){marketReferences=d;renderMarketSources()}).catch(function(){});
-updateSector();renderGestures();renderImplants();calculate();
+updateSector();renderGestures();renderImplants();renderImplantSearch();calculate();
 })();
 </script></body></html>
