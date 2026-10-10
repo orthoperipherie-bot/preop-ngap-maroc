@@ -350,7 +350,36 @@ var clinicalIntentMap={
  'hallux rigidus':['N211'],
  'achilles tendon repair':['N128'],
  'peroneal tendon dislocation':['N225'],
- 'brostrom operation':['N230']
+ 'brostrom operation':['N230'],
+ 'tibial nailing':['A138'],
+ 'intramedullary nailing tibia':['A138'],
+ 'imn tibia':['A138'],
+ 'tibial imn':['A138'],
+ 'clou tibial':['A138'],
+ 'fracture tibial shaft':['A138'],
+ 'tibia fibula orif':['A138'],
+ 'fracture jambe osteosynthese':['A138'],
+ 'fracture ouverte tibia':['A154','A138'],
+ 'gamma nail':['A144'],
+ 'pfna':['A144'],
+ 'dhs hip fracture':['A144'],
+ 'femoral nail':['A143'],
+ 'femoral nailing':['A143'],
+ 'patella fracture orif':['A141'],
+ 'patella fixation':['A141'],
+ 'rotator cuff repair':['C209','C215'],
+ 'rotator cuff repair arthroscopy':['C408','C209'],
+ 'shoulder arthroscopy':['C408'],
+ 'wrist arthroscopy':['C408'],
+ 'ankle arthroscopy':['C408'],
+ 'hip arthroscopy':['C408'],
+ 'meniscal repair':['C408','N111'],
+ 'meniscus repair':['C408','N111'],
+ 'tendon achilles rupture':['N128'],
+ 'achilles rupture repair':['N128'],
+ 'subtalar fusion':['C441'],
+ 'ankle fusion':['C441'],
+ 'wrist fusion':['C440']
 };
 
 function searchWords(s){return norm(s).split(' ').filter(function(w){return w.length>1&&['de','du','des','la','le','les','un','une','sur','pour','avec','sans','et','au','aux','en','par','the','of','for','and','or','to','in'].indexOf(w)<0;});}
@@ -443,7 +472,7 @@ function renderMarketSources(){
  });
  var dis=document.createElement('p');dis.className='muted';dis.textContent='La présence d’une marque sur un site ne confirme pas le stock, l’autorisation de chaque référence ni la disponibilité à la date de l’intervention. Demander un devis récent à un distributeur agréé au Maroc.';bRoot.appendChild(dis);
 }
-function selectMain(a){if(mainAct&&mainAct.code!==a.code){$('actualBilledPrice').value='';$('priceEntryNote').textContent='Le montant saisi sert au calcul du reste patient. Si vous utilisez une fourchette de marché, il s’agit d’un prix global annoncé pouvant inclure implants et séjour.';}mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;renderMarketPrice(a);calculate()}
+function selectMain(a){if(mainAct&&mainAct.code!==a.code){$('actualBilledPrice').value='';$('priceIncludesImplants').checked=false;selectedImplants.forEach(function(it){it.separate=true;});renderImplants();$('priceEntryNote').textContent='Le montant saisi sert au calcul du reste patient. Si vous utilisez une fourchette de marché, vérifiez si le prix inclut les implants et le séjour.';}mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;renderMarketPrice(a);calculate()}
 function weight(i){return i===0?.75:.5}
 function renderGestures(){var root=$('gestures');root.innerHTML='';if(!gestures.length){root.textContent='Aucun geste associé.';root.className='muted';return}root.className='';gestures.forEach(function(g,i){var line=document.createElement('div');line.className='line';var sw=document.createElement('div');sw.className='field';var lab=document.createElement('label');lab.textContent='Geste '+(i+1)+' — code et libellé';var inp=document.createElement('input');inp.type='text';inp.autocomplete='off';inp.placeholder='Rechercher code ou acte';inp.value=g.act?g.act.code+' · '+g.act.title:g.query||'';var sug=document.createElement('div');sw.append(lab,inp,sug);var cw=document.createElement('div');cw.className='field';var cl=document.createElement('label');cl.textContent='Coeff. K';var ci=document.createElement('input');ci.type='number';ci.min='0';ci.step='.1';ci.placeholder='Coeff.';ci.value=g.coef==null?'':g.coef;cw.append(cl,ci);var rm=document.createElement('button');rm.type='button';rm.className='btn danger remove';rm.textContent='×';rm.onclick=function(){gestures=gestures.filter(function(x){return x.id!==g.id});renderGestures();calculate()};line.append(sw,cw,rm);root.appendChild(line);inp.addEventListener('input',function(){g.query=inp.value;g.act=null;g.coef='';sug.innerHTML='';if(!inp.value.trim())return;matches(inp.value).forEach(function(a){sug.appendChild(buildSuggestion(a,function(act){g.act=act;g.query=act.code+' · '+act.title;g.coef=act.coef==null?'':act.coef;renderGestures();calculate()}))});calculate()});ci.addEventListener('input',function(){g.coef=parseNum(ci.value);calculate()})})}
 function roundTo10(n){return Math.round((Number(n)||0)/10)*10}
