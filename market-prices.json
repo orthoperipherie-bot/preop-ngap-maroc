@@ -1,0 +1,198 @@
+{
+  "lastChecked": "2026-10-10",
+  "disclaimer": "Les prix ci-dessous sont des fourchettes publiques annoncées au Maroc (majoritairement secteur privé) et non des tarifs opposables. Le contenu d’un forfait peut varier : implants, honoraires, hospitalisation, pharmacie et matériel ne sont pas toujours inclus de la même façon. Ne pas additionner un implant au forfait si le devis global le comprend déjà.",
+  "procedures": [
+    {
+      "id": "PTH",
+      "title": "Prothèse totale de hanche primaire",
+      "codes": [
+        "C433",
+        "N117"
+      ],
+      "marketMin": 60000,
+      "marketMax": 110000,
+      "sector": "Privé — prix global annoncé",
+      "scope": "Forfait global annoncé par des sites marocains; contenu exact à vérifier sur devis.",
+      "sources": [
+        {
+          "label": "Sahha — prothèse de hanche, mise à jour 21/07/2026 (60 000–110 000 DH)",
+          "url": "https://sahha.ma/actes/prothese-hanche"
+        },
+        {
+          "label": "Journal Santé Maroc — prix 2026 (fourchette plus large, à confronter)",
+          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-prothese-hanche-maroc-2026.html"
+        },
+        {
+          "label": "Morocco Orthopaedic Center — tarif à partir de 6 000 €",
+          "url": "https://www.moroccoorthopaediccenter.com/tarifs"
+        }
+      ]
+    },
+    {
+      "id": "PTG",
+      "title": "Prothèse totale du genou primaire",
+      "codes": [
+        "C434",
+        "N127"
+      ],
+      "marketMin": 45000,
+      "marketMax": 100000,
+      "sector": "Privé — prix global annoncé",
+      "scope": "Fourchette recoupée entre plusieurs pages marocaines; configuration et inclusion de l’implant à vérifier.",
+      "sources": [
+        {
+          "label": "Sahha — prothèse de genou, mise à jour 21/07/2026 (55 000–100 000 DH)",
+          "url": "https://sahha.ma/actes/prothese-genou"
+        },
+        {
+          "label": "Journal Santé Maroc — prix de l’opération du genou 2026 (45 000–80 000 DH)",
+          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
+        },
+        {
+          "label": "Morocco Orthopaedic Center — tarif à partir de 6 500 €",
+          "url": "https://www.moroccoorthopaediccenter.com/tarifs"
+        }
+      ]
+    },
+    {
+      "id": "ARTHRO-GENOU",
+      "title": "Arthroscopie du genou",
+      "codes": [
+        "C408"
+      ],
+      "marketMin": 8000,
+      "marketMax": 25000,
+      "sector": "Privé — prix global annoncé",
+      "scope": "Repère spécifique au genou ; la complexité et les gestes associés changent le prix.",
+      "sources": [
+        {
+          "label": "Sahha — arthroscopie du genou à Casablanca, mise à jour 21/07/2026 (8 000–25 000 DH)",
+          "url": "https://sahha.ma/actes/arthroscopie-genou/casablanca"
+        },
+        {
+          "label": "Traumatologie.ma — fourchettes arthroscopie au Maroc",
+          "url": "https://traumatologie.ma/prix-arthroscopie-genou-au-maroc/"
+        }
+      ]
+    },
+    {
+      "id": "MENISCECTOMIE",
+      "title": "Méniscectomie arthroscopique",
+      "codes": [
+        "N111"
+      ],
+      "marketMin": 12000,
+      "marketMax": 18000,
+      "sector": "Privé — prix global annoncé",
+      "scope": "Repère indicatif publié pour méniscectomie partielle; vérifier si l’hospitalisation et le matériel sont compris.",
+      "sources": [
+        {
+          "label": "Traumatologie.ma — prix arthroscopie / méniscectomie au Maroc",
+          "url": "https://traumatologie.ma/prix-arthroscopie-genou-au-maroc/"
+        },
+        {
+          "label": "Sahha — arthroscopie du genou à Casablanca, mise à jour 21/07/2026",
+          "url": "https://sahha.ma/actes/arthroscopie-genou/casablanca"
+        }
+      ]
+    },
+    {
+      "id": "LCA",
+      "title": "Ligamentoplastie du ligament croisé antérieur",
+      "codes": [
+        "N109"
+      ],
+      "marketMin": 15000,
+      "marketMax": 30000,
+      "sector": "Privé — prix global annoncé",
+      "scope": "Fourchette de marché annoncée pour le genou; greffon, fixation, hospitalisation et rééducation inclus ou non selon le devis.",
+      "sources": [
+        {
+          "label": "Journal Santé Maroc — prix de l’opération du genou 2026",
+          "url": "https://journalsantemaroc.com/prix-soins/chirurgie/prix-operation-genou-maroc-2026.html"
+        },
+        {
+          "label": "Traumatologie.ma — prix arthroscopie et ligamentoplastie au Maroc",
+          "url": "https://traumatologie.ma/prix-arthroscopie-genou-au-maroc/"
+        }
+      ]
+    }
+  ],
+  "brands": {
+    "hipKneeShoulder": {
+      "brands": [
+        "Zimmer Biomet",
+        "Stryker",
+        "Smith+Nephew",
+        "Groupe Lépine",
+        "Amplitude (présence à vérifier selon modèle)"
+      ],
+      "evidence": "Zimmer Biomet, Stryker et Smith+Nephew sont explicitement cités par un centre orthopédique basé à Casablanca. Groupe Lépine dispose d’une présence commerciale marocaine dédiée aux prothèses orthopédiques. Amplitude apparaît dans une source universitaire sur les fournisseurs marocains, mais l’information est historique : confirmer la distribution actuelle et les références disponibles.",
+      "sources": [
+        {
+          "label": "Morocco Orthopaedic Center — implants cités",
+          "url": "https://www.moroccoorthopaediccenter.com/chirurgie-de-la-hanche"
+        },
+        {
+          "label": "Groupe Lépine — catalogue officiel hanche/genou/épaule",
+          "url": "https://www.groupe-lepine.com/fr/10-produits"
+        },
+        {
+          "label": "Lépine Maroc — activité prothèses orthopédiques (annuaire entreprise)",
+          "url": "https://www.charika.ma/societe-lepine-maroc-6538"
+        },
+        {
+          "label": "Thèse universitaire avec fournisseurs marocains historiques et prix anciens",
+          "url": "https://toubkal.imist.ma/server/api/core/bitstreams/32e17d6b-2005-452e-be41-ffef886470a2/content"
+        }
+      ]
+    },
+    "trauma": {
+      "brands": [
+        "DePuy Synthes",
+        "Stryker",
+        "Zimmer Biomet",
+        "Groupe Lépine"
+      ],
+      "evidence": "Fabricants internationaux à demander aux fournisseurs locaux ; les modèles et représentants marocains précis n’ont pas tous pu être confirmés par source publique. Ne pas interpréter la liste comme une garantie de stock ou de distribution agréée pour chaque implant.",
+      "sources": [
+        {
+          "label": "AMMPS — base des sociétés de dispositifs médicaux",
+          "url": "https://www.ammps.gov.ma/basesdedonnes/societes-dispositifs-medicaux?page=49"
+        }
+      ]
+    },
+    "sports": {
+      "brands": [
+        "Arthrex",
+        "Smith+Nephew",
+        "Stryker"
+      ],
+      "evidence": "Marques internationales de chirurgie du sport à demander au distributeur local ; disponibilité de chaque kit/référence au Maroc non confirmée publiquement dans cette recherche.",
+      "sources": [
+        {
+          "label": "Morocco Orthopaedic Center — marques citées en prothèse (source locale)",
+          "url": "https://www.moroccoorthopaediccenter.com/chirurgie-de-la-hanche"
+        },
+        {
+          "label": "AMMPS — base des sociétés de dispositifs médicaux",
+          "url": "https://www.ammps.gov.ma/basesdedonnes/societes-dispositifs-medicaux?page=49"
+        }
+      ]
+    }
+  },
+  "priceDefinitions": [
+    {
+      "name": "Tarif/forfait de référence AMO",
+      "description": "Base conventionnelle historique liée à la NGAP et au secteur; ce n’est pas automatiquement le montant réellement facturé ni le reste à charge."
+    },
+    {
+      "name": "Prix de marché de l’intervention",
+      "description": "Fourchette publique d’un prix global annoncé par un site ou établissement; elle n’est affichée que pour quelques actes avec une source publique et peut inclure implant et séjour."
+    },
+    {
+      "name": "Prix fournisseur de l’implant",
+      "description": "Prix unitaire réel à saisir depuis un devis daté d’un distributeur. Il n’existe pas, dans les sources publiques consultées, de tarif 2026 stable par modèle/marque pour chaque dispositif orthopédique."
+    }
+  ]
+}
