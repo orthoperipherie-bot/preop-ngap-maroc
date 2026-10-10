@@ -55,7 +55,7 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants sont estimés uniquement dans l’onglet « Implants & TNR ».</p></div>
-<div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste patient final estimé après couverture pour l’acte seul. Les implants ne sont jamais ajoutés sur cette page ; leur reste patient est calculé dans l’onglet « Implants & TNR ». Le montant estimé à avancer aujourd’hui est affiché séparément ci-dessous.</div></div>
+<div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE + IMPLANTS FACTURÉS EN SUS</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond à la part restant réellement à la charge du patient après couverture pour l’acte et les implants cochés « En sus ». Les implants inclus au forfait ne sont pas ajoutés une seconde fois. Le montant à avancer aujourd’hui est affiché séparément selon le mode de paiement.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
@@ -447,10 +447,33 @@ function calculateImplants(){
  $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rate===null||coverageUnknown?'À confirmer':fmt(cover));
  $('implantPatientTotal').textContent=!selectedImplants.length?'—':(patientUnknown?'À confirmer : prix/TNR/couverture manquant(e)':fmt(patient));
  $('implantExtraTotal').textContent=extraUnknown?'À confirmer — offre en sus incomplète':fmt(extra);
- var patientAct=lastCalc?lastCalc.patient:'À confirmer',totalImplantPatient;
- if(!lastCalc||!lastCalc.grid)totalImplantPatient='Sélectionnez d’abord un acte';
- else if(typeof patientAct!=='number'||separatePatientUnknown||extraUnknown)totalImplantPatient='À confirmer';
- else totalImplantPatient=fmt(patientAct+separatePatient);
+ var patientAct=lastCalc?lastCalc.patient:'À confirmer',totalImplantPatient,todayAll,patientAllValue,extraValue;
+ if(!lastCalc||!lastCalc.grid){
+  totalImplantPatient='Sélectionnez d’abord un acte';
+  $('totalHeadline').textContent='— DH';
+  $('todayAmount').textContent='— DH';
+  patientAllValue='À confirmer';todayAll='À confirmer';extraValue=extraUnknown?'À confirmer':extra;
+ }else{
+  var finalPatientUnknown=typeof patientAct!=='number'||separatePatientUnknown||extraUnknown;
+  totalImplantPatient=finalPatientUnknown?'À confirmer':fmt(patientAct+separatePatient);
+  $('totalHeadline').textContent=totalImplantPatient;
+  patientAllValue=finalPatientUnknown?'À confirmer':patientAct+separatePatient;
+  if(lastCalc.mode==='pec'){
+   todayAll=finalPatientUnknown?'À confirmer':patientAct+separatePatient;
+   $('todayAmount').textContent=typeof todayAll==='number'?fmt(todayAll):todayAll;
+  }else{
+   todayAll=extraUnknown?'À confirmer':(lastCalc.billedTotal===undefined?lastCalc.total:lastCalc.billedTotal)+extra;
+   $('todayAmount').textContent=typeof todayAll==='number'?fmt(todayAll):todayAll;
+  }
+  extraValue=extraUnknown?'À confirmer':extra;
+ }
+ if(lastCalc){
+  lastCalc.patientAll=patientAllValue;
+  lastCalc.implantPatient=separatePatientUnknown?'À confirmer':separatePatient;
+  lastCalc.implantExtra=extraValue;
+  lastCalc.totalAll=(typeof extraValue==='number'&&typeof lastCalc.total==='number')?lastCalc.total+extraValue:'À confirmer';
+  lastCalc.todayAll=todayAll;
+ }
  $('totalWithImplants').textContent=totalImplantPatient;
  $('implantPriceNote').textContent=(missingPrice?missingPrice+' dispositif(s) nécessitent un prix d’achat réel ou une offre d’importation complète. Le TNR n’est jamais utilisé automatiquement comme prix d’achat. ':'')+'La base remboursable est estimée au minimum du prix retenu et du TNR renseigné ; le payeur peut appliquer ses propres règles, plafonds et accords. Les TNR historiques doivent être vérifiés pour la référence exacte.';
  if(unknownTnr)$('implantPriceNote').textContent+=' '+unknownTnr+' ligne(s) sans TNR connu : saisir une valeur vérifiée uniquement si le dispositif est effectivement éligible.';
@@ -543,7 +566,7 @@ function calculate(){
  var patientAct=coverageUnknown?'À confirmer':Math.max(0,billedTotal-cover);
  var todayAct=mode==='pec'?patientAct:billedTotal;
  $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé — acte seul, implants exclus':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé — acte + implants facturés en sus':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
  $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
  $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
@@ -618,8 +641,11 @@ function summary(){
   'Tarif de référence de l’acte avant couverture : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
   'Part du payeur simulée — acte seul : '+amount(lastCalc.coverage),
   'Reste final estimé à la charge du patient — acte seul : '+amount(lastCalc.patient),
+  'Reste final estimé à la charge du patient — acte + implants facturés en sus : '+amount(lastCalc.patientAll),
   'Montant estimé à payer aujourd’hui — acte seul : '+amount(lastCalc.today),
-  'Les implants sont exclus de ce récapitulatif ; consultez l’onglet « Implants & TNR » pour leur prix et leur part patient.',
+  'Montant estimé à payer aujourd’hui — acte + implants facturés en sus : '+amount(lastCalc.todayAll),
+  'Coût d’achat des implants facturés en sus : '+amount(lastCalc.implantExtra),
+  'Les implants cochés « En sus » sont inclus dans le reste patient global ; les implants intégrés au forfait ne sont pas ajoutés une seconde fois.',
   'Honoraires bruts théoriques du chirurgien : '+fmt(lastCalc.surgeon),
   (lastCalc.surgeonStatus==='public'?'Net individuel du chirurgien public : non calculable à partir de la NGAP (rémunération statutaire/indemnités à considérer)':'Retenue/commission paramétrée : '+fmt(lastCalc.surgeonRetention)+' ('+lastCalc.surgeonRetentionRate+' %)'),
   (lastCalc.surgeonStatus==='public'?'Net estimé du chirurgien : non disponible dans ce simulateur':'Net estimé du chirurgien libéral (avant impôts/cotisations personnelles) : '+fmt(lastCalc.surgeonNet)),
