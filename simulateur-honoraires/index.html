@@ -32,8 +32,8 @@
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. Les implants sont estimés uniquement dans l’onglet « Implants & TNR ».</p></div>
 <div class="hero patient-highlight"><div class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div class="muted">Ce montant correspond au reste net estimé pour l’intervention et les gestes associés après couverture. Aucun implant n’est ajouté dans la « Saisie rapide » : les implants et leur éventuel reste à charge sont calculés séparément dans l’onglet « Implants & TNR ». Le montant à avancer aujourd’hui dépend du mode de paiement et est affiché séparément ci-dessous.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
-<div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
-<div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div>
+<div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small><div id="mainMarketPrice" class="muted"></div></div>
+<div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><div class="field"><label for="actualBilledPrice">Prix réellement facturé pour l’acte seul (DH, facultatif)</label><input id="actualBilledPrice" type="number" min="0" step="100" placeholder="Vide = forfait AMO de référence"></div><p class="muted">Si vous disposez d’un devis réel, saisissez ici le montant facturé pour l’acte seul. Le reste patient compare ce montant à la base de couverture de référence. Les prix globaux publiés peuvent inclure implants et séjour : ne cochez pas alors ce même implant « En sus ».</p>
 <p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
 <div class="panel"><div class="row" style="align-items:center"><h2 style="margin:0">2 · Gestes associés</h2><button class="btn primary" id="addGesture">+ Ajouter</button></div><p class="muted">Ajoutez autant de gestes que nécessaire. Code et coefficient sont repris du catalogue ; le coefficient reste modifiable.</p><div id="gestures"></div><div class="field"><label for="cumulationMode">Règle de cumul des actes (NGAP, article 9 B)</label><select id="cumulationMode"><option value="standard" selected>Règle générale — coefficient le plus élevé à 100 %, 2e à 50 %, suivants non cotés</option><option value="exception75">Exception — traumatismes récents multiples ou territoires différents : 2e à 75 %</option><option value="thirdTrauma">Traumatismes multiples récents : 2e à 75 %, 3e exceptionnel à 50 %</option></select></div><p id="cumulationNote" class="muted">La pondération est appliquée au coefficient le plus élevé, puis au deuxième acte, selon la règle choisie. Les règles particulières et suppléments sélectionnés sont signalés dans les détails.</p><div class="field"><label for="a215Osteosynthesis">Exception A215 — fracture épiphysaire associée à une luxation</label><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input id="a215Osteosynthesis" type="checkbox" style="width:auto;margin:0" disabled> La fracture comporte une ostéosynthèse : autoriser le deuxième acte à 50 % selon A215.</label><div class="field"><label for="a211Applicable">Exception A211 — luxation ancienne</label><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input id="a211Applicable" type="checkbox" style="width:auto;margin:0" disabled> La luxation concerne le coude, l’épaule, le cou-de-pied, le genou ou la hanche : appliquer la majoration de 50 %.</label><p class="muted">Ne cochez cette option que si la localisation correspond au texte NGAP. Le code A207 couvre aussi la rotule, qui n’est pas citée dans la majoration A211.</p></div></div>
 <div class="panel"><h2>3 · Payeur et paiement</h2><div class="grid">
@@ -61,12 +61,12 @@
 <div class="field" style="margin-top:10px"><label for="implantRate">Taux AMO estimé pour les implants (%)</label><input id="implantRate" type="number" min="0" max="100" step="1" value="100"></div>
 <div class="actions"><button class="btn" id="clearImplants">Effacer les implants</button><button class="btn" id="copyImplantSummary">Copier le récapitulatif implants</button></div>
 </div>
-<div class="panel"><h2>Sources et actualité du barème</h2><p class="muted">Référence : <a href="https://www.sante.gov.ma/Reglementation/Cov_Med/Documents/AMO/arretes/Arr%C3%AAt%C3%A9%20n%C2%B0%202314-08.pdf" target="_blank" rel="noopener">arrêté du ministère de la Santé n°2314-08 — TNR des dispositifs médicaux</a>. L’arrêté n°3207-15 a modifié les tarifs de la classe III : <a href="https://pharmacie.ma/uploads/pdfs/BO_6422_Fr-DM.pdf" target="_blank" rel="noopener">Bulletin officiel n°6422 — arrêté n°3207-15</a>. Les valeurs orthopédiques sont affichées avec la date de leur source ; ne les considérez pas comme tarif actuel garanti avant vérification. <a href="https://www.cnops.org.ma/fr/dispositifs-medicaux" target="_blank" rel="noopener">Règles CNOPS sur les dispositifs médicaux</a>.</p></div>
+<div class="panel"><h2>Prix observés au Maroc et marques à demander (vérification : 10/10/2026)</h2><p class="muted">Les fourchettes ci-dessous sont des prix globaux annoncés publiquement, pas des tarifs opposables ni des devis individuels. Le contenu peut varier selon l’inclusion de l’implant, des honoraires, de l’hospitalisation et du matériel. Les prix unitaires fournisseurs d’implants sont généralement non publiés.</p><div id="marketSourceList"></div><div id="brandSourceList"></div></div><div class="panel"><h2>Sources et actualité du barème</h2><p class="muted">Référence : <a href="https://www.sante.gov.ma/Reglementation/Cov_Med/Documents/AMO/arretes/Arr%C3%AAt%C3%A9%20n%C2%B0%202314-08.pdf" target="_blank" rel="noopener">arrêté du ministère de la Santé n°2314-08 — TNR des dispositifs médicaux</a>. L’arrêté n°3207-15 a modifié les tarifs de la classe III : <a href="https://pharmacie.ma/uploads/pdfs/BO_6422_Fr-DM.pdf" target="_blank" rel="noopener">Bulletin officiel n°6422 — arrêté n°3207-15</a>. Les valeurs orthopédiques sont affichées avec la date de leur source ; ne les considérez pas comme tarif actuel garanti avant vérification. <a href="https://www.cnops.org.ma/fr/dispositifs-medicaux" target="_blank" rel="noopener">Règles CNOPS sur les dispositifs médicaux</a>.</p></div>
 </section>
 <section id="tab-details" class="hidden">
 <div class="panel"><h2>Ventilation estimée</h2><p class="muted">Chirurgien : coefficient opératoire pondéré × valeur K/KC de l’établissement. Anesthésie : coefficient secondaire NGAP lorsqu’il est indiqué ; à défaut, l’article 22 prévoit K15 sans dépasser le coefficient de l’acte. Bloc : 50 % de la cotation opératoire selon l’article 23. La part établissement est un résiduel estimatif et peut être indiquée « à confirmer » si la ventilation et le forfait de référence ne sont pas compatibles.</p>
 <p class="muted">Le statut du chirurgien et la retenue/commission se règlent dans la première rubrique. Le détail ci-dessous affiche les honoraires bruts théoriques puis le net estimé si le chirurgien exerce en libéral. Pour un chirurgien public, le salaire net individuel ne peut pas être déduit de la NGAP.</p>
-<div class="metrics"><div class="metric"><small>Tarif de référence avant prise en charge</small><strong id="dTotal">—</strong></div><div class="metric"><small id="dSurgeonGrossLabel">Honoraires bruts du chirurgien</small><strong id="dSurgeonGross">—</strong></div><div class="metric surgeon-highlight"><small id="dSurgeonNetLabel">Net après retenue (hors impôts et cotisations personnelles)</small><strong id="dSurgeonNet">—</strong></div><div class="metric"><small>Honoraires anesthésiste</small><strong id="dAnesthesia">—</strong></div><div class="metric"><small>Bloc opératoire</small><strong id="dBlock">—</strong></div><div class="metric"><small>Part clinique / établissement</small><strong id="dClinic">—</strong></div><div class="metric"><small>Résiduel à ventiler</small><strong id="dResidual">—</strong></div></div>
+<div class="metrics"><div class="metric"><small>Tarif de référence avant prise en charge</small><strong id="dTotal">—</strong></div><div class="metric"><small>Prix réel / estimé facturé (acte seul)</small><strong id="dBilledTotal">—</strong></div><div class="metric"><small id="dSurgeonGrossLabel">Honoraires bruts du chirurgien</small><strong id="dSurgeonGross">—</strong></div><div class="metric surgeon-highlight"><small id="dSurgeonNetLabel">Net après retenue (hors impôts et cotisations personnelles)</small><strong id="dSurgeonNet">—</strong></div><div class="metric"><small>Honoraires anesthésiste</small><strong id="dAnesthesia">—</strong></div><div class="metric"><small>Bloc opératoire</small><strong id="dBlock">—</strong></div><div class="metric"><small>Part clinique / établissement</small><strong id="dClinic">—</strong></div><div class="metric"><small>Résiduel à ventiler</small><strong id="dResidual">—</strong></div></div>
 <p id="surgeonNetNote" class="muted">Net = honoraires bruts théoriques − retenue paramétrée. Impôts, cotisations personnelles et autres charges ne sont pas inclus.</p><div class="row"><span>Retenue estimée</span><strong id="dSurgeonRetention">0 DH</strong></div><div class="row"><span>Secteur appliqué</span><strong id="dSector">—</strong></div><div class="row"><span>Modalité</span><strong id="dCareSetting">Hospitalisation</strong></div><div class="row"><span>Barème de référence</span><strong id="dTariffBand">—</strong></div><div class="row"><span>Coefficient chirurgien pondéré</span><strong id="dSurgeonCoef">—</strong></div><div class="row"><span>Coefficient anesthésie calculé / estimé</span><strong id="dAnesthesiaCoef">—</strong></div><div class="row"><span>Valeur K/KC utilisée</span><strong id="dKeyValue">—</strong></div><div id="dNotice" class="notice">Les détails seront calculés après sélection d’un acte.</div></div>
 <div class="panel"><h2>Actes retenus</h2><div class="tablewrap"><table><thead><tr><th>Type</th><th>Code</th><th>Libellé</th><th class="num">Coeff.</th><th class="num">Pond.</th><th class="num">Retenu</th><th class="num">Anesth.</th></tr></thead><tbody id="actTable"><tr><td colspan="7">Sélectionnez une intervention.</td></tr></tbody></table></div></div>
 <div class="panel"><h2>Méthode et limites</h2><div class="row"><span>Tarif global</span><strong>Grille forfaitaire par tranche de coefficient K</strong></div><div class="row"><span>Net estimé selon le secteur</span><strong>Privé : honoraires théoriques moins la retenue/commission paramétrée. Public : la NGAP ne permet pas de calculer le salaire net individuel du chirurgien.</strong></div><div class="row"><span>Bloc opératoire</span><strong>50 % de la cotation opératoire (NGAP, art. 23)</strong></div><div class="row"><span>Part clinique</span><strong>Solde après honoraires et bloc</strong></div><div class="notice">Privé : l’arrêté n°1961-06 publie un forfait par tranche de coefficient à partir de K30. En dessous de K30, le total affiché est partiel et exclut les frais d’établissement non chiffrés. Public : la convention nationale AMO des établissements publics (mai 2007) indique K/KC à 13 DH et des forfaits publics différenciés. Le détail chirurgien/anesthésie/bloc est calculé par cotation ; la part établissement n’est isolable que si elle reste compatible avec le forfait de référence. Public : K/KC = 13 DH selon la convention nationale AMO des établissements publics (mai 2007). Le forfait public est repris de la grille 2 de cette convention. Privé : K/KC = 22,50 DH et forfaits selon l’arrêté n°1961-06 (2006). Ces barèmes ont une date historique et doivent être confrontés à la convention actuellement appliquée par l’établissement et le payeur. L’anesthésie sans coefficient secondaire suit l’article 22 (K15 plafonné au coefficient de l’acte). Les frais de salle d’opération suivent l’article 23 (50 % du coefficient opératoire). Les conventions, cumul NGAP, droits du patient et accord du payeur prévalent.</div><p class="muted">Sources : <a href="https://cnops.org.ma/sites/default/files/2022-10/Nomeclature_0.pdf" target="_blank" rel="noopener">NGAP marocaine (arrêté n°177-06)</a> · <a href="https://www.sante.gov.ma/Reglementation/ASSURANCEMALADIE/1961-06.pdf" target="_blank" rel="noopener">privé : arrêté n°1961-06 — forfaits de chirurgie, K/KC 22,50 DH</a> · <a href="https://anam.ma/anam/wp-content/uploads/2021/09/Grille1_2007.pdf" target="_blank" rel="noopener">public : grille n°1 de la convention AMO — K 13 DH (ANAM)</a> · <a href="https://anam.ma/anam/wp-content/uploads/2021/09/Grille2_2007.pdf" target="_blank" rel="noopener">convention nationale AMO des établissements publics (mai 2007), grille forfaitaire publique</a> · <a href="https://www.cnops.org.ma/fr/hospitalisation-et-chirurgie" target="_blank" rel="noopener">CNOPS : couverture hospitalisation/chirurgie</a> · <a href="https://www.acaps.ma/fr/grand-public/droits/indemnisation-en-amo" target="_blank" rel="noopener">ACAPS : taux AMO CNSS/CNOPS</a>.</p></div></section>
@@ -74,7 +74,7 @@
 <script>
 (function(){
 'use strict';
-var $=function(id){return document.getElementById(id)},acts=[],mainAct=null,gestures=[],nextId=1,lastCalc=null;
+var $=function(id){return document.getElementById(id)},acts=[],mainAct=null,gestures=[],nextId=1,lastCalc=null,marketReferences=null;
 var selectedImplants=[],nextImplantId=1;
 var implantCatalog=[{"code":"KE110202","title":"Coude — implant articulaire cubital ou radial sur mesure","tnr":19200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE120101","title":"Épaule — tige humérale standard monobloc (tête comprise)","tnr":12000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE120301","title":"Épaule — implant glénoïdien monobloc ou surface glénoïdienne","tnr":15200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE130201","title":"Genou — implant fémoral bicondylien cimenté","tnr":16000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE130403","title":"Genou — prothèse totale de genou Revitan","tnr":22400,"source":"Arrêté 2314-08 (2008)"},{"code":"KE130501","title":"Genou — implant fémoral de reprise bicondylien cimenté","tnr":15200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE140201","title":"Hanche — tige anatomique, col inclus, cimentée","tnr":9000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE140202","title":"Hanche — tige anatomique, col inclus, non cimentée","tnr":13500,"source":"Arrêté 2314-08 (2008)"},{"code":"KE140301","title":"Hanche — prothèse totale de hanche de reprise","tnr":12000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE140401","title":"Hanche — tige de reconstruction col inclus, droite, cimentée","tnr":7600,"source":"Arrêté 2314-08 (2008)"},{"code":"KE140402","title":"Hanche — tige de reconstruction col inclus, droite, non cimentée","tnr":9200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE140904","title":"Hanche — prothèse de Moore, queue et col fenêtrée","tnr":1600,"source":"Arrêté 2314-08 (2008)"},{"code":"KE150105","title":"Fil de cerclage de 50 cm","tnr":100,"source":"Arrêté 2314-08 (2008)"},{"code":"KE300001","title":"Fixateur externe — montage membre supérieur","tnr":5000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE300002","title":"Fixateur externe — montage membre inférieur","tnr":7000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE300003","title":"Fixateur externe type Hoffman / Orthofix","tnr":7000,"source":"Arrêté 2314-08 (2008)"},{"code":"KE310001","title":"Lame-plaque, quel que soit son angle","tnr":1100,"source":"Arrêté 2314-08 (2008)"},{"code":"KE310002","title":"Lame-plaque pour ostéotomie de la hanche","tnr":1400,"source":"Arrêté 2314-08 (2008)"},{"code":"KE320001","title":"Clou-plaque monobloc pour extrémité supérieure du fémur","tnr":900,"source":"Arrêté 2314-08 (2008)"},{"code":"KE330001","title":"Vis-plaque pour extrémité supérieure du fémur","tnr":1450,"source":"Arrêté 2314-08 (2008)"},{"code":"KE330002","title":"Vis-plaque pour extrémité inférieure du fémur","tnr":1500,"source":"Arrêté 2314-08 (2008)"},{"code":"KE330003","title":"Vis pour plaque de triangulation","tnr":100,"source":"Arrêté 2314-08 (2008)"},{"code":"KE340902","title":"Plaque pour fracture épiphysaire tibia/humérus en T","tnr":650,"source":"Arrêté 2314-08 (2008)"},{"code":"KE340903","title":"Plaque coudée condylienne, angle 90°","tnr":900,"source":"Arrêté 2314-08 (2008)"},{"code":"KE340904","title":"Plaque en L pour extrémité supérieure du tibia, 4 trous D/G","tnr":600,"source":"Arrêté 2314-08 (2008)"},{"code":"KE340905","title":"Plaque Lecestre coudée à 7 trous","tnr":1100,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350101","title":"Vis d’interférence métalliques","tnr":340,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350201","title":"Vis d’interférence résorbables","tnr":160,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350301","title":"Vis Herbert","tnr":760,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350401","title":"Vis corticale","tnr":50,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350501","title":"Vis malléolaire à empreinte hexagonale","tnr":70,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350601","title":"Vis spongieuse","tnr":80,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350602","title":"Rondelle pour vis spongieuse","tnr":40,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350701","title":"Vis de verrouillage tibial","tnr":200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE350702","title":"Vis de verrouillage fémoral","tnr":300,"source":"Arrêté 2314-08 (2008)"},{"code":"KE360101","title":"Clou centromédullaire fémoral verrouillé","tnr":1680,"source":"Arrêté 2314-08 (2008)"},{"code":"KE360201","title":"Clou centromédullaire tibial verrouillé","tnr":1900,"source":"Arrêté 2314-08 (2008)"},{"code":"KE360301","title":"Clou centromédullaire huméral verrouillé","tnr":1920,"source":"Arrêté 2314-08 (2008)"},{"code":"KE360501","title":"Clou cervico-diaphysaire court (< 20 cm)","tnr":4720,"source":"Arrêté 2314-08 (2008)"},{"code":"KE360502","title":"Clou cervico-diaphysaire long (> 20 cm)","tnr":5200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE370001","title":"Broche d’ostéosynthèse type Metaizeau","tnr":400,"source":"Arrêté 2314-08 (2008)"},{"code":"KE370002","title":"Broche filetée/cannelée type Kirschner, autosécable","tnr":25,"source":"Arrêté 2314-08 (2008)"},{"code":"KE370005","title":"Clou de Steinmann","tnr":200,"source":"Arrêté 2314-08 (2008)"},{"code":"KE370006","title":"Clou de Küntscher","tnr":560,"source":"Arrêté 2314-08 (2008)"}];
 
@@ -87,7 +87,44 @@ function score(a,q){var n=norm(q),c=norm(a.code),title=norm(a.title),all=norm((a
 function matches(q){var n=norm(q);if(!n)return [];return acts.map(function(a){return {a:a,s:score(a,q)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s||String(a.a.code).localeCompare(String(b.a.code))}).slice(0,9).map(function(x){return x.a})}
 function buildSuggestion(a,onPick){var b=document.createElement('button');b.type='button';b.className='match';var st=document.createElement('strong');st.textContent=a.code+' · '+a.title;var sm=document.createElement('small');sm.textContent=(a.category||'Orthopédie-traumatologie')+' · '+(a.kind==='rule'?'Règle / majoration — voir note':a.kind==='supplement'?'Supplément NGAP':a.kind==='nonop'?'Appareillage assimilé':'Coeff. '+((a.coeffs||[]).join(' / ')||'à vérifier'));b.append(st,sm);b.onclick=function(){onPick(a)};return b}
 function renderMainSuggestions(){var q=$('mainSearch').value.trim(),box=$('mainSuggestions');box.innerHTML='';if(!q)return;var list=matches(q);if(!list.length){box.textContent='Aucune correspondance. Essayez le code exact ou un terme plus court.';return}list.forEach(function(a){box.appendChild(buildSuggestion(a,selectMain))})}
-function selectMain(a){mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;calculate()}
+function marketRefForAct(a){if(!marketReferences||!a)return null;return (marketReferences.procedures||[]).find(function(p){return (p.codes||[]).indexOf(a.code)>=0})||null}
+function renderMarketPrice(a){
+ var root=$('mainMarketPrice');if(!root)return;root.innerHTML='';
+ var p=marketRefForAct(a);
+ if(!p){var msg=document.createElement('small');msg.textContent='Prix de marché 2026 : aucune fourchette publique suffisamment spécifique trouvée pour cet acte NGAP précis. Le montant reste calculé depuis le forfait conventionnel, sauf saisie d’un prix réel facturé.';root.appendChild(msg);return}
+ var strong=document.createElement('strong');strong.textContent='Repère de marché privé annoncé : '+fmt(p.marketMin)+' à '+fmt(p.marketMax)+' DH — '+p.title;root.appendChild(strong);
+ var note=document.createElement('small');note.textContent=p.scope+' Ce prix global ne remplace pas la cotation NGAP/TNR et peut comprendre des postes différents selon le devis.';root.appendChild(note);
+ (p.sources||[]).forEach(function(src){var line=document.createElement('small'),lnk=document.createElement('a');lnk.href=src.url;lnk.target='_blank';lnk.rel='noopener';lnk.textContent=src.label;line.appendChild(lnk);root.appendChild(line)});
+}
+function renderMarketSources(){
+ var root=$('marketSourceList');if(!root||!marketReferences)return;root.innerHTML='';
+ (marketReferences.procedures||[]).forEach(function(p){
+  var box=document.createElement('div');box.className='line';
+  var left=document.createElement('div');left.className='field';
+  var title=document.createElement('strong');title.textContent=p.title;
+  var price=document.createElement('small');price.textContent=p.sector+' : '+fmt(p.marketMin)+'–'+fmt(p.marketMax)+' DH';
+  var note=document.createElement('small');note.textContent=p.scope;
+  left.append(title,price,note);
+  var right=document.createElement('div');right.className='field';
+  (p.sources||[]).forEach(function(src){var lnk=document.createElement('a');lnk.href=src.url;lnk.target='_blank';lnk.rel='noopener';lnk.textContent=src.label;right.appendChild(lnk)});
+  box.append(left,right);root.appendChild(box);
+ });
+ var bRoot=$('brandSourceList');if(!bRoot)return;bRoot.innerHTML='';
+ var head=document.createElement('h3');head.textContent='Marques et présence au Maroc';bRoot.appendChild(head);
+ Object.keys(marketReferences.brands||{}).forEach(function(key){
+  var info=marketReferences.brands[key],box=document.createElement('div');box.className='line';
+  var left=document.createElement('div');left.className='field';
+  var title=document.createElement('strong');title.textContent=key==='hipKneeShoulder'?'Prothèses de hanche, genou et épaule':key==='sports'?'Ancrages et implants de chirurgie du sport':'Ostéosynthèse et dispositifs de traumatologie';
+  var brands=document.createElement('small');brands.textContent=(info.brands||[]).join(' · ');
+  var note=document.createElement('small');note.textContent=info.evidence;
+  left.append(title,brands,note);
+  var right=document.createElement('div');right.className='field';
+  (info.sources||[]).forEach(function(src){var lnk=document.createElement('a');lnk.href=src.url;lnk.target='_blank';lnk.rel='noopener';lnk.textContent=src.label;right.appendChild(lnk)});
+  box.append(left,right);bRoot.appendChild(box);
+ });
+ var dis=document.createElement('p');dis.className='muted';dis.textContent='La présence d’une marque sur un site ne confirme pas le stock, l’autorisation de chaque référence ni la disponibilité à la date de l’intervention. Demander un devis récent à un distributeur agréé au Maroc.';bRoot.appendChild(dis);
+}
+function selectMain(a){mainAct=a;$('mainSearch').value=a.title;$('mainSuggestions').innerHTML='';$('mainSelected').classList.remove('hidden');$('mainTitle').textContent=a.title;$('mainCodeLine').textContent='Code NGAP : '+a.code+' · Coefficient(s) '+((a.coeffs||[]).join(' / ')||'non autonome')+' · '+(a.category||'');$('mainActNote').textContent=a.note||'';$('mainCoef').value=a.coef==null?'':a.coef;renderMarketPrice(a);calculate()}
 function weight(i){return i===0?.75:.5}
 function renderGestures(){var root=$('gestures');root.innerHTML='';if(!gestures.length){root.textContent='Aucun geste associé.';root.className='muted';return}root.className='';gestures.forEach(function(g,i){var line=document.createElement('div');line.className='line';var sw=document.createElement('div');sw.className='field';var lab=document.createElement('label');lab.textContent='Geste '+(i+1)+' — code et libellé';var inp=document.createElement('input');inp.type='text';inp.autocomplete='off';inp.placeholder='Rechercher code ou acte';inp.value=g.act?g.act.code+' · '+g.act.title:g.query||'';var sug=document.createElement('div');sw.append(lab,inp,sug);var cw=document.createElement('div');cw.className='field';var cl=document.createElement('label');cl.textContent='Coeff. K';var ci=document.createElement('input');ci.type='number';ci.min='0';ci.step='.1';ci.placeholder='Coeff.';ci.value=g.coef==null?'':g.coef;cw.append(cl,ci);var rm=document.createElement('button');rm.type='button';rm.className='btn danger remove';rm.textContent='×';rm.onclick=function(){gestures=gestures.filter(function(x){return x.id!==g.id});renderGestures();calculate()};line.append(sw,cw,rm);root.appendChild(line);inp.addEventListener('input',function(){g.query=inp.value;g.act=null;g.coef='';sug.innerHTML='';if(!inp.value.trim())return;matches(inp.value).forEach(function(a){sug.appendChild(buildSuggestion(a,function(act){g.act=act;g.query=act.code+' · '+act.title;g.coef=act.coef==null?'':act.coef;renderGestures();calculate()}))});calculate()});ci.addEventListener('input',function(){g.coef=parseNum(ci.value);calculate()})})}
 function roundTo10(n){return Math.round((Number(n)||0)/10)*10}
@@ -194,18 +231,24 @@ function updateCoverageDefault(){
 }
 function implantMatches(q){
  var n=norm(q);if(!n)return [];
- return implantCatalog.map(function(x){var all=norm(x.code+' '+x.title);var score=norm(x.code)===n?2000:(all.indexOf(n)>=0?800:n.split(' ').filter(Boolean).filter(function(w){return all.indexOf(w)>=0}).length*100);return {x:x,score:score}})
+ return implantCatalog.map(function(x){var all=norm(x.code+' '+x.title+' '+(x.brands||[]).join(' '));var score=norm(x.code)===n?2000:(all.indexOf(n)>=0?800:n.split(' ').filter(Boolean).filter(function(w){return all.indexOf(w)>=0}).length*100);return {x:x,score:score}})
  .filter(function(v){return v.score>0}).sort(function(a,b){return b.score-a.score||a.x.code.localeCompare(b.x.code)}).slice(0,10).map(function(v){return v.x});
 }
 function renderImplantSearch(){
  var box=$('implantSuggestions');box.innerHTML='';var q=$('implantSearch').value.trim();if(!q)return;
- var found=implantMatches(q);if(!found.length){box.textContent='Aucun dispositif trouvé dans le catalogue préchargé.';return}
- found.forEach(function(x){var b=document.createElement('button');b.type='button';b.className='match';var st=document.createElement('strong');st.textContent=x.code+' · '+x.title;var sm=document.createElement('small');sm.textContent='TNR publié : '+fmt(x.tnr)+' · Source '+x.source;b.append(st,sm);b.onclick=function(){addImplant(x)};box.appendChild(b)});
+ var found=implantMatches(q);if(!found.length){box.textContent='Aucun dispositif trouvé dans le catalogue orthopédique intégré.';return}
+ found.forEach(function(x){
+  var b=document.createElement('button');b.type='button';b.className='match';
+  var st=document.createElement('strong');st.textContent=x.code+' · '+x.title;
+  var sm=document.createElement('small');sm.textContent='TNR de référence : '+(typeof x.tnr==='number'?fmt(x.tnr)+' DH ('+(x.source||'barème historique')+')':'non confirmé pour cette référence');
+  var br=document.createElement('small');br.textContent='Marques à demander : '+((x.brands||[]).join(', ')||'à confirmer');
+  var pr=document.createElement('small');pr.textContent=x.purchasePriceStatus||'Prix fournisseur : à saisir depuis un devis récent';
+  b.append(st,sm,br,pr);b.onclick=function(){addImplant(x)};box.appendChild(b)
+ });
 }
 function addImplant(x){selectedImplants.push({id:nextImplantId++,device:x,qty:1,purchase:'',separate:false});$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplants();calculate()}
-function deviceUnitPurchase(it){var p=parseNum(it.purchase);return p===null?it.device.tnr:p}
-function deviceTnrBasis(it){var p=parseNum(it.purchase);return p===null?it.device.tnr:Math.min(p,it.device.tnr)}
-function deviceCoverageRate(){var v=parseNum($('implantRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100}
+function deviceUnitPurchase(it){var p=parseNum(it.purchase);return p===null?null:p}
+function deviceTnrBasis(it){var t=it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;if(t===null)return null;var p=parseNum(it.purchase);return p===null?t:Math.min(p,t)}
 function updateImplantRate(){
  var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:null;
  $('implantRate').value=rate===null?'':String(rate);
@@ -221,35 +264,41 @@ function renderImplants(){
  if(!selectedImplants.length)tb.innerHTML='<tr><td colspan="7">Aucun implant sélectionné.</td></tr>';
  selectedImplants.forEach(function(it){
   var tr=document.createElement('tr');
-  var title=document.createElement('td');title.textContent=it.device.code+' · '+it.device.title+' ('+it.device.source+')';tr.appendChild(title);
+  var title=document.createElement('td');var titleText=document.createElement('div');titleText.textContent=it.device.code+' · '+it.device.title;var brandText=document.createElement('small');brandText.textContent='Marques à demander : '+((it.device.brands||[]).join(', ')||'à confirmer');var statusText=document.createElement('small');statusText.textContent=(it.device.source||'')+' · '+(it.device.purchasePriceStatus||'Prix fournisseur réel à saisir depuis devis');title.append(titleText,brandText,statusText);tr.appendChild(title);
   var tdQty=document.createElement('td');tdQty.className='num';var qty=document.createElement('input');qty.type='number';qty.min='0';qty.step='1';qty.value=it.qty;qty.setAttribute('aria-label','Quantité');qty.style.width='68px';qty.addEventListener('input',function(){it.qty=Math.max(0,parseInt(qty.value||'0',10)||0);calculate();calculateImplants()});tdQty.appendChild(qty);tr.appendChild(tdQty);
-  var tdTnr=document.createElement('td');tdTnr.className='num';tdTnr.textContent=fmt(it.device.tnr);tr.appendChild(tdTnr);
-  var tdPrice=document.createElement('td');tdPrice.className='num';var price=document.createElement('input');price.type='number';price.min='0';price.step='0.01';price.placeholder='TNR par défaut';price.value=it.purchase;price.setAttribute('aria-label','Prix d’achat unitaire');price.style.width='105px';price.addEventListener('input',function(){it.purchase=price.value;tr.children[4].textContent=fmt(deviceTnrBasis(it));calculate();calculateImplants()});tdPrice.appendChild(price);tr.appendChild(tdPrice);
-  var tdBasis=document.createElement('td');tdBasis.className='num';tdBasis.textContent=fmt(deviceTnrBasis(it));tr.appendChild(tdBasis);
+  var tdTnr=document.createElement('td');tdTnr.className='num';tdTnr.textContent=typeof it.device.tnr==='number'?fmt(it.device.tnr):'À confirmer';tr.appendChild(tdTnr);
+  var tdPrice=document.createElement('td');tdPrice.className='num';var price=document.createElement('input');price.type='number';price.min='0';price.step='0.01';price.placeholder='Devis fournisseur';price.value=it.purchase;price.setAttribute('aria-label','Prix d’achat unitaire');price.style.width='105px';price.addEventListener('input',function(){it.purchase=price.value;tr.children[4].textContent=deviceTnrBasis(it)===null?'À confirmer':fmt(deviceTnrBasis(it));calculate();calculateImplants()});tdPrice.appendChild(price);tr.appendChild(tdPrice);
+  var tdBasis=document.createElement('td');tdBasis.className='num';tdBasis.textContent=deviceTnrBasis(it)===null?'À confirmer':fmt(deviceTnrBasis(it));tr.appendChild(tdBasis);
   var tdSep=document.createElement('td');tdSep.className='num';var sep=document.createElement('input');sep.type='checkbox';sep.checked=it.separate;sep.setAttribute('aria-label','Implant facturé en sus');sep.addEventListener('change',function(){it.separate=sep.checked;calculate();calculateImplants()});tdSep.appendChild(sep);tr.appendChild(tdSep);
   var tdDel=document.createElement('td');var del=document.createElement('button');del.className='btn danger';del.type='button';del.textContent='×';del.setAttribute('aria-label','Supprimer le dispositif');del.addEventListener('click',function(){selectedImplants=selectedImplants.filter(function(z){return z.id!==it.id});renderImplants();calculate()});tdDel.appendChild(del);tr.appendChild(tdDel);tb.appendChild(tr);
  });
  calculateImplants();
 }
 function calculateImplants(){
- var rate=deviceCoverageRate(),tnrTotal=0,baseTotal=0,cover=0,patient=0,extra=0,unknownPurchase=0,rateUnknown=rate===null;
+ var rate=deviceCoverageRate(),tnrTotal=0,baseTotal=0,cover=0,patient=0,extra=0,unknownPurchase=0,unknownTnr=0;
+ var rateUnknown=rate===null,patientUnknown=false,extraUnknown=false,coverageUnknown=false;
  selectedImplants.forEach(function(it){
   var q=num(it.qty),purchase=parseNum(it.purchase),unit=deviceUnitPurchase(it),basis=deviceTnrBasis(it);
-  tnrTotal+=q*it.device.tnr;baseTotal+=q*basis;
-  if(purchase===null)unknownPurchase+=q;
-  if(rate!==null){cover+=q*basis*rate;patient+=q*(Math.max(0,unit-basis)+basis*(1-rate))}
-  if(it.separate)extra+=q*unit;
+  if(typeof it.device.tnr==='number')tnrTotal+=q*it.device.tnr;else unknownTnr++;
+  if(basis!==null)baseTotal+=q*basis;
+  if(purchase===null)unknownPurchase++;
+  if(rate===null){coverageUnknown=true;patientUnknown=true;}
+  else if(rate>0&&basis===null){coverageUnknown=true;patientUnknown=true;}
+  else if(rate>0&&basis!==null)cover+=q*basis*rate;
+  if(unit===null)patientUnknown=true;
+  else if(rate!==null&&(rate===0||basis!==null))patient+=q*Math.max(0,unit-(basis===null?0:basis*rate));
+  if(it.separate){if(unit===null)extraUnknown=true;else extra+=q*unit;}
  });
  $('implantCount').textContent=String(selectedImplants.length);
- $('implantTnrTotal').textContent=fmt(tnrTotal);
- $('implantBaseTotal').textContent=selectedImplants.length?fmt(baseTotal):'—';
- $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rateUnknown?'Taux à confirmer':fmt(cover));
- $('implantPatientTotal').textContent=!selectedImplants.length?'—':(rateUnknown?'Taux à confirmer':fmt(patient));
- $('implantExtraTotal').textContent=fmt(extra);
+ $('implantTnrTotal').textContent=fmt(tnrTotal)+(unknownTnr?' · TNR non confirmé pour '+unknownTnr+' ligne(s)':'');
+ $('implantBaseTotal').textContent=!selectedImplants.length?'—':(unknownTnr?'Partiellement à confirmer':fmt(baseTotal));
+ $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rateUnknown||coverageUnknown?'À confirmer':fmt(cover));
+ $('implantPatientTotal').textContent=!selectedImplants.length?'—':(patientUnknown?'Prix/TNR/couverture à confirmer':fmt(patient));
+ $('implantExtraTotal').textContent=extraUnknown?'À confirmer — saisir prix fournisseur':fmt(extra);
  $('totalWithImplants').textContent=lastCalc&&lastCalc.grid?(typeof lastCalc.patientAll==='number'?fmt(lastCalc.patientAll):lastCalc.patientAll):'Sélectionnez d’abord un acte';
- if(unknownPurchase>0)$('implantPriceNote').textContent=unknownPurchase+' unité(s) sans prix fournisseur : le TNR sert de prix de travail et de base estimative. Le calcul réel du reste à charge nécessite le prix d’achat exact.';
- else $('implantPriceNote').textContent='Prix d’achat renseigné pour tous les dispositifs. La base remboursable estimée est plafonnée au TNR par ligne.';
- $('implantCoverNote').textContent=($('payer').value==='cnops'?'CNOPS : hypothèse 100 % du TNR admissible, sous réserve de la liste et de l’accord préalable.':$('payer').value==='cnss'?'CNSS/AMO : hypothèse 70 %, à confirmer pour le dossier.':$('payer').value==='payant'?'Payant : aucun remboursement simulé.':$('payer').value==='far'?'FAR : taux à confirmer dans le régime applicable.':'Assurance : taux à confirmer dans le contrat.')+' Le barème intégré est un repère daté, pas une garantie de remboursement.';
+ if(unknownPurchase>0)$('implantPriceNote').textContent=unknownPurchase+' ligne(s) sans prix fournisseur : aucun prix réel n’est supposé. Le TNR reste une base de remboursement historique, non un prix d’achat. Le reste patient combiné est « À confirmer » tant que le prix réel n’est pas saisi.';
+ else $('implantPriceNote').textContent='Tous les prix d’achat sont renseignés. La base de remboursement est calculée au maximum au TNR disponible. Les lignes sans TNR identifiable restent à confirmer.';
+ $('implantCoverNote').textContent=($('payer').value==='cnops'?'CNOPS : simulation au taux saisi sur le TNR disponible ; vérifier la liste des dispositifs, le TNR en vigueur et tout accord préalable.':$('payer').value==='cnss'?'CNSS/AMO : le taux saisi est une hypothèse à confirmer pour chaque dispositif et dossier.':$('payer').value==='payant'?'Payant : aucune prise en charge simulée.':$('payer').value==='far'?'FAR : taux et règles à confirmer dans le régime applicable.':'Assurance privée : confirmer taux, plafond, exclusions et autorisation dans le contrat.')+' Prix fournisseur absent ou TNR non publié = résultat incomplet.';
 }
 
 function calculate(){
@@ -332,26 +381,26 @@ function calculate(){
  var payer=$('payer').value,mode=$('paymentType').value,rate=parseNum($('coverageRate').value);
  var eligible=payer!=='payant',coverageUnknown=eligible&&rate===null;
  if(rate!==null)rate=Math.max(0,Math.min(100,rate))/100;
- // Première page : calcul du patient pour l'acte seul. Aucun coût d'implant n'est affiché ici.
- var cover=eligible&&!coverageUnknown?total*rate:0;
- var patientAct=coverageUnknown?'À confirmer':Math.max(0,total-cover);
- var todayAct=mode==='pec'?patientAct:total;
- // Le calcul combiné, implant(s) marqué(s) « En sus » inclus, reste réservé à l'onglet Implants & TNR.
- var implantRate=deviceCoverageRate(),extra=0,implantCover=0,implantUnknown=false;
+ var enteredBilled=parseNum($('actualBilledPrice').value),billedTotal=enteredBilled===null?total:enteredBilled;
+ var cover=eligible&&!coverageUnknown?Math.min(total,billedTotal)*rate:0;
+ var patientAct=coverageUnknown?'À confirmer':Math.max(0,billedTotal-cover);
+ var todayAct=mode==='pec'?patientAct:billedTotal;
+ var implantRate=deviceCoverageRate(),extra=0,implantCover=0,implantUnknown=false,extraUnknown=false;
  selectedImplants.forEach(function(it){
   if(!it.separate)return;
-  var q=num(it.qty),unit=deviceUnitPurchase(it);
-  extra+=q*unit;
+  var q=num(it.qty),unit=deviceUnitPurchase(it),basis=deviceTnrBasis(it);
+  if(unit===null)extraUnknown=true;else extra+=q*unit;
   if(eligible&&implantRate===null)implantUnknown=true;
-  else if(eligible)implantCover+=q*deviceTnrBasis(it)*implantRate;
+  else if(eligible&&implantRate>0&&basis===null)implantUnknown=true;
+  else if(eligible&&basis!==null)implantCover+=q*basis*implantRate;
  });
- var totalAll=total+extra,coverAll=cover+implantCover;
- var unknownCoverage=coverageUnknown||implantUnknown;
+ var totalAll=billedTotal+extra,coverAll=cover+implantCover;
+ var unknownCoverage=coverageUnknown||implantUnknown||extraUnknown;
  var patientAll=unknownCoverage?'À confirmer':Math.max(0,totalAll-coverAll);
- var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):totalAll;
- $('totalHeadline').textContent=grid?(unknownCoverage?'À confirmer':fmt(patientAct)):'— DH';
+ var todayAll=mode==='pec'?(unknownCoverage?'À confirmer':patientAll):(extraUnknown?'À confirmer':totalAll);
+ $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
  $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient net (acte seul)':(mainAct?'Acte sélectionné sans coefficient calculable automatiquement : consultez la note NGAP ou saisissez le coefficient.':'Sélectionnez une intervention principale.');
- $('payerAmount').textContent=grid?(unknownCoverage?'À confirmer':fmt(cover)):'—';
+ $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
  $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
  $('effectiveCoef').textContent=grid?sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K':'—';
@@ -359,7 +408,7 @@ function calculate(){
  $('summaryBasis').textContent=grid?grid.label:'—';
  $('summaryPayment').textContent=({'direct':'Paiement direct','pec':'PEC — prise en charge préalable','remboursement':'Avance puis remboursement'})[mode];
  $('payerNote').textContent=payerNote(payer,mode);
- $('dTotal').textContent=grid?fmt(total):'—';
+ $('dTotal').textContent=grid?fmt(total):'—';$('dBilledTotal').textContent=grid?fmt(billedTotal):'—';
  $('dCareSetting').textContent=careSetting==='ambulatoire'?'Ambulatoire / sans nuitée':'Hospitalisation';
  var sectorValue=$('sector').value,publicFacility=sectorValue==='public',nonprofitFacility=sectorValue==='nonprofit';
  var publicSurgeon=$('surgeonStatus').value==='public';
@@ -404,7 +453,7 @@ function calculate(){
   var cells=[r.type,r.act.code,r.act.title,c===null?'Règle / à calculer':c.toLocaleString('fr-FR',{maximumFractionDigits:2}),weightText,c===null?'—':(r.weight===undefined?'—':((r.coef||0)*r.weight).toLocaleString('fr-FR',{maximumFractionDigits:2})),an];
   cells.forEach(function(v,i){var td=document.createElement('td');td.textContent=v;if(i>=3)td.className='num';tr.appendChild(td);});tb.appendChild(tr);
  });
- lastCalc={total:total,totalAll:totalAll,implantExtra:extra,surgeon:sf,surgeonNet:surgeonNet,surgeonRetention:surgeonRetention,surgeonRetentionRate:retentionPct,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value,surgeonStatus:$('surgeonStatus').value,careSetting:careSetting};
+ lastCalc={total:total,billedTotal:billedTotal,totalAll:totalAll,implantExtra:extra,surgeon:sf,surgeonNet:surgeonNet,surgeonRetention:surgeonRetention,surgeonRetentionRate:retentionPct,anesthesia:af,block:block,clinic:clinicKnown?clinic:'À confirmer',clinicResidual:rawClinic,coefficient:sc,coverage:coverageUnknown?'À confirmer':cover,coverageAll:unknownCoverage?'À confirmer':coverAll,patient:patientAct,patientAll:patientAll,implantCoverage:implantUnknown?'À confirmer':implantCover,today:todayAct,todayAll:todayAll,grid:grid,rows:selected,mode:mode,payer:payer,rate:rate===null?null:rate,sector:$('sector').value,surgeonStatus:$('surgeonStatus').value,careSetting:careSetting};
  calculateImplants();
 }
 function addGesture(){gestures.push({id:nextId++,act:null,coef:'',query:''});renderGestures();calculate()}
@@ -423,6 +472,7 @@ function summary(){
   'Coefficient chirurgical retenu : '+lastCalc.coefficient+' K',
   'Valeur K/KC : '+fmt(parseNum($('keyValue').value)===null?sectorKeyValue():parseNum($('keyValue').value)),
   'Tarif de référence de l’acte avant couverture : '+(lastCalc.grid?lastCalc.grid.label+' — '+fmt(lastCalc.total):'non calculable automatiquement'),
+  'Prix réel/estimé facturé pour l’acte seul : '+(lastCalc.grid?fmt(lastCalc.billedTotal):'non calculable'),
   'Implants : non inclus dans cette saisie rapide ; consulter l’onglet « Implants & TNR ».',
   'Part du payeur estimée — acte seul : '+amount(lastCalc.coverage),
   'Reste net à la charge du patient — acte seul : '+amount(lastCalc.patient),
@@ -442,12 +492,12 @@ $('implantSearch').addEventListener('input',renderImplantSearch);
 $('implantRate').addEventListener('input',function(){calculate();calculateImplants();});
 $('clearImplants').addEventListener('click',function(){selectedImplants=[];renderImplants();calculate();});
 $('copyImplantSummary').addEventListener('click',function(){
- var lines=selectedImplants.map(function(it){return it.device.code+' · '+it.device.title+' | quantité '+it.qty+' | TNR '+fmt(it.device.tnr)+' | prix achat '+(parseNum(it.purchase)===null?'non saisi':fmt(it.purchase))+' | base remboursable '+fmt(deviceTnrBasis(it))+' | '+(it.separate?'en sus':'hors supplément')});
+ var lines=selectedImplants.map(function(it){var basis=deviceTnrBasis(it);return it.device.code+' · '+it.device.title+' | marques à demander : '+((it.device.brands||[]).join(', ')||'à confirmer')+' | quantité '+it.qty+' | TNR '+(typeof it.device.tnr==='number'?fmt(it.device.tnr):'non confirmé')+' | prix achat '+(parseNum(it.purchase)===null?'non saisi':fmt(it.purchase))+' | base remboursable '+(basis===null?'à confirmer':fmt(basis))+' | '+(it.separate?'en sus':'hors supplément')});
  var txt=['Récapitulatif implants — estimation indicative',lines.join('\n'),'TNR cumulé : '+$('implantTnrTotal').textContent,'Base estimée : '+$('implantBaseTotal').textContent,'Prise en charge estimée : '+$('implantCoverTotal').textContent,'Reste estimé : '+$('implantPatientTotal').textContent,'Source des TNR : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.'].join('\n');
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt);});else alert(txt);
 });
 $('mainSearch').addEventListener('input',renderMainSuggestions);
-$('mainCoef').addEventListener('input',calculate);
+$('mainCoef').addEventListener('input',calculate);$('actualBilledPrice').addEventListener('input',calculate);
 $('keyValue').addEventListener('input',function(){calculate();});
 $('cumulationMode').addEventListener('change',function(){
  var s=$('cumulationMode').value;
@@ -478,7 +528,7 @@ $('copySummary').addEventListener('click',function(){
 });
 $('reset').addEventListener('click',function(){
  mainAct=null;gestures=[];nextId=1;$('surgeonRetention').value='0';$('surgeonStatus').value='liberal';
- $('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('mainActNote').textContent='';
+ $('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('actualBilledPrice').value='';$('mainActNote').textContent='';$('mainMarketPrice').innerHTML='';
  $('payer').value='cnops';$('paymentType').value='pec';$('careSetting').value='hospitalisation';$('careSettingNote').textContent='Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';$('coverageRate').value=String(defaultCoverage('cnops',$('sector').value,$('careSetting').value));$('cumulationMode').value='standard';$('a215Osteosynthesis').checked=false;$('a211Applicable').checked=false;
  selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';
  updateImplantRate();renderGestures();renderImplants();calculate();
@@ -495,6 +545,7 @@ fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalog
 }).catch(function(){
  $('tariffBasisHeadline').textContent='Catalogue orthopédique non chargé : vérifier le déploiement de orthopedie-actes.json.';
 });
+fetch('../market-prices.json').then(function(r){if(!r.ok)throw Error('marché non chargé');return r.json()}).then(function(d){marketReferences=d;renderMarketSources();if(mainAct)renderMarketPrice(mainAct)}).catch(function(){var x=$('mainMarketPrice');if(x)x.textContent='Références de prix de marché non chargées ; utiliser un devis réel.'});
 updateSector();renderGestures();renderImplants();calculate();
 })();
 </script></body></html>
