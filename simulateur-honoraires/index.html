@@ -445,13 +445,14 @@ function renderImplantSearch(){
   box.textContent='Saisissez un code, un nom ou une articulation (ex. plaque tibia, PTH, clou fémoral) pour afficher les correspondances.';
   return;
  }
- var found=implantMatches(query);
- if(!found.length){
+ var allFound=implantMatches(query);
+ if(!allFound.length){
   $('implantCatalogCount').textContent='Aucun résultat pour « '+query+' » parmi '+implantCatalog.length+' dispositifs.';
   box.textContent='Aucune référence trouvée. Essayez le code exact, une articulation ou un terme plus court.';
   return;
  }
- $('implantCatalogCount').textContent=found.length.toLocaleString('fr-FR')+' résultat(s) sur '+implantCatalog.length+' dispositifs pour « '+query+' ».';
+ var found=allFound.slice(0,10);
+ $('implantCatalogCount').textContent=(allFound.length>found.length?'Affichage des 10 premiers résultats sur ':'')+allFound.length.toLocaleString('fr-FR')+' correspondance(s) parmi '+implantCatalog.length+' dispositifs pour « '+query+' ». Précisez votre recherche pour affiner.';
  var list=document.createElement('div');list.className='implant-device-list';
  found.forEach(function(x){
   var row=document.createElement('div');row.className='implant-catalog-item';
