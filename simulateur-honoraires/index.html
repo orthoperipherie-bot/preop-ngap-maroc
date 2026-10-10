@@ -238,94 +238,7 @@ function implantMatches(q){
   return {x:x,score:score,allowed:allowed};
  }).filter(function(v){return v.allowed&&v.score>0}).sort(function(a,b){return b.score-a.score||a.x.code.localeCompare(b.x.code)}).slice(0,10).map(function(v){return v.x});
 }
-function marketReferenceForDevice(d){
- var t=norm(d.title||''),cat=d.category||'trauma',priced=implantImportBenchmarks[d.code];
- if(priced)return {eur:priced.eur,basis:priced.basis,public:priced.sourceType==='public-benchmark',sourceType:priced.sourceType};
- function ref(eur,basis){basis=basis||'Hypothèse par famille, modèle exact non publié';var isPublic=/^(PLV public France 2025|Repère public France 2025|Marché public UE 2025)/i.test(basis);return {eur:eur,basis:basis,public:isPublic,sourceType:isPublic?'public-benchmark':'family-estimate'};}
- if(/allongement osseux|clou d allongement/.test(t))return ref(12000,'Hypothèse de famille — clou d’allongement motorisé haut de gamme');
- if(/megaprothese|reconstruction tumorale|implant orthopedique personnalise|sur mesure|3d/.test(t))return ref(6000,'Hypothèse de famille — reconstruction tumorale/personnalisée');
- if(/set de prothese totale primaire/.test(t)&&cat==='hip')return ref(2200,'Hypothèse de famille — set complet PTH primaire');
- if(/set de prothese totale primaire/.test(t)&&cat==='knee')return ref(2800,'Hypothèse de famille — set complet PTG primaire');
- if(/prothese totale inversee/.test(t))return ref(3000,'Hypothèse de famille — prothèse totale inversée d’épaule');
- if(/prothese totale anatomique/.test(t))return ref(2300,'Hypothèse de famille — prothèse anatomique d’épaule');
- if(/prothese totale de revision|prothese totale de reprise/.test(t))return ref(4000,'Hypothèse de famille — prothèse de révision');
- if(/prothese contrainte|charniere rotatoire|prothese contrainte condylienne/.test(t))return ref(4200,'Hypothèse de famille — prothèse de genou contrainte/charnière');
- if(/prothese totale de cheville/.test(t))return ref(2500,'Hypothèse de famille — prothèse de cheville');
- if(/systeme posterieur vis pediculaires|fixation occipito cervicale/.test(t))return ref(2200,'Hypothèse de famille — système rachidien complet');
- if(/systeme de distraction|transport osseux externe/.test(t))return ref(3000,'Hypothèse de famille — dispositif de transport osseux');
- if(/hexapode|correction tridimensionnelle/.test(t))return ref(3500,'Hypothèse de famille — fixateur externe hexapode');
- if(/fixateur externe circulaire|ilizarov/.test(t))return ref(1400,'Hypothèse de famille — fixateur circulaire Ilizarov');
- if(/fixateur externe|fixator/.test(t)&&!/broche|fiche d ancrage|barre|clamp|connecteur/.test(t))return ref(850,'Hypothèse de famille — montage de fixateur externe');
- if(/prothese totale du poignet/.test(t))return ref(1800,'Hypothèse de famille — prothèse totale du poignet');
- if(/prothese totale humero ulnaire/.test(t))return ref(1600,'Hypothèse de famille — prothèse de coude');
- if(/prothese de tete radiale/.test(t))return ref(650,'Hypothèse de famille — tête radiale prothétique');
- if(/implant d articulation mcp|implant trapezo metacarpien/.test(t))return ref(400,'Hypothèse de famille — petit implant articulaire de la main');
- if(/reparation meniscale tout en un|all inside|fixation de racine meniscale/.test(t))return ref(/racine/.test(t)?400:300,'Hypothèse de famille — réparation méniscale');
- if(/kit de reparation percutanee du tendon d achille/.test(t))return ref(350,'Hypothèse de famille — kit de réparation tendineuse');
- if(/ancre|anchor/.test(t))return ref(110,'Repère public France 2025 pour ancrage tendineux/ligamentaire non résorbable');
- if(/bouton cortical|button/.test(t))return ref(120,'Hypothèse de famille — bouton cortical ligamentaire');
- if(/vis d interference peek|vis d interference resorbable/.test(t))return ref(202,'Repère public France 2025 pour vis d’interférence résorbable');
- if(/vis d interference/.test(t))return ref(85,'Repère public France 2025 pour vis d’interférence non résorbable');
- if(/patch de renfort tendineux|matrice de reparation/.test(t))return ref(345,'Repère public France 2025 pour renfort tendineux (famille)');
- if(/greffon tendineux|allogreffe/.test(t))return ref(850,'Hypothèse de famille — greffon tendineux/allogreffe');
- if(/suture tape|sutures et fils a haute resistance/.test(t))return ref(150,'Hypothèse de famille — suture renforcée');
- if(/cage de remplacement vertebral|corpectomie/.test(t))return ref(1200,'Hypothèse de famille — cage de remplacement vertébral');
- if(/prothese discale/.test(t))return ref(2400,'Hypothèse de famille — prothèse discale');
- if(/kit de cyphoplastie/.test(t))return ref(1200,'Hypothèse de famille — kit de cyphoplastie');
- if(/vertebroplastie|ciment vertebral/.test(t))return ref(550,'Hypothèse de famille — kit de vertébroplastie');
- if(/cage intersomatique.*titane poreux|cage intersomatique expansible/.test(t))return ref(900,'Hypothèse de famille — cage intersomatique spécialisée');
- if(/cage intersomatique|interbody cage/.test(t))return ref(600,'Hypothèse de famille — cage intersomatique');
- if(/vis pediculaire/.test(t))return ref(220,'Hypothèse de famille — vis pédiculaire');
- if(/tige de connexion|spine rod/.test(t))return ref(150,'Hypothèse de famille — tige de connexion rachidienne');
- if(/prothese unicompartimentale/.test(t))return ref(1800,'Hypothèse de famille — prothèse unicompartimentale');
- if(/femoro patellaire/.test(t))return ref(1400,'Hypothèse de famille — prothèse fémoro-patellaire');
- if(/glenosphere|baseplate/.test(t))return ref(416,'Repère public France 2025 pour embase glénoïdienne métallique');
- if(/insert|polyethylene|bouton rotulien|composant patellaire/.test(t))return ref(215,'Repère public France 2025 pour insert/composant polymère');
- if(/cupule|acetabulaire|cage|anneau de reconstruction|augment acetabulaire/.test(t))return ref(532,'Repère public France 2025 pour cupule acétabulaire');
- if(/tige femorale longue|tige longue modulaire|modulaire a col interchangeable|tige de reconstruction/.test(t))return ref(850,'Hypothèse de famille — tige longue/modulaire');
- if(/tige humerale/.test(t))return ref(993,'Repère public France 2025 pour tige humérale standard');
- if(/tige femorale|tige anatomique|tige cimentee|tige non cimentee/.test(t))return ref(754,'Repère public France 2025 pour tige anatomique de hanche');
- if(/tete femorale|couple de frottement/.test(t))return ref(172,'Repère public France 2025 pour tête fémorale métallique');
- if(/plateau tibial|cone metaphysaire|manchon metaphysaire|tige d extension/.test(t))return ref(/cone|manchon/.test(t)?650:676,'Repère public France 2025 pour composant de genou');
- if(/ciment osseux charge en antibiotique/.test(t))return ref(180,'Hypothèse de famille — ciment osseux avec antibiotique');
- if(/ciment osseux|ciment pmma|bouchon de ciment|restrictor/.test(t))return ref(60,'Hypothèse de famille — ciment osseux/accessoire');
- if(/substitut osseux|matrice osseuse|greffe osseuse|allogreffe structurale|materiau de comblement/.test(t))return ref(/structurale/.test(t)?500:300,'Hypothèse de famille — greffe/substitut osseux');
- if(/plaque/.test(t)&&/bassin|cotyle|pelvis|acetabul/.test(t))return ref(450,'Marché public UE — plaque d’ostéosynthèse avec vis, repère de famille bassin');
- if(/plaque/.test(t)&&/verrouillee|verrouillage|anatomique|compression|radius distal|clavicule|tibia proximal|femur distal/.test(t))return ref(350,'Marché public UE 2025 — plaque d’ostéosynthèse avec vis, repère de famille');
- if(/plaque|lame plaque|vis plaque|clou plaque|agrafe/.test(t))return ref(300,'Marché public UE 2025 — plaque d’ostéosynthèse avec vis, repère de famille');
- if(/clou centromedullaire|clou cervico|clou de/.test(t))return ref(500,'Hypothèse de famille — clou centromédullaire');
- if(/clou d arthrodese|clou de fusion/.test(t))return ref(550,'Hypothèse de famille — clou d’arthrodèse');
- if(/vis|broche|fil de cerclage|cable|fiche d ancrage|kirschner|steinmann|rondelle|pin/.test(t))return ref(/vis/.test(t)?35:25,'Repère de famille UE pour petite vis/broche/câble');
- if(/orthese|implant de stabilisation lisfranc|syndesmose/.test(t))return ref(180,'Hypothèse de famille — fixation pied/cheville');
- if(cat==='hip')return ref(600,'Hypothèse de famille — composant de hanche');
- if(cat==='knee')return ref(650,'Hypothèse de famille — composant de genou');
- if(cat==='shoulder')return ref(650,'Hypothèse de famille — composant épaule/coude');
- if(cat==='spine')return ref(600,'Hypothèse de famille — implant rachidien');
- if(cat==='external')return ref(850,'Hypothèse de famille — fixateur externe');
- if(cat==='sport')return ref(180,'Hypothèse de famille — implant de chirurgie du sport');
- if(cat==='bone')return ref(300,'Hypothèse de famille — greffe/substitut osseux');
- if(cat==='foot')return ref(250,'Hypothèse de famille — implant pied/cheville');
- if(cat==='tumor')return ref(6000,'Hypothèse de famille — implant tumoral/personnalisé');
- return ref(300,'Hypothèse de famille — dispositif d’ostéosynthèse courant');
-}
-function implantImportEstimate(d){
- var m=marketReferenceForDevice(d),fx=Math.max(0,parseNum($('implantFxEur').value)||0);
- var freight=Math.max(0,Math.min(100,num($('implantFreightPct').value)))/100;
- var duty=Math.max(0,Math.min(100,num($('implantCustomsPct').value)))/100;
- var tpi=Math.max(0,Math.min(100,num($('implantTpiPct').value)))/100;
- var vat=Math.max(0,Math.min(100,num($('implantVatPct').value)))/100;
- var cif=m.eur*fx*(1+freight),dutyValue=cif*duty,tpiValue=cif*tpi,pc=cif+dutyValue+tpiValue;
- var md=0,mex=0;
- if($('implantMarginRegime').value==='classIII'){
-  if(pc<300){md=pc*.05;mex=pc*.10}
-  else if(pc<1000){md=pc*.03;mex=pc*.07}
-  else if(pc<=10000){md=pc*.02;mex=pc*.05}
-  else {md=200;mex=500}
- }
- var ht=pc+md+mex,vatValue=ht*vat;
- return {market:m,marketMAD:m.eur*fx,cif:cif,pc:pc,md:md,mex:mex,vat:vatValue,ttc:ht+vatValue};
-}
-function implantOriginName(origin){return ({europe:'Europe — repère de prix européen',india:'Inde',china:'Chine',pakistan:'Pakistan',turkey:'Turquie',unknown:'Origine à préciser'})[origin||'europe']||'Origine à préciser';}
+function implantOriginName(origin){return ({europe:'Europe — TNR de référence (historique)',india:'Inde',china:'Chine',pakistan:'Pakistan',turkey:'Turquie',unknown:'Origine à préciser'})[origin||'europe']||'Origine à préciser';}
 function implantPriceForCase(it){var actual=parseNum(it.purchase);if(actual!==null)return actual;var origin=(it.origin||'europe'),tnr=deviceTnrValue(it);return origin==='europe'&&tnr!==null?tnr:null;}
 function deviceTnrValue(it){if(it&&it.tnrOverride!==undefined)return parseNum(it.tnrOverride);return it&&it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;}
 function renderImplantSearch(){
@@ -365,7 +278,7 @@ function renderImplants(){
   titleText.textContent=it.device.code+' · '+it.device.title;
   var originLabel=document.createElement('label');originLabel.className='implant-meta';originLabel.textContent='Provenance / référence de prix';
   var origin=document.createElement('select');origin.style.maxWidth='100%';origin.setAttribute('aria-label','Origine ou filière de prix du dispositif');
-  [['europe','Europe — repère de prix européen (indicatif)'],['india','Inde — prix fournisseur requis'],['china','Chine — prix fournisseur requis'],['pakistan','Pakistan — prix fournisseur requis'],['turkey','Turquie — prix fournisseur requis'],['unknown','Autre / origine à préciser — prix requis']].forEach(function(data){var opt=document.createElement('option');opt.value=data[0];opt.textContent=data[1];origin.appendChild(opt);});
+  [['europe','Europe — TNR de référence (historique, à confirmer)'],['india','Inde — prix fournisseur requis'],['china','Chine — prix fournisseur requis'],['pakistan','Pakistan — prix fournisseur requis'],['turkey','Turquie — prix fournisseur requis'],['unknown','Autre / origine à préciser — prix requis']].forEach(function(data){var opt=document.createElement('option');opt.value=data[0];opt.textContent=data[1];origin.appendChild(opt);});
   if(!it.origin)it.origin='europe';origin.value=it.origin;
   origin.addEventListener('change',function(){it.origin=origin.value;renderImplants();calculate();});
   var sourceNote=document.createElement('small');sourceNote.className='implant-meta';
