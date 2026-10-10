@@ -444,8 +444,10 @@ function calculateImplants(){
   var q=Math.max(1,num(it.qty)||1),unit=deviceUnitPurchase(it),tnr=deviceTnrValue(it),basis=deviceTnrBasis(it);
   if(unit!==null)marketTotal+=q*unit;else{missingPrice++;patientUnknown=true;}
   if(tnr!==null&&it.applyTnr!==false)tnrTotal+=q*tnr;else if(tnr===null)unknownTnr++;
-  if(payer==='payant'||rate===0||it.applyTnr===false){if(unit!==null)patient+=q*unit;else patientUnknown=true;}
-  else if(rate===null||tnr===null||basis===null){coverageUnknown=true;patientUnknown=true;if(unit!==null)patient+=q*unit;}
+  if(payer==='payant'||rate===0){if(unit!==null)patient+=q*unit;else patientUnknown=true;}
+  else if(rate===null||tnr===null){coverageUnknown=true;patientUnknown=true;if(unit!==null)patient+=q*unit;}
+  else if(it.applyTnr===false){if(unit!==null)patient+=q*unit;else patientUnknown=true;}
+  else if(basis===null){coverageUnknown=true;patientUnknown=true;if(unit!==null)patient+=q*unit;}
   else{baseTotal+=q*basis;cover+=q*basis*rate;if(unit!==null)patient+=q*Math.max(0,unit-basis*rate);else patientUnknown=true;}
   updateImplantRowSummary(it);
  });
