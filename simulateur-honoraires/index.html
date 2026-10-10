@@ -494,7 +494,7 @@ function renderImplants(){
   var tdDel=document.createElement('td');var del=document.createElement('button');del.type='button';del.className='btn danger remove';del.textContent='×';del.setAttribute('aria-label','Supprimer '+it.device.title);del.addEventListener('click',function(){selectedImplants=selectedImplants.filter(function(z){return z.id!==it.id;});renderImplants();renderImplantSearch();calculate();});tdDel.appendChild(del);tr.appendChild(tdDel);
   tb.appendChild(tr);updateImplantRowSummary(it);
  });
- renderImplantPriceDetails();calculateImplants();
+ renderImplantPriceDetails();syncTnrDisplay();calculateImplants();
 }
 function updateImplantRate(){
  var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:null;
@@ -510,7 +510,7 @@ function syncTnrDisplay(){
  var on=tnrComparisonEnabled();
  document.querySelectorAll('.tnr-only').forEach(function(el){el.classList.toggle('hidden',!on);});
  var label=$('implantPatientLabel');
- if(label)label.textContent=on?'Reste patient estimé après prise en charge TNR':'Reste estimé sur les implants sélectionnés — sans remboursement TNR déduit';
+ if(label)label.textContent=on?'Reste patient estimé après prise en charge TNR (ajout au total seulement si « En sus »)':'Reste estimé sur les implants sélectionnés sans remboursement TNR (ajout au total seulement si « En sus »)';
  var searchCount=$('implantCatalogCount');
  if(searchCount&&!$('implantSearch').value.trim())searchCount.textContent='Recherche à la demande — aucune liste complète affichée.';
 }
@@ -762,7 +762,7 @@ $('copyImplantSummary').addEventListener('click',function(){
   var est=it.estimate||estimateImplantPrice(it.device),base=deviceTnrBasis(it),price=deviceUnitPurchase(it),tnr=deviceTnrValue(it);
   return it.device.code+' · '+it.device.title+' | quantité '+it.qty+' | prix TTC estimé '+fmt(est.center)+' DH (fourchette '+fmt(est.low)+'–'+fmt(est.high)+') | prix retenu '+(price===null?'à confirmer':fmt(price)+' DH/unité')+' | '+(tnrOn?('TNR '+(tnr===null?'non identifié/à confirmer':fmt(tnr)+' DH, historique')+' | base remboursable '+(base===null?'à confirmer':fmt(base))):'comparaison TNR désactivée')+' | '+(it.separate?'en sus':'hors sus');
  });
- var txt=['Récapitulatif implants — estimation indicative, non devis','Comparaison TNR : '+(tnrOn?'activée':'désactivée')+'.','Les prix par famille ne sont pas homologués. Pour une référence de classe III, confirmer le prix officiel exact auprès du distributeur/AMMPS.','',lines.join('\n'),'Somme des TNR disponibles : '+$('implantTnrTotal').textContent,'Base remboursable estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée : '+$('implantCoverTotal').textContent,'Reste patient estimé sur implants : '+$('implantPatientTotal').textContent,'Source des TNR historiques : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.'].join('\n');
+ var txt=['Récapitulatif implants — estimation indicative, non devis','Comparaison TNR : '+(tnrOn?'activée':'désactivée')+'.','Prix de marché total retenu : '+$('implantMarketTotal').textContent,'Les prix par famille ne sont pas homologués. Pour une référence de classe III, confirmer le prix officiel exact auprès du distributeur/AMMPS.','',lines.join('\n')].concat(tnrOn?['Somme des TNR disponibles : '+$('implantTnrTotal').textContent,'Base remboursable estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée : '+$('implantCoverTotal').textContent,'Source des TNR historiques : arrêté n°2314-08 (2008), à vérifier au regard des mises à jour.']:[]).concat(['Coût/restant estimé sur les implants : '+$('implantPatientTotal').textContent,'Les implants cochés « En sus » sont les seuls ajoutés au total patient.']).join('\n');
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt);});else alert(txt);
 });
 $('mainSearch').addEventListener('input',renderMainSuggestions);
@@ -798,7 +798,7 @@ $('reset').addEventListener('click',function(){
  mainAct=null;gestures=[];nextId=1;$('surgeonRetention').value='0';$('surgeonStatus').value='liberal';
  $('mainSearch').value='';$('mainSuggestions').innerHTML='';$('mainSelected').classList.add('hidden');$('mainCoef').value='';$('mainActNote').textContent='';
  $('payer').value='cnops';$('paymentType').value='pec';$('careSetting').value='hospitalisation';$('careSettingNote').textContent='Hospitalisation : forfait global de référence selon le secteur, incluant les postes indiqués dans la convention.';$('coverageRate').value=String(defaultCoverage('cnops',$('sector').value,$('careSetting').value));$('cumulationMode').value='standard';$('a215Osteosynthesis').checked=false;$('a211Applicable').checked=false;
- selectedImplants=[];$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplantSearch();
+ selectedImplants=[];$('useTnrComparison').checked=false;$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplantSearch();
  updateImplantRate();renderGestures();renderImplants();renderImplantSearch();calculate();
 });
 document.querySelectorAll('[data-tab]').forEach(function(b){
