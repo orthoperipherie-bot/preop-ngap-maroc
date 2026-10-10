@@ -79,7 +79,7 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. La rubrique implants calcule automatiquement les TNR disponibles et la prise en charge estimée selon le payeur sélectionné.</p></div>
-<div class="hero patient-highlight"><div id="totalHeadlineLabel" class="sub">RESTE ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div id="totalHeadlineNote" class="muted">Ce montant correspond au reste estimé à la charge du patient pour l’acte seul, après la prise en charge simulée. Les montants des implants sont affichés uniquement dans l’onglet « Implants &amp; TNR » et ne modifient pas ce montant. Le montant à payer ou à avancer aujourd’hui, selon le mode de paiement, est indiqué séparément.</div></div>
+<div class="hero patient-highlight"><div id="totalHeadlineLabel" class="sub">RESTE ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div id="totalHeadlineNote" class="muted">Ce montant correspond au reste estimé à la charge du patient pour l’acte seul. Les implants ne sont jamais ajoutés à cette saisie rapide : ils sont calculés uniquement dans l’onglet « Implants &amp; TNR », qui possède sa propre fiche acte + implants. Le montant à payer ou à avancer aujourd’hui est indiqué séparément.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
@@ -144,7 +144,7 @@
 <p class="muted">Le TNR et la prise en charge estimée s’affichent automatiquement. Le prix de marché prérempli est indicatif et doit être remplacé par le devis fournisseur lorsque vous l’avez. Un dispositif sans TNR renseigné est signalé comme « à confirmer ».</p>
 <div class="tablewrap"><table><thead><tr><th>Dispositif / code</th><th class="num">Qté</th><th class="num">Prix estimatif TTC / unité</th><th class="num">TNR unitaire · appliquer au calcul</th><th></th></tr></thead><tbody id="implantTable"><tr><td colspan="5">Aucun implant sélectionné. Utilisez la recherche ci-dessus.</td></tr></tbody></table></div>
 <div class="row"><span>Coût estimé total des implants sélectionnés</span><strong id="implantExtraTotal">0 DH</strong></div>
-<div class="row patient-row"><span>RESTE PATIENT TOTAL ESTIMÉ — ACTE DE CETTE FICHE + TOUS LES IMPLANTS SÉLECTIONNÉS</span><strong id="totalWithImplants">—</strong></div><div class="row"><span>Montant estimé à avancer aujourd’hui (selon le type de paiement)</span><strong id="implantTodayWithAct">—</strong></div>
+<div class="row patient-row"><span>RESTE PATIENT TOTAL ESTIMÉ — RESTE DE L’ACTE DE CETTE FICHE + RESTE PATIENT DES IMPLANTS</span><strong id="totalWithImplants">—</strong></div><p id="implantCombinedNote" class="muted">Ce total additionne uniquement ce que le patient doit finalement payer pour l’acte et pour les implants. Le coût fournisseur total des implants est affiché séparément. Cette fiche est indépendante de la saisie rapide.</p><div class="row"><span>Montant estimé à avancer aujourd’hui (selon le type de paiement)</span><strong id="implantTodayWithAct">—</strong></div>
 <div class="actions"><button class="btn" id="clearImplants">Effacer les implants</button><button class="btn" id="resetImplantCalc">Réinitialiser cette fiche indépendante</button><button class="btn" id="copyImplantSummary">Copier le récapitulatif implants</button></div></div>
 <div class="panel"><h2>Prix TTC estimé et cadre légal</h2>
 <p class="muted">Pour les dispositifs sans prix fournisseur connu, l’application préremplit une estimation TTC et une fourchette indicative selon le type de dispositif. Ce n’est pas un devis ni un prix de vente homologué. La marque/référence commerciale, le contenu exact du kit, le prix de cession HT, la classe réglementaire et le distributeur peuvent faire varier sensiblement le prix réel.</p>
@@ -671,9 +671,14 @@ function calculateImplants(){
   $('implantActSurgeon').textContent='—';$('implantActAnesthesia').textContent='—';$('implantActBlock').textContent='—';
   $('implantActCalcNote').textContent=act.note||'Sélectionnez un acte coté et vérifiez les règles particulières.';
  }
- var patientAll=act.known&&typeof act.patient==='number'&&!patientUnknown?act.patient+patient:'À confirmer';
+ // Calcul combiné, réservé à l’onglet Implants & TNR :
+ // reste patient de l’acte de cette fiche + reste patient des implants.
+ // Ne jamais injecter les implants dans calculate() / la saisie rapide.
+ var actPatientKnown=act.known&&typeof act.patient==='number';
+ var implantPatientKnown=!patientUnknown;
+ var patientAll=actPatientKnown&&implantPatientKnown?act.patient+patient:'À confirmer';
  var todayAll='À confirmer';
- if(act.known&&typeof act.patient==='number'){
+ if(actPatientKnown){
   if($('implantPaymentType').value==='pec')todayAll=patientAll;
   else if(!missingPrice)todayAll=act.total+marketTotal;
  }
