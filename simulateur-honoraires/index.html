@@ -671,7 +671,7 @@ function calculate(){
  var patientAct=coverageUnknown?'À confirmer':Math.max(0,billedTotal-cover);
  var todayAct=mode==='pec'?patientAct:billedTotal;
  $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé — acte + implants facturés en sus':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé — acte + implants inclus automatiquement':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
  $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
  $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
