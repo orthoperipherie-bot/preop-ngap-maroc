@@ -63,8 +63,8 @@
 .implant-inline{border-top:2px solid var(--line);margin-top:20px;padding-top:12px}.implant-tnr-control label{display:flex;align-items:flex-start;gap:8px;color:var(--ink);font-weight:650;margin:0}.implant-tnr-control input[type=checkbox]{width:auto;min-width:auto;margin:3px 0 0}.implant-inline .implant-price-input{width:110px;max-width:100%;padding:8px;font-size:13px}.implant-inline .implant-price-estimate{display:block;font-size:11px;color:var(--muted);margin-top:4px;white-space:normal}
 </style></head><body><main class="app">
 <div class="eyebrow">Outil quotidien · Orthopédie & traumatologie</div><h1>Simulateur NGAP</h1><p class="muted">Saisissez l’intervention et les gestes associés, puis consultez le reste estimé à payer par le patient. Le catalogue d’implants distingue les TNR historiques, les repères publics de prix de sets complets et les prix fournisseur à confirmer. Le troisième volet détaille l’estimation NGAP. Ce n’est pas un devis.</p>
-<p class="muted" id="buildVersion">Version 53 — catalogue implants étendu ; reste patient acte + implants ; prix fournisseur et taux implant distingués.</p>
-<div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="implants">Implants &amp; TNR</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
+<p class="muted" id="buildVersion">Version 54 — rubrique implants masquée ; calculs synchronisés avec la saisie rapide.</p>
+<div class="tabs"><button class="btn tab active" data-tab="saisie">Saisie rapide</button><button class="btn tab" data-tab="details">Détails estimés NGAP</button></div>
 <section id="tab-saisie">
 <div class="panel"><h2>0 · Secteur de facturation</h2><div class="grid">
 <div class="field"><label for="sector">Secteur</label><select id="sector"><option value="private" selected>Secteur privé — clinique</option><option value="public">Secteur public — CHU</option><option value="nonprofit">Hôpital privé à but non lucratif</option></select></div>
@@ -92,7 +92,7 @@
 <div class="metrics"><div class="metric"><small>Part payeur estimée — acte seul</small><strong id="payerAmount">—</strong></div><div class="metric patient-highlight"><small id="todayAmountLabel">Montant à payer aujourd’hui — acte seul (PEC : reste patient ; direct/remboursement : avance totale)</small><strong id="todayAmount">—</strong></div><div class="metric"><small>Coefficient pondéré total</small><strong id="effectiveCoef">—</strong></div></div>
 <div class="panel"><h2>Résumé pratique</h2><div class="row"><span>Intervention</span><strong id="summaryAct">À sélectionner</strong></div><div class="row"><span>Base tarifaire</span><strong id="summaryBasis">—</strong></div><div class="row"><span>Mode de paiement</span><strong id="summaryPayment">—</strong></div><div class="actions"><button class="btn" id="copySummary">Copier le résumé</button><button class="btn" id="reset">Réinitialiser</button></div></div>
 </section>
-<section id="tab-implants" class="hidden">
+<section id="tab-implants" class="hidden" style="display:none!important" aria-hidden="true">
 <div class="panel"><h2>4 · Implants orthopédiques — optionnel</h2>
 <p class="muted"><strong>Calcul synchronisé avec « Saisie rapide » :</strong> l’acte, les gestes associés, le secteur, le payeur, le taux et le mode de paiement ne sont pas ressaisis ici. Le total acte seul et le total patient acte + implants sont affichés en haut de la saisie rapide. Recherchez ensuite par articulation, intervention ou type de dispositif. Les libellés sont simplifiés pour faciliter le choix. Le tableau affiche le TNR de référence lorsqu’il est connu (barème historique à vérifier). Pour une prothèse totale de hanche, vérifiez le couple de frottement (métal/polyéthylène, céramique/polyéthylène, céramique-céramique) et distinguez la double mobilité, qui correspond à une conception de stabilité.</p><div class="implant-tnr-control" style="border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;">
 <p class="muted"><strong>TNR et remboursement automatiques.</strong> Le TNR de référence et la déduction estimée sont affichés sans activation manuelle. Les barèmes peuvent être historiques : confirmez la valeur et l’éligibilité du dispositif avant facturation.</p>
@@ -707,7 +707,7 @@ $('reset').addEventListener('click',function(){
 document.querySelectorAll('[data-tab]').forEach(function(b){
  b.onclick=function(){
   document.querySelectorAll('[data-tab]').forEach(function(x){x.classList.toggle('active',x===b);});
-  ['saisie','details','implants'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',b.dataset.tab!==t);});
+  ['saisie','details'].forEach(function(t){$('tab-'+t).classList.toggle('hidden',b.dataset.tab!==t);});$('tab-implants').classList.add('hidden');$('tab-implants').style.display='none';
  };
 });
 fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalogue orthopédique inaccessible');return r.json();}).then(function(d){
