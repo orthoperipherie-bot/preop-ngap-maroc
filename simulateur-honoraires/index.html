@@ -79,7 +79,7 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. La rubrique implants calcule automatiquement les TNR disponibles et la prise en charge estimée selon le payeur sélectionné.</p></div>
-<div class="hero patient-highlight"><div id="totalHeadlineLabel" class="sub">RESTE ESTIMÉ À LA CHARGE DU PATIENT — ACTE + IMPLANTS « EN SUS »</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div id="totalHeadlineNote" class="muted">Ce montant correspond au reste estimé à la charge du patient après la prise en charge simulée : acte + implants cochés « En sus ». Les implants considérés inclus dans le forfait ne sont pas ajoutés une deuxième fois. Le montant à payer ou à avancer aujourd’hui, selon le mode de paiement, est indiqué séparément.</div></div>
+<div class="hero patient-highlight"><div id="totalHeadlineLabel" class="sub">RESTE ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div id="totalHeadlineNote" class="muted">Ce montant correspond au reste estimé à la charge du patient pour l’acte seul, après la prise en charge simulée. Les montants des implants sont affichés uniquement dans l’onglet « Implants &amp; TNR » et ne modifient pas ce montant. Le montant à payer ou à avancer aujourd’hui, selon le mode de paiement, est indiqué séparément.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
@@ -580,15 +580,8 @@ function calculateImplants(){
   lastCalc.coverageAll=typeof lastCalc.coverage==='number'&&!separateCoverageUnknown?lastCalc.coverage+separateCover:'À confirmer';
  }
  $('totalWithImplants').textContent=!lastCalc||!lastCalc.grid?'Sélectionnez d’abord un acte':(typeof patientAllValue==='number'?fmt(patientAllValue):patientAllValue);
- $('totalHeadline').textContent=!lastCalc||!lastCalc.grid?'— DH':(typeof patientAllValue==='number'?fmt(patientAllValue):patientAllValue);
- $('tariffBasisHeadline').textContent=!lastCalc||!lastCalc.grid?'Sélectionnez une intervention avec une cotation calculable.':lastCalc.grid.label+' · reste patient estimé après couverture · implants « En sus » ajoutés seulement s’ils sont sélectionnés ainsi.';
- var mode=lastCalc?lastCalc.mode:$('paymentType').value;
- $('todayAmount').textContent=!lastCalc||!lastCalc.grid?'—':(typeof todayAll==='number'?fmt(todayAll):todayAll);
- $('todayAmountLabel').textContent=mode==='pec'
-  ?'À payer aujourd’hui — acte + implants « En sus » (après prise en charge)'
-  :mode==='direct'
-   ?'À payer aujourd’hui — acte + implants « En sus » (paiement direct)'
-   :'À avancer aujourd’hui — acte + implants « En sus » (avant remboursement)';
+ // Affichage volontairement séparé : cette fonction ne modifie jamais les montants de la page « Saisie rapide ».
+ // Le reste patient incluant les implants est affiché uniquement dans cet onglet, via totalWithImplants.
  $('implantPriceNote').textContent=!selectedImplants.length
   ?'Le TNR et la prise en charge estimée seront calculés automatiquement dès qu’un implant est sélectionné. Prix de marché indicatif, à confirmer avec un devis fournisseur.'
   :'Le tableau détaille tous les implants sélectionnés. Pour le total global de l’intervention, seuls les dispositifs cochés « En sus » s’ajoutent au reste patient ; les autres sont supposés inclus dans le forfait afin d’éviter un double comptage. Les TNR présents sont historiques et doivent être vérifiés.';
@@ -681,7 +674,7 @@ function calculate(){
  var patientAct=coverageUnknown?'À confirmer':Math.max(0,billedTotal-cover);
  var todayAct=mode==='pec'?patientAct:billedTotal;
  $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé après couverture, implants « En sus » inclus':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé après couverture — acte seul':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
  $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
  $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
@@ -824,7 +817,7 @@ document.querySelectorAll('[data-tab]').forEach(function(b){
 });
 fetch('../orthopedie-actes.json').then(function(r){if(!r.ok)throw Error('catalogue orthopédique inaccessible');return r.json();}).then(function(d){
  acts=Array.isArray(d)?d:[];
- $('tariffBasisHeadline').textContent='Catalogue orthopédie-traumatologie : '+acts.filter(function(a){return !String(a.code).startsWith('ASSIM-');}).length+' codes NGAP et '+acts.filter(function(a){return String(a.code).startsWith('ASSIM-');}).length+' assimilations.';
+ $('buildVersion').textContent='Catalogue orthopédie-traumatologie chargé : '+acts.filter(function(a){return !String(a.code).startsWith('ASSIM-');}).length+' codes NGAP et '+acts.filter(function(a){return String(a.code).startsWith('ASSIM-');}).length+' assimilations.';
 }).catch(function(){
  $('tariffBasisHeadline').textContent='Catalogue orthopédique non chargé : vérifier le déploiement de orthopedie-actes.json.';
 });
