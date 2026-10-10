@@ -269,6 +269,9 @@ function updateCoverageDefault(){
  }[p]||'Taux de couverture à confirmer.';
  return s+(m==='direct'?' Paiement direct : le patient paie le montant facturé au moment du soin, sans déduction d’un versement direct du payeur.':m==='pec'?' En PEC : le reste patient est estimé après déduction de la part payeur simulée.':' En remboursement : le patient avance le montant facturé puis demande le remboursement prévu par son régime.');
 }
+function implantCategoryLabel(cat){
+ return ({trauma:'Ostéosynthèse — plaques, vis, clous et broches',hip:'Hanche et bassin',knee:'Genou',shoulder:'Épaule',misc:'Coude, poignet et main',external:'Fixateurs externes',sport:'Chirurgie du sport / arthroscopie',bone:'Substituts osseux et greffes',foot:'Pied et cheville',spine:'Rachis',tumor:'Reconstruction tumorale'})[cat]||'Autres dispositifs';
+}
 function implantDisplayTitle(x){
  var c=String(x&&x.code||''),t=String(x&&x.title||'');
  var labels={
