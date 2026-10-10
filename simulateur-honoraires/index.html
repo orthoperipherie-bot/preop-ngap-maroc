@@ -567,21 +567,10 @@ function calculateImplants(){
  if(unknownTnr&&payer!=='payant'&&rate!==0)$('implantPriceNote').textContent+=' '+unknownTnr+' ligne(s) sans TNR dans le catalogue : le remboursement de ces dispositifs ne peut pas être confirmé, leur prise en charge est donc marquée « à confirmer ».';
  var payNote=payer==='cnops'?'CNOPS : taux, TNR actuel, liste du dispositif, droits et accord éventuel à confirmer.':payer==='cnss'?'CNSS/AMO : le taux simulé reste indicatif et doit être vérifié selon le dossier.':payer==='payant'?'Payant : aucune prise en charge calculée.':payer==='far'?'FAR : règles et taux spécifiques à confirmer auprès du régime.':'Assurance privée : taux, plafonds, exclusions et franchises à vérifier dans le contrat.';
  $('implantCoverNote').textContent=(rate===null?'Aucun taux renseigné pour ce payeur. Saisissez le taux contractuel/réglementaire.':'Taux de prise en charge prérempli selon le payeur (modifiable).')+' '+payNote+' La couverture réelle dépend de l’éligibilité du dispositif, des droits, du TNR courant et d’un éventuel accord préalable.';
- if(lastCalc&&lastCalc.grid){
-  $('totalHeadline').textContent=typeof patientAllValue==='number'?fmt(patientAllValue):String(patientAllValue);
-  $('totalHeadlineLabel').textContent=hasImplants?'RESTE À PAYER PAR LE PATIENT — ACTE + IMPLANTS (APRÈS PRISE EN CHARGE)':'RESTE À PAYER PAR LE PATIENT — ACTE SEUL (APRÈS PRISE EN CHARGE)';
-  $('totalHeadlineNote').textContent=hasImplants
-   ?'Ce montant correspond à ce qui reste à la charge du patient après la prise en charge simulée : reste sur l’acte + reste sur les implants. Ce n’est pas le coût total de l’intervention. Le montant à régler ou à avancer aujourd’hui est affiché séparément selon le mode de paiement.'
-   :'Ce montant est le reste à payer par le patient après la prise en charge simulée, et non le coût total de l’intervention. Le montant à régler ou à avancer aujourd’hui est affiché séparément selon le mode de paiement.';
-  $('todayAmount').textContent=typeof todayAll==='number'?fmt(todayAll):String(todayAll);
-  $('todayAmountLabel').textContent=hasImplants
-   ?(lastCalc.mode==='pec'?'À payer aujourd’hui avec PEC — reste patient estimé, acte + implants':lastCalc.mode==='remboursement'?'À avancer aujourd’hui avant remboursement — total facturé estimé, acte + implants':'À régler aujourd’hui sans déduction directe du payeur — acte + implants')
-   :(lastCalc.mode==='pec'?'À payer aujourd’hui avec PEC — reste patient estimé':lastCalc.mode==='remboursement'?'À avancer aujourd’hui avant remboursement — total facturé estimé':'À régler aujourd’hui sans déduction directe du payeur');
-  $('tariffBasisHeadline').textContent='Reste à payer par le patient · '+(lastCalc.grid.label||'tarif de référence')+' · coefficient retenu '+lastCalc.coefficient.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(hasImplants?' · acte + implants':' · acte seul');
- }else{
-  $('totalHeadline').textContent='— DH';
-  $('totalHeadlineLabel').textContent='MONTANT ESTIMÉ RESTANT À PAYER PAR LE PATIENT';
- }
+
+ // Les calculs d'implants restent strictement dans l’onglet « Implants & TNR ».
+ // Ne jamais remplacer les montants « acte seul » de la première page par le total acte + implants.
+
 }
 function calculate(){
  var k=parseNum($('keyValue').value);if(k===null)k=sectorKeyValue();
@@ -668,7 +657,7 @@ function calculate(){
  var patientAct=coverageUnknown?'À confirmer':Math.max(0,billedTotal-cover);
  var todayAct=mode==='pec'?patientAct:billedTotal;
  $('totalHeadline').textContent=grid?(coverageUnknown?'À confirmer':fmt(patientAct)):'— DH';
- $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé — acte + implants inclus automatiquement':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
+ $('tariffBasisHeadline').textContent=grid?grid.label+' · coefficient retenu '+sc.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K · reste patient estimé — acte seul, hors implants':'Acte sélectionné sans coefficient calculable automatiquement : vérifiez sa note NGAP.';
  $('payerAmount').textContent=grid?(coverageUnknown?'À confirmer':fmt(cover)):'—';
  $('patientAmount').textContent=grid?(typeof patientAct==='string'?patientAct:fmt(patientAct)):'—';
  $('todayAmount').textContent=grid?(typeof todayAct==='string'?todayAct:fmt(todayAct)):'—';
