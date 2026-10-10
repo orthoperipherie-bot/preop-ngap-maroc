@@ -79,7 +79,7 @@
 <p id="sectorNote" class="notice">Secteur privé : K/KC = 22,50 DH, référence conventionnelle privée. Vérifier la convention et le tarif appliqués.</p>
 <p class="muted">Important : le choix « secteur public » applique le barème AMO de référence de l’établissement, et non une facturation individuelle du professionnel. Les valeurs intégrées sont des références conventionnelles historiques (2006–2007) à vérifier avec l’établissement et l’organisme payeur.</p>
 <p id="careSettingNote" class="muted">Hospitalisation : utilisation du forfait global de référence pour le secteur sélectionné. La rubrique implants est intégrée en bas de cette page ; cochez l’option TNR pour afficher la base et calculer la déduction indicative.</p></div>
-<div class="hero patient-highlight"><div id="totalHeadlineLabel" class="sub">RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div id="totalHeadlineNote" class="muted">Le reste patient est calculé après déduction de la part simulée du payeur. Les implants cochés « En sus » seront ajoutés après application éventuelle du TNR.</div></div>
+<div class="hero patient-highlight"><div id="totalHeadlineLabel" class="sub">MONTANT ESTIMÉ RESTANT À PAYER PAR LE PATIENT — ACTE SEUL</div><div id="totalHeadline" class="big">— DH</div><div id="tariffBasisHeadline" class="sub">Chargement du catalogue NGAP…</div><div id="totalHeadlineNote" class="muted">Ce montant correspond à la somme qui reste à la charge du patient après la couverture simulée, et non au coût total de l’intervention. Les implants cochés « En sus » ajoutent uniquement leur part restant à payer après application éventuelle du TNR.</div></div>
 <div class="panel"><h2>1 · Intervention principale</h2><div class="field"><label for="mainSearch">Rechercher l’intervention par nom ou code NGAP</label><input id="mainSearch" autocomplete="off" placeholder="Ex. PTH, PTG, LCA, canal carpien, A143…"><div id="mainSuggestions"></div></div>
 <div id="mainSelected" class="selected hidden"><strong id="mainTitle"></strong><small id="mainCodeLine"></small><small id="mainActNote" class="muted"></small></div>
 <div class="grid"><div class="field"><label for="mainCoef">Coefficient chirurgical NGAP (K/KC)</label><input id="mainCoef" type="number" min="0" step=".1" placeholder="Auto après sélection"></div><div class="field"><label for="keyValue">Valeur de la lettre-clé du secteur (DH)</label><input id="keyValue" type="number" min="0" step=".5" value="22.5"></div></div><p id="kNote" class="muted">Le coefficient d’acte est repris de la NGAP fournie ; la valeur monétaire K/KC dépend du secteur sélectionné et reste modifiable.</p></div>
@@ -588,14 +588,14 @@ function calculateImplants(){
  if(lastCalc&&lastCalc.grid){
   var finalPatient=hasSeparate?patientAllValue:lastCalc.patient;
   $('totalHeadline').textContent=typeof finalPatient==='number'?fmt(finalPatient):String(finalPatient);
-  $('totalHeadlineLabel').textContent=hasSeparate?'RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE + IMPLANTS « EN SUS »':'RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT — ACTE SEUL';
+  $('totalHeadlineLabel').textContent=hasSeparate?'MONTANT ESTIMÉ RESTANT À PAYER PAR LE PATIENT — ACTE + IMPLANTS EN SUS':'MONTANT ESTIMÉ RESTANT À PAYER PAR LE PATIENT — ACTE SEUL';
   $('totalHeadlineNote').textContent=hasSeparate?'Le montant inclut uniquement les implants cochés « En sus », après déduction de la prise en charge TNR lorsqu’elle est activée. Les actes et couvertures restent des estimations.':'Les implants sélectionnés ne s’ajoutent pas au reste patient tant que la case « En sus » de leur ligne n’est pas cochée.';
   $('todayAmount').textContent=typeof todayAll==='number'?fmt(todayAll):String(todayAll);
   $('todayAmountLabel').textContent=hasSeparate?'Montant à avancer aujourd’hui — acte + prix complet des implants « En sus » (avant remboursement si paiement direct/remboursement)':'Montant à payer aujourd’hui — acte seul (PEC : reste patient ; direct/remboursement : avance totale)';
   $('tariffBasisHeadline').textContent=(lastCalc.grid.label||'Tarif de référence')+' · coefficient retenu '+lastCalc.coefficient.toLocaleString('fr-FR',{maximumFractionDigits:2})+' K'+(hasSeparate?' · reste patient acte + implants en sus':' · reste patient acte seul');
  }else{
   $('totalHeadline').textContent='— DH';
-  $('totalHeadlineLabel').textContent='RESTE FINAL ESTIMÉ À LA CHARGE DU PATIENT';
+  $('totalHeadlineLabel').textContent='MONTANT ESTIMÉ RESTANT À PAYER PAR LE PATIENT';
  }
 }
 function calculate(){
