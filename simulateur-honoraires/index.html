@@ -249,6 +249,7 @@ function renderImplantSearch(){
 function addImplant(x){selectedImplants.push({id:nextImplantId++,device:x,qty:1,purchase:'',separate:false});$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplants();calculate()}
 function deviceUnitPurchase(it){var p=parseNum(it.purchase);return p===null?null:p}
 function deviceTnrBasis(it){var t=it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;if(t===null)return null;var p=parseNum(it.purchase);return p===null?t:Math.min(p,t)}
+function deviceCoverageRate(){var v=parseNum($('implantRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100}
 function updateImplantRate(){
  var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:null;
  $('implantRate').value=rate===null?'':String(rate);
