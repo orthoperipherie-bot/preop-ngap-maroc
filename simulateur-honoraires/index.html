@@ -228,9 +228,11 @@ function updateCoverageDefault(){
 function implantMatches(q){
  var n=norm(q);if(!n)return [];
  var filter=$('implantCatalogueFilter')?$('implantCatalogueFilter').value:'all';
+ var originFilter=$('implantOriginFilter')?$('implantOriginFilter').value:'europe';
  return implantCatalog.map(function(x){
   var hasTnr=typeof x.tnr==='number'&&Number.isFinite(x.tnr);
   var allowed=filter==='all'||(filter==='tnr'&&hasTnr)||(filter==='supplier'&&!hasTnr);
+  if(originFilter==='europe'&&!hasTnr)allowed=false;
   var all=norm(x.code+' '+x.title+' '+(x.searchTerms||''));
   var score=norm(x.code)===n?2000:(all.indexOf(n)>=0?800:n.split(' ').filter(Boolean).filter(function(w){return all.indexOf(w)>=0}).length*100);
   return {x:x,score:score,allowed:allowed};
@@ -324,7 +326,7 @@ function implantImportEstimate(d){
  return {market:m,marketMAD:m.eur*fx,cif:cif,pc:pc,md:md,mex:mex,vat:vatValue,ttc:ht+vatValue};
 }
 function implantOriginName(origin){return ({europe:'Europe — repère de prix européen',india:'Inde',china:'Chine',pakistan:'Pakistan',turkey:'Turquie',unknown:'Origine à préciser'})[origin||'europe']||'Origine à préciser';}
-function implantPriceForCase(it){var actual=parseNum(it.purchase);if(actual!==null)return actual;return (it.origin||'europe')==='europe'?implantImportEstimate(it.device).ttc:null;}
+function implantPriceForCase(it){var actual=parseNum(it.purchase);if(actual!==null)return actual;var origin=(it.origin||'europe'),tnr=deviceTnrValue(it);return origin==='europe'&&tnr!==null?tnr:null;}
 function deviceTnrValue(it){if(it&&it.tnrOverride!==undefined)return parseNum(it.tnrOverride);return it&&it.device&&typeof it.device.tnr==='number'?it.device.tnr:null;}
 function renderImplantSearch(){
  var box=$('implantSuggestions');box.innerHTML='';var q=$('implantSearch').value.trim();if(!q)return;
@@ -335,13 +337,16 @@ function renderImplantSearch(){
   var st=document.createElement('strong');st.textContent=x.code+' · '+x.title;
   var hasTnr=typeof x.tnr==='number'&&Number.isFinite(x.tnr);
   var sm=document.createElement('small');sm.textContent=hasTnr?'TNR historique disponible ('+(x.tnrSource||x.source||'source à vérifier')+') : '+fmt(x.tnr)+' DH — confirmer la valeur actuelle.':'Aucun TNR retrouvé dans le catalogue de travail — prix fournisseur et base de remboursement à confirmer.';
-  var est=implantImportEstimate(x),pr=document.createElement('small');pr.textContent='Repère prix Europe : '+fmt(est.ttc)+' DH TTC (indicatif/non réglementaire). Après ajout, choisissez la provenance et vérifiez/saisissez le prix fournisseur.';
+  var origin=$('implantOriginFilter')?$('implantOriginFilter').value:'europe',pr=document.createElement('small');
+  if(origin==='europe')pr.textContent=hasTnr?'Europe : TNR historique '+fmt(x.tnr)+' DH utilisé comme prix de référence par défaut ; à confirmer, et prix d’achat réel saisissable sur la ligne.':'Pas de TNR historique disponible : prix fournisseur requis.';
+  else if(origin==='all')pr.textContent='Après ajout, choisissez la provenance sur la ligne. Europe = TNR disponible ; Inde/Chine/Pakistan/Turquie = prix fournisseur/importateur confirmé.';
+  else pr.textContent='Filière '+implantOriginName(origin)+' : saisissez le prix fournisseur/importateur réel en DH TTC. Le TNR, s’il s’applique à cette référence, sert séparément de base/plafond de remboursement.';
   b.append(st,sm,pr);b.onclick=function(){addImplant(x);};box.appendChild(b);
  });
 }
-function addImplant(x){selectedImplants.push({id:nextImplantId++,device:x,qty:1,purchase:'',separate:false,origin:'europe'});$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplants();calculate()}
+function addImplant(x){var origin=$('implantOriginFilter')?$('implantOriginFilter').value:'europe';if(origin==='all')origin='europe';selectedImplants.push({id:nextImplantId++,device:x,qty:1,purchase:'',separate:false,origin:origin});$('implantSearch').value='';$('implantSuggestions').innerHTML='';renderImplants();calculate()}
 function deviceUnitPurchase(it){return implantPriceForCase(it)}
-function deviceTnrBasis(it){var t=deviceTnrValue(it),actual=parseNum(it.purchase);if(t===null||actual===null)return null;return Math.min(actual,t)}
+function deviceTnrBasis(it){var t=deviceTnrValue(it),actual=implantPriceForCase(it);if(t===null||actual===null)return null;return Math.min(actual,t)}
 function deviceCoverageRate(){var v=parseNum($('implantRate').value);return v===null?null:Math.max(0,Math.min(100,v))/100}
 function updateImplantRate(){
  var p=$('payer').value,rate=p==='payant'?0:p==='cnops'?100:null;
@@ -374,15 +379,15 @@ function renderImplants(){
   var tdBasis=document.createElement('td');tdBasis.className='num';
   tnrInput.addEventListener('input',function(){it.tnrOverride=tnrInput.value;if(tdBasis)tdBasis.textContent=deviceTnrBasis(it)===null?'À confirmer':fmt(deviceTnrBasis(it));calculate();});
   tdTnr.appendChild(tnrInput);var tnrHint=document.createElement('small');tnrHint.className='implant-meta';tnrHint.textContent=typeof it.device.tnr==='number'?'Valeur de départ historique':'À saisir si un TNR officiel s’applique';tdTnr.appendChild(tnrHint);tr.appendChild(tdTnr);
-  var tdEst=document.createElement('td');tdEst.className='num';var actualValue=parseNum(it.purchase),est=implantImportEstimate(it.device),unit=deviceUnitPurchase(it);
+  var tdEst=document.createElement('td');tdEst.className='num';var actualValue=parseNum(it.purchase),unit=deviceUnitPurchase(it),tnrVal=deviceTnrValue(it);
   var price=document.createElement('strong');price.className='implant-price-out';price.textContent=unit===null?'Prix fournisseur requis':fmt(unit);tdEst.appendChild(price);
   var split=document.createElement('small');split.className='implant-estimate-label';
-  if(actualValue!==null)split.textContent='Prix confirmé saisi, DH TTC';
-  else if((it.origin||'europe')==='europe')split.textContent='Repère Europe : '+fmt(est.pc)+' + marges estimées '+fmt(est.md+est.mex)+' + TVA estimée '+fmt(est.vat)+' (non réglementaire)';
-  else split.textContent='Aucun tarif pays fiable intégré : saisissez le prix fournisseur/importateur TTC en DH.';
+  if(actualValue!==null)split.textContent='Prix fournisseur/importateur confirmé, DH TTC';
+  else if((it.origin||'europe')==='europe'&&tnrVal!==null)split.textContent='TNR historique utilisé comme référence par défaut — confirmer le TNR actuel ; ce n’est pas le prix d’achat réel.';
+  else split.textContent='Aucun prix automatique : saisissez le prix fournisseur/importateur TTC en DH.';
   tdEst.appendChild(split);tr.appendChild(tdEst);
   var tdActual=document.createElement('td');tdActual.className='num';var actual=document.createElement('input');actual.type='number';actual.min='0';actual.step='0.01';actual.placeholder='Prix TTC DH';actual.value=it.purchase;actual.setAttribute('aria-label','Prix fournisseur ou importateur confirmé en DH TTC');actual.style.width='105px';
-  actual.addEventListener('input',function(){it.purchase=actual.value;var current=parseNum(it.purchase),priceVal=deviceUnitPurchase(it);price.textContent=priceVal===null?'Prix fournisseur requis':fmt(priceVal);split.textContent=current!==null?'Prix confirmé saisi, DH TTC':((it.origin||'europe')==='europe'?'Repère Europe indicatif — non réglementaire':'Aucun tarif pays fiable intégré : saisissez le prix fournisseur/importateur TTC en DH.');tdBasis.textContent=deviceTnrBasis(it)===null?'À confirmer':fmt(deviceTnrBasis(it));calculate();});
+  actual.addEventListener('input',function(){it.purchase=actual.value;var current=parseNum(it.purchase),priceVal=deviceUnitPurchase(it);price.textContent=priceVal===null?'Prix fournisseur requis':fmt(priceVal);split.textContent=current!==null?'Prix confirmé saisi, DH TTC':((it.origin||'europe')==='europe'&&tnrVal!==null?'TNR historique utilisé comme référence par défaut — confirmer le TNR actuel.':'Aucun prix automatique : saisissez le prix fournisseur/importateur TTC en DH.');tdBasis.textContent=deviceTnrBasis(it)===null?'À confirmer':fmt(deviceTnrBasis(it));calculate();});
   tdActual.appendChild(actual);tr.appendChild(tdActual);
   var base=deviceTnrBasis(it);tdBasis.textContent=base===null?'À confirmer':fmt(base);tr.appendChild(tdBasis);
   var tdSep=document.createElement('td');tdSep.className='num';var sep=document.createElement('input');sep.type='checkbox';sep.checked=it.separate;sep.setAttribute('aria-label','Implant facturé en sus');sep.addEventListener('change',function(){it.separate=sep.checked;calculate();});tdSep.appendChild(sep);tr.appendChild(tdSep);
@@ -392,12 +397,12 @@ function renderImplants(){
  calculateImplants();
 }
 function calculateImplants(){
- var rate=deviceCoverageRate(),tnrTotal=0,baseTotal=0,cover=0,patient=0,extra=0,unknownTnr=0,estimatedEurope=0,missingSupplier=0,extraUnknown=false,patientUnknown=false,coverageUnknown=false,separatePatient=0,separatePatientUnknown=false;
+ var rate=deviceCoverageRate(),tnrTotal=0,baseTotal=0,cover=0,patient=0,extra=0,unknownTnr=0,europeTnrDefault=0,missingSupplier=0,extraUnknown=false,patientUnknown=false,coverageUnknown=false,separatePatient=0,separatePatientUnknown=false;
  selectedImplants.forEach(function(it){
   var q=num(it.qty),unit=deviceUnitPurchase(it),basis=deviceTnrBasis(it),actual=parseNum(it.purchase),tnr=deviceTnrValue(it);
   if(tnr!==null)tnrTotal+=q*tnr;else unknownTnr++;
   if(basis!==null)baseTotal+=q*basis;
-  if(actual===null&&(it.origin||'europe')==='europe')estimatedEurope++;
+  if(actual===null&&(it.origin||'europe')==='europe'&&tnr!==null)europeTnrDefault++;
   if(unit===null)missingSupplier++;
   if(rate===null){coverageUnknown=true;patientUnknown=true;}
   else if(rate>0&&basis===null){coverageUnknown=true;patientUnknown=true;}
@@ -414,7 +419,7 @@ function calculateImplants(){
  });
  $('implantCount').textContent=String(selectedImplants.length);
  $('implantTnrTotal').textContent=fmt(tnrTotal)+(unknownTnr?' · '+unknownTnr+' ligne(s) sans TNR confirmé':'');
- $('implantBaseTotal').textContent=!selectedImplants.length?'—':(unknownTnr?'Partielle — TNR à compléter pour certaines lignes':missingSupplier?'À confirmer — prix fournisseur manquant':estimatedEurope?'Estimation partielle — confirmez les prix d’achat':fmt(baseTotal));
+ $('implantBaseTotal').textContent=!selectedImplants.length?'—':(unknownTnr?'Partielle — TNR à compléter pour certaines lignes':missingSupplier?'À confirmer — prix fournisseur manquant':fmt(baseTotal));
  $('implantCoverTotal').textContent=!selectedImplants.length?'—':(rate===null||coverageUnknown?'À confirmer':fmt(cover));
  $('implantPatientTotal').textContent=!selectedImplants.length?'—':(patientUnknown?'Prix/TNR/couverture à confirmer':fmt(patient));
  $('implantExtraTotal').textContent=extraUnknown?'À confirmer':fmt(extra);
@@ -423,12 +428,11 @@ function calculateImplants(){
  else if(typeof patientAct!=='number'||separatePatientUnknown||extraUnknown)totalImplantPatient='À confirmer';
  else totalImplantPatient=fmt(patientAct+separatePatient);
  $('totalWithImplants').textContent=totalImplantPatient;
- $('implantPriceNote').textContent=(estimatedEurope?estimatedEurope+' dispositif(s) utilisent un repère budgétaire européen non réglementaire. ':'')+(missingSupplier?missingSupplier+' dispositif(s) sans prix : choisissez une origine hors Europe ou saisissez le prix fournisseur/importateur confirmé en DH. ':'')+'La base remboursable n’est calculée qu’avec un prix fournisseur saisi et un TNR utilisé renseigné. Le repère Europe sert uniquement au budget et non à prouver le prix d’achat ni la prise en charge. ';
+ $('implantPriceNote').textContent=(europeTnrDefault?europeTnrDefault+' dispositif(s) Europe utilisent provisoirement le TNR historique comme prix de référence, conformément au mode de simulation choisi ; ce n’est pas une preuve du prix d’achat réel. ':'')+(missingSupplier?missingSupplier+' dispositif(s) nécessitent un prix fournisseur/importateur confirmé ; les tarifs pour Inde, Chine, Pakistan et Turquie ne sont pas inventés. ':'')+'La base remboursable est calculée comme le minimum entre le prix utilisé et le TNR renseigné. Les valeurs TNR historiques doivent être vérifiées pour la référence exacte et le dossier du patient. ';
  if(unknownTnr)$('implantPriceNote').textContent+='Pour '+unknownTnr+' ligne(s), aucun TNR ne figure dans le catalogue : saisissez un TNR vérifié uniquement si cette référence est effectivement admissible.';
  var payNote=$('payer').value==='cnops'?'CNOPS : couverture simulée sur TNR saisi/disponible, à confirmer.':$('payer').value==='cnss'?'CNSS/AMO : taux saisi = hypothèse du dossier.':$('payer').value==='payant'?'Payant : aucun remboursement calculé.':$('payer').value==='far'?'FAR : règles spécifiques à confirmer.':'Assurance privée : taux et plafond contractuels à vérifier.';
  $('implantCoverNote').textContent=payNote+' Le pays d’origine ne garantit pas la couverture ; la référence exacte, le TNR applicable, les droits et un éventuel accord préalable doivent être vérifiés.';
- var fx=Math.max(0,parseNum($('implantFxEur').value)||0),freight=num($('implantFreightPct').value),duty=num($('implantCustomsPct').value),tpi=num($('implantTpiPct').value),vat=num($('implantVatPct').value),regime=$('implantMarginRegime').value;
- $('implantPriceMethod').textContent='Filière Europe seulement : estimation budgétaire à partir de repères publics / repères de famille, puis EUR/MAD '+fx.toLocaleString('fr-FR',{maximumFractionDigits:4})+' DH/€ ; fret/assurance '+freight+' % ; droits hypothétiques '+duty+' % ; TPI '+tpi+' % ; TVA estimée '+vat+' %. Taux EUR/MAD de référence du 09/10/2026 à actualiser. '+(regime==='classIII'?'La formule de marge de classe III ne doit être appliquée que si la classe et le régime de prix officiel sont confirmés.':'Aucune marge réglementée n’est ajoutée sans confirmation de la classe et du prix officiel.')+' Pour Inde/Chine/Pakistan/Turquie, aucun prix import automatique n’est supposé : saisissez le prix fournisseur/importateur TTC en DH. Le code douanier, l’origine documentée, les préférences tarifaires et exonérations peuvent modifier le coût d’import.';
+ $('implantPriceMethod').textContent='Europe : prix de référence = TNR historique disponible, sauf si un prix d’achat réel est saisi. Inde, Chine, Pakistan et Turquie : prix fournisseur/importateur confirmé obligatoire. Le TNR applicable ne dépend pas uniquement du pays d’origine. Les montants TNR disponibles sont historiques : vérifiez-les auprès de l’organisme payeur.'
 }
 
 function calculate(){
@@ -604,14 +608,14 @@ function summary(){
   'Source : NGAP marocaine fournie ; forfaits/valeurs de référence historiques à vérifier auprès de l’établissement et de l’organisme payeur avant facturation.'
  ].join('\n');
 }
-['implantFxEur','implantFreightPct','implantCustomsPct','implantTpiPct','implantVatPct','implantMarginRegime'].forEach(function(id){$(id).addEventListener('input',function(){renderImplants();calculate();});$(id).addEventListener('change',function(){renderImplants();calculate();});});
-$('implantCatalogueFilter').addEventListener('change',renderImplantSearch);
+$('implantOriginFilter').addEventListener('change',function(){var origin=$('implantOriginFilter').value;if(origin==='europe')$('implantCatalogueFilter').value='tnr';else if(origin!=='all')$('implantCatalogueFilter').value='all';renderImplantSearch();});
+$('implantCatalogueFilter').addEventListener('change',function(){if($('implantOriginFilter').value==='europe'&&$('implantCatalogueFilter').value==='supplier')$('implantOriginFilter').value='all';renderImplantSearch();});
 $('implantSearch').addEventListener('input',renderImplantSearch);
 $('implantRate').addEventListener('input',function(){calculate();calculateImplants();});
 $('clearImplants').addEventListener('click',function(){selectedImplants=[];renderImplants();calculate();});
 $('copyImplantSummary').addEventListener('click',function(){
  var lines=selectedImplants.map(function(it){var basis=deviceTnrBasis(it),price=deviceUnitPurchase(it),tnr=deviceTnrValue(it);return it.device.code+' · '+it.device.title+' | origine/filière '+implantOriginName(it.origin)+' | quantité '+it.qty+' | prix utilisé '+(price===null?'prix fournisseur requis':fmt(price))+' | prix fournisseur confirmé '+(parseNum(it.purchase)===null?'non saisi':fmt(it.purchase))+' | TNR utilisé '+(tnr===null?'non identifié / à confirmer':fmt(tnr)+' DH')+' | base de remboursement simulée '+(basis===null?'à confirmer':fmt(basis))+' | '+(it.separate?'en sus, ajouté au reste patient':'non ajouté en sus')});
- var txt=['Récapitulatif implants — estimation budgétaire, non devis','Coût d’import estimé et TNR sont deux données distinctes.',lines.join('\n'),'Somme des TNR historiques disponibles : '+$('implantTnrTotal').textContent,'Base de remboursement estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée : '+$('implantCoverTotal').textContent,'Reste patient estimé sur implants : '+$('implantPatientTotal').textContent,'Avertissement : les TNR proviennent du barème historique n°2314-08 (2008). Pour la classe III, contrôler la mise à jour de l’arrêté 3207-15. Les coûts d’import ne sont ni des TNR ni des prix homologués marocains.'].join('\n');
+ var txt=['Récapitulatif implants — estimation, non devis','Europe : TNR historique utilisé comme référence tarifaire par défaut si disponible. Pour Inde, Chine, Pakistan et Turquie : prix fournisseur/importateur confirmé requis.',lines.join('\n'),'Somme des TNR historiques disponibles : '+$('implantTnrTotal').textContent,'Base de remboursement estimée : '+$('implantBaseTotal').textContent,'Part payeur estimée : '+$('implantCoverTotal').textContent,'Reste patient estimé sur implants : '+$('implantPatientTotal').textContent,'Avertissement : les TNR proviennent du barème historique n°2314-08 (2008). Pour la classe III, contrôler la mise à jour de l’arrêté 3207-15. Les coûts d’import ne sont ni des TNR ni des prix homologués marocains.'].join('\n');
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){alert(txt);});else alert(txt);
 });
 $('mainSearch').addEventListener('input',renderMainSuggestions);
