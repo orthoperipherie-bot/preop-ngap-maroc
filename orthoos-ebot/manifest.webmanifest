@@ -1,0 +1,11 @@
+{
+  "name": "OrthoOS · EBOT Clinical Station Trainer",
+  "short_name": "OrthoOS EBOT",
+  "description": "Interactive orthopaedic viva training across five EBOT stations.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f6",
+  "theme_color": "#102c3a",
+  "icons": []
+}
