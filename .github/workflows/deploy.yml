@@ -46,6 +46,10 @@ jobs:
           cp manifest.webmanifest site/manifest.webmanifest
           cp sw.js site/sw.js
           cp simulateur-honoraires/index.html site/simulateur-honoraires/index.html
+          mkdir -p site/orthoos-ebot
+          cp orthoos-ebot/index.html site/orthoos-ebot/index.html
+          cp orthoos-ebot/manifest.webmanifest site/orthoos-ebot/manifest.webmanifest
+          cp orthoos-ebot/sw.js site/orthoos-ebot/sw.js
           touch site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
