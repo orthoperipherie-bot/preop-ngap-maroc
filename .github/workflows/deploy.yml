@@ -50,6 +50,11 @@ jobs:
           cp orthoos-ebot/index.html site/orthoos-ebot/index.html
           cp orthoos-ebot/manifest.webmanifest site/orthoos-ebot/manifest.webmanifest
           cp orthoos-ebot/sw.js site/orthoos-ebot/sw.js
+          mkdir -p site/orthoscores
+          cp orthoscores/index.html site/orthoscores/index.html
+          cp orthoscores/manifest.webmanifest site/orthoscores/manifest.webmanifest
+          cp orthoscores/sw.js site/orthoscores/sw.js
+          cp orthoscores/icon.svg site/orthoscores/icon.svg
           touch site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
