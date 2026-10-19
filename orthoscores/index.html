@@ -4,10 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f7fb">
-<link rel="manifest" href="./manifest.webmanifest">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="OrthoScores">
 <title>OrthoScores — Scores fonctionnels</title>
 <style>
 :root {
@@ -96,6 +92,13 @@ p { line-height: 1.48; }
 .progress { height:5px; background:var(--surface-2); border-radius:8px; overflow:hidden; margin-bottom:16px; }
 .progress > div { height:100%; background:var(--accent); border-radius:8px; width:0%; transition:width .15s; }
 .item-grid { display:grid; gap:10px; }
+.item-row:has([data-item]) { align-items:stretch; flex-direction:column; gap:7px; }
+.item-row [data-item] { width:100%; max-width:none; }
+.guided-list { display:grid; gap:12px; }
+.guided-question { border:1px solid var(--line); border-radius:15px; padding:13px; background:var(--surface); }
+.guided-question label { display:block; font-size:13px; font-weight:800; line-height:1.4; margin-bottom:9px; }
+.guided-question small { display:block; color:var(--muted); font-size:10px; line-height:1.45; margin-top:7px; }
+.guided-select { width:100%; max-width:none; min-width:0; padding:12px; white-space:normal; }
 .item-row { display:flex; align-items:center; gap:9px; padding:10px 0; border-bottom:1px solid var(--line); }
 .item-row:last-child { border-bottom:0; }
 .item-label { flex:1; min-width:0; font-size:13px; font-weight:650; }
@@ -200,6 +203,18 @@ const scores=[
  {id:'tegner',name:'Tegner Activity Scale',sub:'Genou / sport',region:'Genou / sport',icon:'activity',items:1,scale:'0–10',direction:'Plus élevé = niveau d’activité supérieur',desc:'Niveau d’activité professionnelle et sportive.',kind:'tegner',reference:'https://pubmed.ncbi.nlm.nih.gov/?term=Tegner+activity+scale',note:'Échelle ordinale d’activité de 0 à 10. Reporter le niveau correspondant au formulaire/référentiel utilisé ; ce score ne mesure pas à lui seul la fonction du genou.',license:'Échelle ordinale : le score doit être interprété en fonction de l’activité réellement pratiquée.',maxScore:10}
 ];
 const regions=['Tous','Épaule','Hanche','Genou','Pied / cheville','Membre inférieur','Rachis cervical','Sport'];
+const guidedScales={
+ mjoa:[
+  {label:'1. Motricité des membres supérieurs',max:5,help:'Choisissez selon la capacité fonctionnelle des mains.',options:[[0,'Impossible de bouger les mains'],[1,'Bouge les mains, mais ne peut pas se nourrir seul'],[2,'Peut se nourrir seul, mais ne peut pas boutonner une chemise'],[3,'Peut boutonner avec grande difficulté ou très lentement'],[4,'Peut boutonner avec une légère difficulté'],[5,'Fonction des mains normale']]},
+  {label:'2. Motricité des membres inférieurs',max:7,help:'Choisissez le niveau de marche le plus adapté.',options:[[0,'Perte motrice et sensitive complète des membres inférieurs'],[1,'Sensibilité préservée, mais aucun mouvement volontaire des jambes'],[2,'Peut bouger les jambes, mais ne peut pas marcher'],[3,'Marche uniquement avec une aide (canne, béquille ou autre aide)'],[4,'Peut monter/descendre les escaliers avec une rampe'],[5,'Marche et prend les escaliers sans rampe, avec instabilité notable'],[6,'Marche sans aide ; légère instabilité'],[7,'Marche normale']]},
+  {label:'3. Sensibilité des membres supérieurs',max:3,help:'Cotation de la sensibilité des mains.',options:[[0,'Perte sensitive complète des mains'],[1,'Perte sensitive sévère ou douleur importante'],[2,'Perte sensitive légère, engourdissement ou paresthésies légères'],[3,'Sensibilité normale']]},
+  {label:'4. Fonction vésicale',max:3,help:'Choisissez selon la difficulté de miction rapportée.',options:[[0,'Incapacité à uriner volontairement ou contrôle urinaire très altéré'],[1,'Difficulté marquée à uriner'],[2,'Difficulté légère à modérée à uriner'],[3,'Miction normale']]}
+ ]
+};
+function guidedForm(s){const items=guidedScales[s.id]||[];return '<div class="guided-list">'+items.map((it,i)=>'<div class="guided-question"><label for="guided-'+i+'">'+esc(it.label)+'</label><select class="item-select guided-select" id="guided-'+i+'" data-guided="g'+i+'"><option value="">Choisir la description clinique…</option>'+it.options.map(o=>'<option value="'+o[0]+'" '+(String(state.form['g'+i]??'')===String(o[0])?'selected':'')+'>'+o[0]+' point'+(o[0]>1?'s':'')+' — '+esc(o[1])+'</option>').join('')+'</select><small>'+esc(it.help)+' Maximum : '+it.max+' points.</small></div>').join('')+'</div>';}
+function componentChoiceForm(s){return '<div class="grid2">'+s.parts.map((p,i)=>'<div class="field"><label for="part-choice-'+i+'">'+esc(p[0])+'</label><select class="item-select guided-select" id="part-choice-'+i+'" data-part="p'+i+'"><option value="">Choisir le sous-score validé…</option>'+Array.from({length:p[1]+1},(_,v)=>'<option value="'+v+'" '+(String(state.form['p'+i]??'')===String(v)?'selected':'')+'>'+v+' point'+(v>1?'s':'')+(v===p[1]?' — maximum':v===0?' — minimum':'')+'</option>').join('')+'</select><small>Sélectionner le sous-score calculé à partir de la grille clinique. Maximum : '+p[1]+' points.</small></div>').join('')+'</div>';}
+function calcGuidedMjoa(){const items=guidedScales.mjoa;const vals=items.map((it,i)=>state.form['g'+i]===undefined||state.form['g'+i]===''?null:Number(state.form['g'+i]));const answered=vals.filter(v=>v!==null).length;if(answered!==items.length)return {valid:false,answered,needed:items.length,progress:answered/items.length*100};return {valid:true,value:vals.reduce((a,v)=>a+v,0),max:18,answered,needed:items.length,progress:100,direction:'Plus élevé = meilleure fonction',sub:'Membres supérieurs '+vals[0]+'/5 · Membres inférieurs '+vals[1]+'/7 · Sensibilité '+vals[2]+'/3 · Vessie '+vals[3]+'/3'};}
+function decorateItemOptions(s){document.querySelectorAll('[data-item]').forEach((select,index)=>{const cap=select.closest('.item-row')?.querySelector('.item-label span');if(cap){if(s.id==='womac')cap.textContent=index<5?'Domaine : douleur':index<7?'Domaine : raideur':'Domaine : fonction';else if(s.id==='quickdash')cap.textContent='Choisir la réponse correspondant au questionnaire';else if(s.id==='lefs')cap.textContent='Choisir la difficulté pour l’activité cotée';else if(s.id==='ohs'||s.id==='oks')cap.textContent='Utiliser la réponse du formulaire autorisé';}Array.from(select.options).forEach(opt=>{if(opt.value==='')return;const v=Number(opt.value);if(s.id==='quickdash')opt.textContent=({1:'1 — aucune difficulté / aucun symptôme',2:'2 — difficulté ou symptôme léger',3:'3 — difficulté ou symptôme modéré',4:'4 — difficulté ou symptôme sévère',5:'5 — incapable / symptôme extrême'})[v]||opt.textContent;else if(s.id==='womac')opt.textContent=({0:'0 — aucun',1:'1 — léger',2:'2 — modéré',3:'3 — sévère',4:'4 — extrême'})[v]||opt.textContent;else if(s.id==='lefs')opt.textContent=({0:'0 — difficulté extrême ou incapable',1:'1 — beaucoup de difficulté',2:'2 — difficulté modérée',3:'3 — légère difficulté',4:'4 — aucune difficulté'})[v]||opt.textContent;else if(s.id==='ohs'||s.id==='oks')opt.textContent=v+' — '+(v===0?'réponse la plus défavorable':v===4?'réponse la plus favorable':'niveau intermédiaire; vérifier le formulaire');});});}
 let state={view:'scores',filter:'Tous',query:'',selected:null,form:{},lastResult:null,history:[],favorites:[],entryCode:'',note:''};
 try { state.history=JSON.parse(localStorage.getItem('orthoscores_history')||'[]'); } catch(e) { state.history=[]; }
 try { state.favorites=JSON.parse(localStorage.getItem('orthoscores_favorites')||'[]'); } catch(e) { state.favorites=[]; }
@@ -248,13 +263,14 @@ function exportCsv(){const rows=[['score','valeur','maximum','echelle','referenc
 $('#helpBtn').addEventListener('click',()=>{alert('OrthoScores — maquette interactive\n\n• Les questionnaires originaux ne sont pas reproduits. Entrez les cotations d’une version autorisée/validée.\n• Les calculateurs ont des règles distinctes : vérifiez la version et les champs avant interprétation.\n• L’historique est stocké localement, sans chiffrement spécifique. Évitez les données identifiantes.\n• Ceci n’est pas un dispositif médical validé.');});
 document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{state.view=b.dataset.nav;state.selected=null;state.query='';state.filter='Tous';renderHome();}));
 const origRenderHome=renderHome;
+const originalCalc=calc;
+calc=function(s){if(s.id==='mjoa')return calcGuidedMjoa();if(s.id==='womac'){const vals=Array.from({length:24},(_,i)=>state.form['i'+(i+1)]===undefined||state.form['i'+(i+1)]===''?null:Number(state.form['i'+(i+1)]));const answered=vals.filter(v=>v!==null).length;if(answered!==24)return {valid:false,answered,needed:24,progress:answered/24*100};return {valid:true,value:vals.reduce((a,v)=>a+v,0),max:96,answered:24,needed:24,progress:100,direction:s.direction,sub:'Douleur '+vals.slice(0,5).reduce((a,v)=>a+v,0)+'/20 · Raideur '+vals.slice(5,7).reduce((a,v)=>a+v,0)+'/8 · Fonction '+vals.slice(7).reduce((a,v)=>a+v,0)+'/68'};}return originalCalc(s);};
+const originalRenderDetail=renderDetail;
+renderDetail=function(){originalRenderDetail();const s=byId(state.selected);if(!s)return;const instructions=document.querySelector('#main .panel-head p');if(instructions){if(s.id==='mjoa')instructions.textContent='Choisissez la description clinique qui correspond le mieux : le total se met à jour automatiquement.';else if(s.kind==='items'||s.kind==='womac')instructions.textContent='Choisissez la réponse de chaque item : le résultat est calculé automatiquement.';else if(s.kind==='components')instructions.textContent='Sélectionnez chaque sous-score établi à partir de la grille clinique et des mesures.';}if(s.id==='mjoa'){const target=document.querySelector('#main .panel .grid2');if(target)target.outerHTML=guidedForm(s);document.querySelectorAll('[data-guided]').forEach(el=>el.addEventListener('change',()=>{state.form[el.dataset.guided]=el.value===''?'':Number(el.value);refreshResult();}));}else if(s.kind==='components'){const target=document.querySelector('#main .panel .grid2');if(target)target.outerHTML=componentChoiceForm(s);document.querySelectorAll('[data-part]').forEach(el=>el.addEventListener('change',()=>{state.form[el.dataset.part]=el.value===''?'':Number(el.value);refreshResult();}));}decorateItemOptions(s);refreshResult();};
 function renderHomeWithBindings(){origRenderHome();bindHistory();}
 renderHome=renderHomeWithBindings;
 renderHome();
 })();
-</script>
-<script>
-if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) { window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {})); }
 </script>
 </body>
 </html>
