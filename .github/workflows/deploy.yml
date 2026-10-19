@@ -55,6 +55,11 @@ jobs:
           cp orthoscores/manifest.webmanifest site/orthoscores/manifest.webmanifest
           cp orthoscores/sw.js site/orthoscores/sw.js
           cp orthoscores/icon.svg site/orthoscores/icon.svg
+          mkdir -p site/suivi-patients
+          cp suivi-patients/index.html site/suivi-patients/index.html
+          cp suivi-patients/manifest.webmanifest site/suivi-patients/manifest.webmanifest
+          cp suivi-patients/sw.js site/suivi-patients/sw.js
+          cp suivi-patients/icon.svg site/suivi-patients/icon.svg
           touch site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
