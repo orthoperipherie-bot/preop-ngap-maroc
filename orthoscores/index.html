@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f7fb">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="OrthoScores">
+<title>OrthoScores — Scores fonctionnels</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --canvas: light-dark(#f4f7fb, #0d1420);
+  --surface: light-dark(#ffffff, #151f2e);
+  --surface-2: light-dark(#edf2f8, #1d2939);
+  --ink: light-dark(#172538, #f3f6fb);
+  --muted: light-dark(#68778d, #a8b5c8);
+  --line: light-dark(#dce4ef, #2c394b);
+  --accent: light-dark(#1768d4, #79aefb);
+  --accent-strong: light-dark(#104ea8, #9cc3ff);
+  --accent-wash: light-dark(#e4efff, #172f50);
+  --mint: light-dark(#0c8b72, #54d5b5);
+  --amber: light-dark(#946200, #ffd072);
+  --rose: light-dark(#b6424f, #ff9aa4);
+  --shadow: 0 12px 30px rgba(20, 44, 76, .08);
+}
+* { box-sizing: border-box; }
+html { background: var(--canvas); }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; background: var(--canvas); color: var(--ink); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+#app { width: 100%; min-height: 100dvh; border-radius: 0; background: var(--canvas); padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+.shell { width: min(100%, 820px); margin: 0 auto; }
+.topbar { position: sticky; top: 0; z-index: 10; padding: calc(12px + env(safe-area-inset-top)) 18px 12px; background: color-mix(in srgb, var(--canvas) 90%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); backdrop-filter: blur(18px); }
+.brandline { display: flex; align-items: center; gap: 11px; }
+.logo { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; color: white; background: linear-gradient(145deg, #2477df, #1154b3); box-shadow: 0 6px 15px rgba(23,104,212,.22); flex: 0 0 auto; }
+.logo svg { width: 23px; height: 23px; }
+.brand { font-size: 18px; letter-spacing: -.5px; line-height: 1.15; font-weight: 800; }
+.tagline { margin-top: 3px; color: var(--muted); font-size: 11px; letter-spacing: .02em; }
+.header-actions { margin-left: auto; display:flex; gap: 7px; }
+.iconbtn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); width: 40px; height: 40px; border-radius: 13px; display:grid; place-items:center; }
+.iconbtn svg { width:18px; height:18px; }
+main { padding: 18px 16px 10px; }
+.eyebrow { font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; }
+h1 { font-size: clamp(26px, 7vw, 34px); line-height: 1.07; letter-spacing: -1.2px; margin: 8px 0 8px; }
+h2 { margin: 0; font-size: 21px; letter-spacing: -.6px; }
+h3 { margin: 0; font-size: 15px; letter-spacing: -.2px; }
+p { line-height: 1.48; }
+.hero { border-radius: 25px; padding: 23px 21px; color: #f6f9ff; background: radial-gradient(circle at 91% 2%, rgba(98,171,255,.48), transparent 34%), linear-gradient(138deg, #153c79, #1466c8 67%, #3488e6); box-shadow: 0 16px 32px rgba(23, 76, 147, .18); position: relative; overflow: hidden; }
+.hero .eyebrow { color: #bfdbff; }
+.hero p { max-width: 510px; color: #d9e8ff; margin: 10px 0 18px; font-size: 14px; }
+.hero-stats { display:flex; gap: 9px; flex-wrap:wrap; }
+.stat { min-width: 92px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.09); border-radius: 13px; }
+.stat strong { display:block; font-size: 18px; line-height:1.1; }
+.stat span { font-size: 10px; color: #d8e7ff; }
+.section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin: 24px 2px 12px; }
+.subtle { color: var(--muted); font-size: 12px; }
+.searchbox { display:flex; align-items:center; gap:10px; border:1px solid var(--line); background:var(--surface); padding: 0 14px; min-height:48px; border-radius:15px; box-shadow: 0 3px 10px rgba(30,50,75,.025); }
+.searchbox svg { width:18px; height:18px; color:var(--muted); flex-shrink:0; }
+.searchbox input { width:100%; border:0; outline:0; background:transparent; color:var(--ink); min-width:0; font-size:14px; }
+.filters { display:flex; gap:7px; overflow-x:auto; padding: 12px 0 3px; scrollbar-width:none; }
+.filters::-webkit-scrollbar { display:none; }
+.pill { padding: 9px 13px; white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--muted); font-size:12px; font-weight:650; }
+.pill.active { background:var(--accent); border-color:var(--accent); color:white; }
+.score-list { display:grid; grid-template-columns: 1fr; gap:10px; }
+.score-card { display:flex; gap:13px; align-items:center; text-align:left; border:1px solid var(--line); background:var(--surface); padding:14px; border-radius:19px; color:var(--ink); min-width:0; box-shadow: 0 5px 16px rgba(30,50,75,.025); transition: transform .12s, border-color .12s; }
+.score-card:active { transform:scale(.99); }
+.score-icon { width:47px; height:47px; flex:0 0 47px; border-radius:16px; background:var(--accent-wash); color:var(--accent); display:grid; place-items:center; }
+.score-icon svg { width:23px; height:23px; }
+.score-info { min-width:0; flex:1; }
+.score-info p { font-size:12px; color:var(--muted); margin:5px 0 0; }
+.score-title-row { display:flex; gap:8px; align-items:center; }
+.score-title-row strong { font-size:14px; }
+.tag { font-size:9px; letter-spacing:.03em; padding:4px 7px; border-radius:6px; color:var(--mint); background:color-mix(in srgb, var(--mint) 11%, transparent); font-weight:800; white-space:nowrap; }
+.chevron { color:var(--muted); width:17px; height:17px; flex:0 0 auto; }
+.empty { padding:30px 14px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:17px; }
+.bottomnav { position:fixed; left:0; right:0; bottom:0; z-index:20; background:color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(20px); border-top:1px solid var(--line); padding:8px 20px calc(8px + env(safe-area-inset-bottom)); }
+.bottomnav-inner { display:flex; width:min(100%, 520px); margin:0 auto; justify-content:space-around; }
+.navbtn { display:flex; flex-direction:column; align-items:center; gap:4px; background:transparent; border:0; color:var(--muted); min-width:75px; padding:3px 8px; font-size:10px; font-weight:650; }
+.navbtn svg { width:21px; height:21px; }
+.navbtn.active { color:var(--accent); }
+.backline { display:flex; gap:9px; align-items:center; margin-bottom:18px; }
+.backbtn { display:flex; align-items:center; gap:6px; color:var(--accent); border:0; background:transparent; font-weight:750; font-size:13px; padding:6px 0; }
+.backbtn svg { width:17px; height:17px; }
+.detail-head { display:flex; align-items:flex-start; gap:13px; margin-bottom:16px; }
+.detail-head .score-icon { width:56px; height:56px; flex-basis:56px; }
+.detail-head h1 { font-size:27px; margin:2px 0 7px; }
+.detail-head p { margin:0; color:var(--muted); font-size:13px; }
+.badge-row { display:flex; flex-wrap:wrap; gap:7px; margin:12px 0; }
+.badge { background:var(--surface-2); border-radius:9px; padding:7px 9px; font-size:10px; color:var(--muted); font-weight:700; }
+.panel { border:1px solid var(--line); border-radius:20px; background:var(--surface); padding:17px; margin-top:13px; box-shadow: 0 5px 18px rgba(30,50,75,.025); }
+.panel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:14px; }
+.panel-head p { margin:5px 0 0; font-size:12px; color:var(--muted); }
+.progress { height:5px; background:var(--surface-2); border-radius:8px; overflow:hidden; margin-bottom:16px; }
+.progress > div { height:100%; background:var(--accent); border-radius:8px; width:0%; transition:width .15s; }
+.item-grid { display:grid; gap:10px; }
+.item-row { display:flex; align-items:center; gap:9px; padding:10px 0; border-bottom:1px solid var(--line); }
+.item-row:last-child { border-bottom:0; }
+.item-label { flex:1; min-width:0; font-size:13px; font-weight:650; }
+.item-label span { display:block; color:var(--muted); font-size:10px; margin-top:3px; font-weight:500; }
+.item-select { border:1px solid var(--line); border-radius:11px; color:var(--ink); background:var(--surface); padding:9px 8px; min-width:90px; max-width:125px; }
+.field { margin-top:12px; }
+.field label { display:block; font-size:12px; font-weight:750; margin-bottom:7px; }
+.field small { display:block; font-size:10px; color:var(--muted); margin-top:5px; }
+.numinput, .textinput, .textarea { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--surface); color:var(--ink); outline:0; }
+.numinput:focus, .textinput:focus, .textarea:focus, .item-select:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-wash); }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.result-card { color:#fff; border-radius:22px; background:linear-gradient(140deg, #11386f, #1b65c3); padding:19px; margin-top:14px; box-shadow:0 14px 28px rgba(19,82,158,.15); }
+.result-top { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.result-kicker { font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:#c3dcff; font-weight:800; }
+.result-score { font-size:42px; font-weight:850; letter-spacing:-1.8px; margin-top:6px; line-height:1; }
+.result-score small { font-size:16px; letter-spacing:0; font-weight:650; color:#d3e5ff; }
+.result-desc { color:#d9e9ff; font-size:12px; margin:9px 0 0; }
+.result-track { height:5px; border-radius:9px; background:rgba(255,255,255,.2); margin-top:17px; overflow:hidden; }
+.result-track div { height:100%; border-radius:9px; background:#a9f2de; width:0; transition:width .15s; }
+.result-bottom { display:flex; gap:7px; flex-wrap:wrap; margin-top:13px; }
+.result-mini { padding:6px 8px; background:rgba(255,255,255,.11); border-radius:8px; font-size:10px; color:#e3efff; }
+.primary, .secondary, .danger { border-radius:13px; padding:13px 15px; font-weight:800; font-size:13px; border:1px solid transparent; }
+.primary { background:var(--accent); color:white; }
+.primary:disabled { opacity:.4; cursor:not-allowed; }
+.secondary { background:var(--surface); color:var(--ink); border-color:var(--line); }
+.danger { background:transparent; color:var(--rose); border-color:color-mix(in srgb, var(--rose) 36%, var(--line)); }
+.action-row { display:flex; gap:8px; margin-top:12px; }
+.action-row > * { flex:1; }
+.notice { border-radius:14px; padding:12px 13px; background:var(--accent-wash); color:var(--ink); font-size:11px; line-height:1.5; margin-top:12px; }
+.notice.warn { background:color-mix(in srgb, var(--amber) 12%, var(--surface)); border:1px solid color-mix(in srgb, var(--amber) 30%, var(--line)); }
+.section-title { font-size:16px; font-weight:800; letter-spacing:-.3px; }
+.history-item { display:flex; align-items:center; gap:12px; border:1px solid var(--line); background:var(--surface); border-radius:17px; padding:13px; margin-bottom:9px; }
+.history-score { min-width:65px; text-align:center; color:var(--accent); background:var(--accent-wash); border-radius:12px; padding:10px 7px; font-weight:850; font-size:15px; }
+.history-meta { min-width:0; flex:1; }
+.history-meta strong { font-size:13px; }
+.history-meta p { color:var(--muted); margin:4px 0 0; font-size:10px; }
+.mini-action { border:0; border-radius:10px; padding:8px; background:var(--surface-2); color:var(--muted); }
+.mini-action svg { height:17px; width:17px; display:block; }
+.bookmark { border:0; background:transparent; color:var(--muted); display:grid; place-items:center; padding:4px; }
+.bookmark.saved { color:#e7a626; }
+.bookmark svg { width:18px; height:18px; }
+.library-row { display:flex; align-items:center; gap:10px; }
+.disclaimer { font-size:10px; color:var(--muted); line-height:1.5; margin:18px 4px 5px; }
+.linkbtn { color:var(--accent); text-decoration:none; font-weight:750; }
+.source-list a { color:var(--accent); overflow-wrap:anywhere; }
+.no-print { }
+@media (min-width: 620px) {
+  main { padding:24px 24px 20px; }
+  .topbar { padding-left:24px; padding-right:24px; }
+  .score-list { grid-template-columns:1fr 1fr; }
+  .score-card { min-height:106px; }
+  .hero { padding:28px; }
+  .item-grid.cols2 { grid-template-columns:1fr 1fr; column-gap:22px; }
+  .bottomnav { display:none; }
+  #app { padding-bottom:28px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition:none!important; scroll-behavior:auto!important; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="shell brandline">
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v4a4 4 0 0 0 8 0V3"/><path d="M8 21v-2a4 4 0 0 1 8 0v2"/><path d="M12 11v2"/><path d="M5 10h14"/><path d="M5 14h14"/></svg></div>
+      <div><div class="brand">OrthoScores</div><div class="tagline">L’ESSENTIEL DES SCORES ORTHOPÉDIQUES</div></div>
+      <div class="header-actions"><button class="iconbtn" id="helpBtn" aria-label="À propos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 0 1 4.4.8c0 1.7-2.2 2-2.2 3.7"/><path d="M12 17.2h.01"/></svg></button></div>
+    </div>
+  </header>
+  <main class="shell" id="main"></main>
+  <nav class="bottomnav" aria-label="Navigation principale"><div class="bottomnav-inner">
+    <button class="navbtn active" data-nav="scores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h3M8 16h2M14 12h2M14 16h2"/></svg><span>Scores</span></button>
+    <button class="navbtn" data-nav="favorites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg><span>Favoris</span></button>
+    <button class="navbtn" data-nav="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg><span>Historique</span></button>
+  </div></nav>
+</div>
+<script>
+(function(){
+'use strict';
+const ICONS={
+  shoulder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-2 1-3 3-3 5 0 2 2 3 4 3l1 7h4l1-7c2 0 4-1 4-3 0-2-1-4-3-5"/><path d="M9 7c1 2 5 2 6 0"/></svg>',
+  hip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c-2 3-2 6 0 8l2 2-2 8M16 3c2 3 2 6 0 8l-2 2 2 8"/><circle cx="12" cy="12" r="3"/><path d="M9 12H5M15 12h4"/></svg>',
+  knee:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 8 9l2 3-2 3-1 6M15 3l1 6-2 3 2 3 1 6"/><path d="M8 9c2-1 6-1 8 0M8 15c2 1 6 1 8 0"/></svg>',
+  foot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c1 4 1 7 0 10-1 2-3 3-3 5 0 2 2 3 5 3h6c3 0 4-2 3-4-1-2-5-3-6-6-1-2-1-5-1-8"/><path d="M8 15c2 1 5 1 7 0"/></svg>',
+  leg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 2 8-3 9M16 3l-2 8 3 9"/><path d="M9 11h6"/><path d="M7 20h4M13 20h4"/></svg>',
+  activity:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>',
+  chevron:'<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+  bookmark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4V4.5z"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+};
+const scores=[
+ {id:'quickdash',name:'QuickDASH',sub:'Membre supérieur',region:'Épaule / coude / poignet / main',icon:'shoulder',items:11,scale:'0–100',direction:'Plus élevé = plus de handicap',desc:'Symptômes et fonction du membre supérieur.',kind:'items',min:1,max:5,missing:1,reference:'https://dash.iwh.on.ca/quickdash',note:'Calcul officiel : au moins 10 des 11 items renseignés. Score = (moyenne des réponses − 1) × 25. Les modules optionnels Travail et Sport/Musique ne sont pas inclus ici.',license:'Saisir les cotations issues du questionnaire autorisé ; le libellé des questions n’est pas reproduit.',maxScore:100},
+ {id:'constant',name:'Constant–Murley',sub:'Épaule',region:'Épaule',icon:'shoulder',items:4,scale:'0–100',direction:'Plus élevé = meilleure fonction',desc:'Douleur, activités, mobilité et force.',kind:'components',parts:[['Douleur',15],['Activités quotidiennes',20],['Amplitudes articulaires',40],['Force',25]],reference:'https://pmc.ncbi.nlm.nih.gov/articles/PMC6132990/',note:'Score clinicien de 100 points : douleur 15, activités de la vie quotidienne 20, amplitudes 40 et force 25. La mesure de la force doit suivre un protocole reproductible.',license:'Les amplitudes et la force nécessitent un examen clinique standardisé.',maxScore:100},
+ {id:'ohs',name:'Oxford Hip Score',sub:'Hanche',region:'Hanche',icon:'hip',items:12,scale:'0–48',direction:'Plus élevé = meilleur état',desc:'Douleur et fonction, notamment après PTH.',kind:'items',min:0,max:4,missing:0,reference:'https://innovation.ox.ac.uk/licence-details/oxford-hip-score-ohs',note:'Total des 12 items, chacun coté de 0 à 4 dans la version moderne, soit 0–48 ; 48 correspond au meilleur état. Vérifier la version du formulaire utilisé.',license:'Instrument sous droits/licence Oxford University Innovation. Utiliser un formulaire autorisé ; les questions ne sont pas affichées ici.',maxScore:48},
+ {id:'oks',name:'Oxford Knee Score',sub:'Genou',region:'Genou',icon:'knee',items:12,scale:'0–48',direction:'Plus élevé = meilleur état',desc:'Douleur et fonction du genou, surtout après PTG.',kind:'items',min:0,max:4,missing:0,reference:'https://innovation.ox.ac.uk/licence-details/oxford-knee-score-oks',note:'Total des 12 items, chacun coté de 0 à 4 dans la version moderne, soit 0–48 ; 48 correspond au meilleur état. Vérifier la version du formulaire utilisé.',license:'Instrument sous droits/licence Oxford University Innovation. Utiliser un formulaire autorisé ; les questions ne sont pas affichées ici.',maxScore:48},
+ {id:'womac',name:'WOMAC',sub:'Hanche et genou',region:'Hanche / genou',icon:'hip',items:24,scale:'0–96',direction:'Plus élevé = symptômes plus importants',desc:'Douleur, raideur et fonction dans l’arthrose.',kind:'womac',min:0,max:4,missing:0,reference:'https://pmc.ncbi.nlm.nih.gov/articles/PMC4336550/',note:'Version Likert 0–4 : douleur 5 items (0–20), raideur 2 (0–8), fonction 17 (0–68), total 0–96. Un total plus bas indique moins de symptômes. Les versions et modes de cotation ne sont pas interchangeables.',license:'Utiliser la version linguistique et le mode de cotation appropriés à votre contexte ; les questions ne sont pas reproduites.',maxScore:96},
+ {id:'lefs',name:'LEFS',sub:'Membre inférieur',region:'Hanche / genou / cheville',icon:'leg',items:20,scale:'0–80',direction:'Plus élevé = meilleure fonction',desc:'Fonction physique du membre inférieur.',kind:'items',min:0,max:4,missing:0,reference:'https://www.sralab.org/rehabilitation-measures/lower-extremity-functional-scale',note:'20 items cotés de 0 à 4, additionnés pour un score de 0 à 80. Compléter tous les items pour afficher un score total exploitable.',license:'Saisir les réponses du formulaire complet ; seuls des numéros d’items sont affichés.',maxScore:80},
+ {id:'hhs',name:'Harris Hip Score',sub:'Hanche',region:'Hanche',icon:'hip',items:4,scale:'0–100',direction:'Plus élevé = meilleure fonction',desc:'Douleur et fonction après pathologie ou chirurgie de hanche.',kind:'components',parts:[['Douleur',44],['Fonction',47],['Absence de déformation',4],['Amplitudes articulaires',5]],reference:'https://pubmed.ncbi.nlm.nih.gov/?term=Harris+hip+score+scoring',note:'Saisir les sous-totaux déjà cotés selon la feuille HHS complète : douleur 0–44, fonction 0–47, déformation 0–4, mobilité 0–5. Total maximal 100.',license:'La fonction et les amplitudes doivent être cotées d’après le protocole original de référence.',maxScore:100},
+ {id:'aofas',name:'AOFAS cheville–arrière-pied',sub:'Pied / cheville',region:'Pied / cheville',icon:'foot',items:9,scale:'0–100',direction:'Plus élevé = moins de symptômes',desc:'Score mixte clinique et patient : douleur, fonction, alignement.',kind:'aofas',reference:'https://pmc.ncbi.nlm.nih.gov/articles/PMC5337732/',note:'Répartition : douleur 40, fonction 50 (7 items), alignement 10. Il mêle déclaratif et examen clinique. L’AOFAS a retiré son soutien à ces scores en 2011 du fait de limites de validation : interpréter avec prudence.',license:'Score historique à interpréter avec prudence ; privilégier également des PROM validés et adaptés à l’objectif clinique.',maxScore:100},
+ {id:'mjoa',name:'mJOA cervical',sub:'Rachis cervical',region:'Rachis cervical',icon:'activity',items:4,scale:'0–18',direction:'Plus élevé = meilleure fonction',desc:'Évaluation de la myélopathie cervicale dégénérative.',kind:'components',parts:[['Motricité des membres supérieurs',5],['Motricité des membres inférieurs',7],['Sensibilité des membres supérieurs',3],['Fonction vésicale',3]],reference:'https://www.ncbi.nlm.nih.gov/books/NBK482312/',note:'Cotation des domaines : motricité des membres supérieurs 0 = aucun mouvement des mains, 1 = mouvements possibles mais alimentation à la cuillère impossible, 2 = alimentation possible mais boutonner impossible, 3 = boutonner avec grande difficulté, 4 = légère difficulté, 5 = normal. Motricité des membres inférieurs : 0 = perte motrice et sensitive complète, 1 = sensibilité préservée sans mouvement volontaire, 2 = mouvements possibles mais marche impossible, 3 = marche sur sol plat avec canne/béquille, 4 = escaliers avec rampe, 5 = escaliers sans aide mais instabilité importante, 6 = légère instabilité sur sol plat, 7 = normal. Sensibilité des mains : 0 = absente, 1 = perte sévère ou douleur constante, 2 = perte légère, 3 = normale. Vessie : 0 = miction impossible à initier, 1 = difficulté marquée avec poussée/aide manuelle, 2 = difficulté légère à modérée, hésitation ou jet lent, 3 = normal. Gravité habituelle : 0–11 sévère, 12–14 modérée, 15–17 légère, 18 = aucune limitation cotée.',license:'Le score doit être coté selon le référentiel clinique retenu et interprété avec l’examen neurologique, l’imagerie et l’évolution ; ne remplace pas le jugement clinique.',maxScore:18},
+ {id:'tegner',name:'Tegner Activity Scale',sub:'Genou / sport',region:'Genou / sport',icon:'activity',items:1,scale:'0–10',direction:'Plus élevé = niveau d’activité supérieur',desc:'Niveau d’activité professionnelle et sportive.',kind:'tegner',reference:'https://pubmed.ncbi.nlm.nih.gov/?term=Tegner+activity+scale',note:'Échelle ordinale d’activité de 0 à 10. Reporter le niveau correspondant au formulaire/référentiel utilisé ; ce score ne mesure pas à lui seul la fonction du genou.',license:'Échelle ordinale : le score doit être interprété en fonction de l’activité réellement pratiquée.',maxScore:10}
+];
+const regions=['Tous','Épaule','Hanche','Genou','Pied / cheville','Membre inférieur','Rachis cervical','Sport'];
+let state={view:'scores',filter:'Tous',query:'',selected:null,form:{},lastResult:null,history:[],favorites:[],entryCode:'',note:''};
+try { state.history=JSON.parse(localStorage.getItem('orthoscores_history')||'[]'); } catch(e) { state.history=[]; }
+try { state.favorites=JSON.parse(localStorage.getItem('orthoscores_favorites')||'[]'); } catch(e) { state.favorites=[]; }
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function persist(){try{localStorage.setItem('orthoscores_history',JSON.stringify(state.history));localStorage.setItem('orthoscores_favorites',JSON.stringify(state.favorites));}catch(e){}}
+function byId(id){return scores.find(s=>s.id===id);}
+function iconFor(score){return ICONS[score.icon]||ICONS.activity;}
+function filteredScores(){let arr=scores.filter(s=>state.view==='favorites'?state.favorites.includes(s.id):true);if(state.filter!=='Tous'&&state.view!=='favorites'){arr=arr.filter(s=>s.region.toLowerCase().includes(state.filter.toLowerCase())|| (state.filter==='Sport'&&s.id==='tegner'));}if(state.query.trim()){const q=state.query.toLowerCase();arr=arr.filter(s=>(s.name+' '+s.sub+' '+s.desc+' '+s.region).toLowerCase().includes(q));}return arr;}
+function scoreCard(s){const fav=state.favorites.includes(s.id);return `<div class="score-card" data-open="${s.id}" role="button" tabindex="0"><div class="score-icon">${iconFor(s)}</div><div class="score-info"><div class="score-title-row"><strong>${esc(s.name)}</strong>${s.id==='aofas'?'<span class="tag" style="color:var(--amber)">LEGACY</span>':''}</div><p>${esc(s.desc)}</p><div class="badge-row" style="margin:8px 0 0"><span class="badge">${esc(s.scale)} pts</span><span class="badge">${esc(s.sub)}</span></div></div><button class="bookmark ${fav?'saved':''}" data-fav="${s.id}" aria-label="${fav?'Retirer des favoris':'Ajouter aux favoris'}">${ICONS.bookmark}</button>${ICONS.chevron}</div>`;}
+function renderHome(){const list=filteredScores();const isFav=state.view==='favorites';const isHist=state.view==='history';let content='';if(isHist){content=renderHistory();}else{content=`${state.view==='scores'?`<section class="hero"><div class="eyebrow">Outil clinique · Version de démonstration</div><h1>Les scores utiles.<br>Au bon moment.</h1><p>Calculez les scores fonctionnels les plus utilisés en chirurgie orthopédique et traumatologique, du cabinet au suivi postopératoire.</p><div class="hero-stats"><div class="stat"><strong>${scores.length}</strong><span>scores disponibles</span></div><div class="stat"><strong>Auto</strong><span>calcul instantané</span></div><div class="stat"><strong>Local</strong><span>historique sur l’appareil</span></div></div></section>`:''}<div class="section-head"><div><div class="eyebrow">Bibliothèque</div><h2>${isFav?'Vos favoris':'Choisir un score'}</h2></div><span class="subtle">${list.length} outil${list.length!==1?'s':''}</span></div><label class="searchbox">${ICONS.search}<input id="search" type="search" placeholder="Rechercher : épaule, genou, QuickDASH…" value="${esc(state.query)}" aria-label="Rechercher un score"></label><div class="filters">${regions.map(r=>`<button class="pill ${state.filter===r?'active':''}" data-filter="${esc(r)}">${esc(r)}</button>`).join('')}</div><div class="score-list">${list.map(scoreCard).join('')||'<div class="empty">Aucun score trouvé.<br>Essayez un autre mot-clé ou filtre.</div>'}</div><p class="disclaimer">Les scores sont des aides à la mesure, pas des décisions thérapeutiques autonomes. Toujours vérifier la version, la licence et les consignes du questionnaire utilisé.</p>`;}$('#main').innerHTML=content;updateNav();bindHome();}
+function updateNav(){document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.nav===state.view));}
+function bindHome(){const sr=$('#search');if(sr)sr.addEventListener('input',e=>{state.query=e.target.value;const pos=e.target.selectionStart;renderHome();const n=$('#search');n.focus();n.setSelectionRange(pos,pos);});document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{state.filter=b.dataset.filter;renderHome();}));document.querySelectorAll('[data-open]').forEach(b=>{b.addEventListener('click',e=>{if(e.target.closest('[data-fav]'))return;openScore(b.dataset.open);});b.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('[data-fav]')){e.preventDefault();openScore(b.dataset.open);}});});document.querySelectorAll('[data-fav]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggleFav(b.dataset.fav);}));}
+function toggleFav(id){if(state.favorites.includes(id))state.favorites=state.favorites.filter(x=>x!==id);else state.favorites.push(id);persist();renderHome();}
+function openScore(id){state.selected=id;state.view='detail';state.form={};state.lastResult=null;state.entryCode='';state.note='';renderDetail();window.scrollTo({top:0,behavior:'smooth'});}
+function itemForm(s){const values=[];for(let i=1;i<=s.items;i++){const current=state.form['i'+i]??'';values.push(`<div class="item-row"><div class="item-label">Item ${String(i).padStart(2,'0')}<span>${s.kind==='womac'?(i<=5?'Douleur':i<=7?'Raideur':'Fonction'):s.id==='quickdash'?'Cotation issue du formulaire':s.id==='lefs'?'Cotation issue du formulaire':'Réponse cotée selon la version validée'}</span></div><select class="item-select" data-item="i${i}" aria-label="Item ${i}"><option value="">—</option>${Array.from({length:s.max-s.min+1},(_,j)=>s.min+j).map(v=>`<option value="${v}" ${String(current)===String(v)?'selected':''}>${v}</option>`).join('')}</select></div>`);}return `<div class="item-grid ${s.id==='womac'?'cols2':''}">${values.join('')}</div>`;}
+function componentForm(s){return `<div class="grid2">${s.parts.map((p,i)=>`<div class="field"><label for="part${i}">${esc(p[0])}</label><input class="numinput" id="part${i}" type="number" inputmode="decimal" min="0" max="${p[1]}" step="1" value="${state.form['p'+i]??''}" placeholder="0–${p[1]}" data-part="p${i}"><small>Maximum : ${p[1]} points</small></div>`).join('')}</div>`;}
+const aofasItems=[
+ {label:'Douleur',hint:'0 / 20 / 30 / 40',max:40,opts:[[0,'0 — sévère / presque constante'],[20,'20 — modérée et quotidienne'],[30,'30 — légère et occasionnelle'],[40,'40 — aucune douleur']]},
+ {label:'Limitations et aide',hint:'0 / 4 / 7 / 10',max:10,opts:[[0,'0 points'],[4,'4 points'],[7,'7 points'],[10,'10 points']]},
+ {label:'Distance de marche',hint:'0 / 2 / 4 / 5',max:5,opts:[[0,'0 points'],[2,'2 points'],[4,'4 points'],[5,'5 points']]},
+ {label:'Surfaces de marche',hint:'0 / 3 / 5',max:5,opts:[[0,'0 points'],[3,'3 points'],[5,'5 points']]},
+ {label:'Anomalie de la marche',hint:'0 / 4 / 8',max:8,opts:[[0,'0 points'],[4,'4 points'],[8,'8 points']]},
+ {label:'Mobilité sagittale',hint:'0 / 4 / 8',max:8,opts:[[0,'0 points'],[4,'4 points'],[8,'8 points']]},
+ {label:'Mobilité de l’arrière-pied',hint:'0 / 3 / 6',max:6,opts:[[0,'0 points'],[3,'3 points'],[6,'6 points']]},
+ {label:'Stabilité cheville–arrière-pied',hint:'0 / 8',max:8,opts:[[0,'0 — instable'],[8,'8 — stable']]},
+ {label:'Alignement',hint:'0 / 5 / 10',max:10,opts:[[0,'0 points'],[5,'5 points'],[10,'10 points']]}
+];
+function aofasForm(){return `<div class="item-grid">${aofasItems.map((it,i)=>`<div class="item-row"><div class="item-label">${esc(it.label)}<span>Maximum ${it.max} points · ${it.hint}</span></div><select class="item-select" data-aofas="a${i}" aria-label="${esc(it.label)}"><option value="">—</option>${it.opts.map(o=>`<option value="${o[0]}" ${String(state.form['a'+i]??'')===String(o[0])?'selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`).join('')}</div>`;}
+function tegnerForm(){return `<div class="field"><label for="tegner-level">Niveau d’activité selon la référence utilisée</label><select class="item-select" style="width:100%;max-width:none" id="tegner-level" data-tegner><option value="">Sélectionner un niveau de 0 à 10</option>${Array.from({length:11},(_,i)=>`<option value="${i}" ${String(state.form.level??'')===String(i)?'selected':''}>${i} / 10</option>`).join('')}</select><small>Échelle ordinale : utiliser le formulaire ou les critères de référence pour déterminer le niveau adapté.</small></div>`;}
+function calc(s){const f=state.form;if(s.kind==='items'){const vals=Array.from({length:s.items},(_,i)=>f['i'+(i+1)]===''||f['i'+(i+1)]===undefined?null:Number(f['i'+(i+1)]));const answered=vals.filter(v=>v!==null).length;if(s.id==='quickdash'){if(answered<10)return {valid:false,answered,needed:10,progress:answered/s.items*100};const avg=vals.reduce((a,v)=>a+(v===null?0:v),0)/answered;const value=Math.round(((avg-1)*25)*10)/10;return {valid:true,value,max:100,answered,needed:10,progress:answered/s.items*100,direction:s.direction,sub:`${answered}/11 items renseignés`};}if(answered!==s.items)return {valid:false,answered,needed:s.items,progress:answered/s.items*100};const value=vals.reduce((a,v)=>a+v,0);return {valid:true,value,max:s.maxScore,answered,needed:s.items,progress:100,direction:s.direction,sub:`${answered}/${s.items} items renseignés`};}
+ if(s.kind==='womac'){const vals=Array.from({length:24},(_,i)=>Number(f['i'+(i+1)]));return {valid:true,value:vals.reduce((a,v)=>a+v,0),max:96,answered:24,needed:24,progress:100,direction:s.direction,sub:`Douleur ${vals.slice(0,5).reduce((a,v)=>a+v,0)}/20 · Raideur ${vals.slice(5,7).reduce((a,v)=>a+v,0)}/8 · Fonction ${vals.slice(7).reduce((a,v)=>a+v,0)}/68`};}
+ if(s.kind==='components'){const arr=s.parts.map((p,i)=>f['p'+i]===''||f['p'+i]===undefined?null:Number(f['p'+i]));const answered=arr.filter(v=>v!==null).length;const valid=arr.every((v,i)=>v!==null&&Number.isFinite(v)&&v>=0&&v<=s.parts[i][1]);if(!valid)return {valid:false,answered,needed:s.parts.length,progress:answered/s.parts.length*100,issue:'Renseigner chaque sous-score dans la plage autorisée.'};return {valid:true,value:arr.reduce((a,v)=>a+v,0),max:s.maxScore,answered,needed:s.parts.length,progress:100,direction:s.direction,sub:s.parts.map((p,i)=>`${p[0]} ${arr[i]}/${p[1]}`).join(' · ')};}
+ if(s.kind==='aofas'){const arr=aofasItems.map((x,i)=>f['a'+i]===''||f['a'+i]===undefined?null:Number(f['a'+i]));const answered=arr.filter(v=>v!==null).length;if(answered!==9)return {valid:false,answered,needed:9,progress:answered/9*100};return {valid:true,value:arr.reduce((a,v)=>a+v,0),max:100,answered,needed:9,progress:100,direction:s.direction,sub:`Douleur ${arr[0]}/40 · Fonction ${arr.slice(1,8).reduce((a,v)=>a+v,0)}/50 · Alignement ${arr[8]}/10`};}
+ if(s.kind==='tegner'){if(f.level===undefined||f.level==='')return {valid:false,answered:0,needed:1,progress:0};return {valid:true,value:Number(f.level),max:10,answered:1,needed:1,progress:100,direction:s.direction,sub:'Niveau ordinal d’activité'};}
+}
+function resultInterpretation(s,r){if(!r.valid)return r.answered===undefined?'Renseignez les champs pour calculer le score.':`${r.answered}/${r.needed} éléments renseignés.`;if(s.id==='mjoa')return r.value<=11?'Myélopathie sévère (0–11/18).':r.value<=14?'Myélopathie modérée (12–14/18).':r.value<=17?'Myélopathie légère (15–17/18).':'18/18 : aucune limitation fonctionnelle cotée par le mJOA.';if(s.id==='quickdash')return r.value<=20?'Handicap/symptômes relativement faibles sur cette échelle.':r.value<=50?'Handicap/symptômes intermédiaires sur cette échelle.':'Handicap/symptômes importants sur cette échelle.';if(s.id==='womac')return 'Interprétation selon la version et le contexte clinique ; un total plus bas indique moins de symptômes.';if(s.id==='tegner')return 'Comparer au niveau pré-lésionnel et à l’objectif sportif/professionnel.';return s.direction+'. Interpréter le niveau et l’évolution dans le contexte clinique et selon la version du score.';}
+function renderDetail(){const s=byId(state.selected);if(!s){state.view='scores';renderHome();return;}const fav=state.favorites.includes(s.id);let form='';if(s.kind==='items')form=itemForm(s);if(s.kind==='womac')form=itemForm(s);if(s.kind==='components')form=componentForm(s);if(s.kind==='aofas')form=aofasForm();if(s.kind==='tegner')form=tegnerForm();const r=calc(s);const pct=r.valid?Math.max(0,Math.min(100,r.value/r.max*100)):0;$('#main').innerHTML=`<div class="backline"><button class="backbtn" id="backToList">${ICONS.back} Bibliothèque</button><button class="bookmark ${fav?'saved':''}" id="detailFav" style="margin-left:auto" aria-label="${fav?'Retirer des favoris':'Ajouter aux favoris'}">${ICONS.bookmark}</button></div><div class="detail-head"><div class="score-icon">${iconFor(s)}</div><div><div class="eyebrow">${esc(s.sub)} · Score fonctionnel</div><h1>${esc(s.name)}</h1><p>${esc(s.desc)}</p><div class="badge-row"><span class="badge">${esc(s.scale)} points</span><span class="badge">${esc(s.direction)}</span></div></div></div><section class="panel"><div class="panel-head"><div><h3>Cotation</h3><p>${s.kind==='items'?'Saisir la valeur de chaque item depuis le formulaire utilisé.':s.kind==='components'?'Saisir chaque sous-score déjà coté.':s.kind==='aofas'?'Choisir les points de chaque rubrique.':'Sélectionner le niveau coté.'}</p></div></div><div class="progress"><div id="formProgress" style="width:${r.progress||0}%"></div></div>${form}${s.license?`<div class="notice">${esc(s.license)}</div>`:''}<div class="field"><label for="entry-code">Référence de dossier (facultatif, sans donnée nominative)</label><input id="entry-code" class="textinput" type="text" maxlength="40" placeholder="Ex. ORTHO-024" value="${esc(state.entryCode)}"><small>Évitez nom, date de naissance ou identifiant patient.</small></div><div class="field"><label for="clinical-note">Note clinique (facultatif, non nominative)</label><textarea id="clinical-note" class="textarea" rows="2" maxlength="250" placeholder="Ex. préopératoire, J+90, côté…">${esc(state.note)}</textarea></div><div class="result-card" id="resultCard"><div class="result-top"><div><div class="result-kicker">Résultat calculé</div><div class="result-score" id="resultScore">${r.valid?esc(r.value):'—'} <small>/ ${s.maxScore}</small></div></div><span class="result-mini">${r.valid?'Score valide':'En attente'}</span></div><p class="result-desc" id="resultDesc">${esc(resultInterpretation(s,r))}</p><div class="result-track"><div id="resultTrack" style="width:${pct}%"></div></div><div class="result-bottom" id="resultBottom">${r.valid?`<span class="result-mini">${esc(r.sub||'')}</span>`:`<span class="result-mini">${r.answered||0} / ${r.needed||s.items} renseignés</span>`}</div></div><div class="action-row"><button class="primary" id="saveResult" ${r.valid?'':'disabled'}>Enregistrer le résultat</button><button class="secondary" id="copyResult" ${r.valid?'':'disabled'}>Copier</button></div><div class="notice warn">${esc(s.note)}</div><div class="notice">Source / cotation : <a class="linkbtn" href="${esc(s.reference)}" target="_blank" rel="noopener noreferrer">Consulter la référence ↗</a></div></section><p class="disclaimer">OrthoScores est un outil d’aide au calcul, non un dispositif médical validé. Vérifiez la cotation, les données saisies et les droits d’utilisation du questionnaire avant toute utilisation clinique ou recherche.</p>`;
+ $('#backToList').addEventListener('click',()=>{state.view='scores';state.selected=null;renderHome();});$('#detailFav').addEventListener('click',()=>{toggleFav(s.id);renderDetail();});document.querySelectorAll('[data-item]').forEach(el=>el.addEventListener('change',()=>{state.form[el.dataset.item]=el.value===''?'':Number(el.value);refreshResult();}));document.querySelectorAll('[data-part]').forEach(el=>el.addEventListener('input',()=>{state.form[el.dataset.part]=el.value===''?'':Number(el.value);refreshResult();}));document.querySelectorAll('[data-aofas]').forEach(el=>el.addEventListener('change',()=>{state.form[el.dataset.aofas]=el.value===''?'':Number(el.value);refreshResult();}));const tl=$('[data-tegner]');if(tl)tl.addEventListener('change',()=>{state.form.level=tl.value===''?'':Number(tl.value);refreshResult();});$('#entry-code').addEventListener('input',e=>state.entryCode=e.target.value);$('#clinical-note').addEventListener('input',e=>state.note=e.target.value);$('#saveResult').addEventListener('click',saveResult);$('#copyResult').addEventListener('click',copyResult);}
+function refreshResult(){const s=byId(state.selected);if(!s)return;const r=calc(s);const prog=$('#formProgress');if(prog)prog.style.width=(r.progress||0)+'%';const score=$('#resultScore'), desc=$('#resultDesc'), card=$('#resultCard'), track=$('#resultTrack'), bottom=$('#resultBottom');if(score)score.innerHTML=`${r.valid?esc(r.value):'—'} <small>/ ${s.maxScore}</small>`;if(desc)desc.textContent=resultInterpretation(s,r);if(track)track.style.width=(r.valid?Math.max(0,Math.min(100,r.value/r.max*100)):0)+'%';if(bottom)bottom.innerHTML=r.valid?`<span class="result-mini">${esc(r.sub||'')}</span>`:`<span class="result-mini">${r.answered||0} / ${r.needed||s.items} renseignés</span>`;const badge=$('#resultCard .result-mini');if(badge)badge.textContent=r.valid?'Score valide':'En attente';$('#saveResult').disabled=!r.valid;$('#copyResult').disabled=!r.valid;}
+function saveResult(){const s=byId(state.selected),r=calc(s);if(!r.valid)return;const record={id:Date.now().toString(36),scoreId:s.id,title:s.name,value:r.value,max:r.max,scale:s.scale,direction:s.direction,sub:r.sub||'',code:state.entryCode.trim(),note:state.note.trim(),createdAt:new Date().toISOString()};state.history.unshift(record);state.history=state.history.slice(0,200);persist();const btn=$('#saveResult');btn.textContent='Enregistré ✓';setTimeout(()=>{if(btn&&btn.isConnected)btn.textContent='Enregistrer le résultat';},1600);}
+function copyResult(){const s=byId(state.selected),r=calc(s);if(!r.valid)return;const txt=`${s.name} : ${r.value}/${r.max} (${s.direction})\n${r.sub||''}\nRéférence : ${state.entryCode||'non renseignée'}\nDate : ${new Date().toLocaleDateString('fr-FR')}`;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>{const b=$('#copyResult');if(b){b.textContent='Copié ✓';setTimeout(()=>{if(b.isConnected)b.textContent='Copier';},1400);}}).catch(()=>window.prompt('Copier le résultat :',txt));}else{window.prompt('Copier le résultat :',txt);}}
+function renderHistory(){if(!state.history.length)return `<div class="section-head"><div><div class="eyebrow">Suivi</div><h2>Historique des calculs</h2></div></div><div class="empty">Aucun résultat enregistré.<br>Ouvrez un score puis touchez « Enregistrer le résultat ».</div><div class="notice">Les résultats sauvegardés sont conservés localement dans le navigateur de cet appareil. Cette version ne synchronise pas les données entre appareils.</div>`;return `<div class="section-head"><div><div class="eyebrow">Suivi</div><h2>Historique des calculs</h2><div class="subtle">${state.history.length} résultat${state.history.length>1?'s':''} enregistré${state.history.length>1?'s':''}</div></div></div><div class="action-row" style="margin-bottom:14px"><button class="secondary" id="exportCsv">Exporter en CSV</button><button class="danger" id="clearHistory">Effacer l’historique</button></div>${state.history.map(h=>`<div class="history-item"><div class="history-score">${esc(h.value)}<small style="font-size:9px"> / ${esc(h.max)}</small></div><div class="history-meta"><strong>${esc(h.title)}</strong><p>${esc(h.code||'Sans référence')} · ${new Date(h.createdAt).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'})}</p>${h.note?`<p>${esc(h.note)}</p>`:''}</div><button class="mini-action" data-remove="${esc(h.id)}" aria-label="Supprimer ce résultat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></button></div>`).join('')}<div class="notice warn">Les données sont enregistrées localement dans ce navigateur et ne sont pas chiffrées par cette maquette. N’y entrez aucune donnée directement identifiante. Pensez à exporter puis supprimer l’historique si nécessaire.</div>`;}
+function bindHistory(){const ex=$('#exportCsv');if(ex)ex.addEventListener('click',exportCsv);const cl=$('#clearHistory');if(cl)cl.addEventListener('click',()=>{if(confirm('Effacer tous les résultats enregistrés sur cet appareil ?')){state.history=[];persist();renderHome();}});document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{state.history=state.history.filter(h=>h.id!==b.dataset.remove);persist();renderHome();}));}
+function exportCsv(){const rows=[['score','valeur','maximum','echelle','reference_dossier','note','date'],...state.history.map(h=>[h.title,h.value,h.max,h.scale,h.code,h.note,h.createdAt])];const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='orthoscores-historique.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+$('#helpBtn').addEventListener('click',()=>{alert('OrthoScores — maquette interactive\n\n• Les questionnaires originaux ne sont pas reproduits. Entrez les cotations d’une version autorisée/validée.\n• Les calculateurs ont des règles distinctes : vérifiez la version et les champs avant interprétation.\n• L’historique est stocké localement, sans chiffrement spécifique. Évitez les données identifiantes.\n• Ceci n’est pas un dispositif médical validé.');});
+document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{state.view=b.dataset.nav;state.selected=null;state.query='';state.filter='Tous';renderHome();}));
+const origRenderHome=renderHome;
+function renderHomeWithBindings(){origRenderHome();bindHistory();}
+renderHome=renderHomeWithBindings;
+renderHome();
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) { window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {})); }
+</script>
+</body>
+</html>
