@@ -1,0 +1,19 @@
+{
+  "name": "OrthoSuivi — Suivi orthopédique",
+  "short_name": "OrthoSuivi",
+  "description": "Dossiers pseudonymisés, consultations, scores fonctionnels et évolution postopératoire.",
+  "lang": "fr-FR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1768d4",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
