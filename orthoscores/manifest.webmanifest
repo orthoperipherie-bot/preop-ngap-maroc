@@ -1,0 +1,19 @@
+{
+  "name": "OrthoScores — Scores fonctionnels",
+  "short_name": "OrthoScores",
+  "description": "Bibliothèque et calcul local de scores fonctionnels en chirurgie orthopédique et traumatologique.",
+  "lang": "fr-FR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1768d4",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
