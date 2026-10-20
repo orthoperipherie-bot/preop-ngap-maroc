@@ -65,11 +65,14 @@ body.chain-mode .layout{grid-template-columns:minmax(0,1fr) 290px}body.chain-mod
 <script>
 const ASSETS = {
  knee:{name:"Knee anatomy: bones and cartilage",uid:"1e947b39c2e545128dad5d66b391b4d8",url:"https://sketchfab.com/3d-models/knee-anatomy-bones-and-cartilage-1e947b39c2e545128dad5d66b391b4d8",by:"University of Dundee, CAHID",note:"Genou réel : os, cartilage et ménisques."},
+ kneeOsteoarthritis:{name:"Knee osteoarthritis stages",uid:"cbdb39776411424eac6489028afa9ec3",url:"https://sketchfab.com/3d-models/knee-osteoarthritis-stages-cbdb39776411424eac6489028afa9ec3",by:"Deepankar Parmar",note:"Maquette pathologique réelle présentant plusieurs stades d’arthrose, avec espace articulaire et ostéophytes."},
  kneeACL:{name:"Human Knee",uid:"fofl9pAJfKAJMPcdGj01pSZavZH",url:"https://sketchfab.com/3d-models/human-knee-fofl9pAJfKAJMPcdGj01pSZavZH",by:"Modèle anatomique Sketchfab",note:"Articulation et ligaments du genou."},
  kneeReplacement:{name:"Total Knee Replacement Device",uid:"42cc722795e1474eb4866dc4d3d74e90",url:"https://sketchfab.com/3d-models/total-knee-replacement-device-42cc722795e1474eb4866dc4d3d74e90",by:"Auteur sur Sketchfab",note:"Maquette réelle d’un dispositif de prothèse de genou, pas une vidéo d’intervention."},
  meniscusTear:{name:"Lateral Meniscus: Radial Tear",uid:"88df1e6b07ab428388d38814f3424626",url:"https://sketchfab.com/3d-models/lateral-meniscus-radial-tear-88df1e6b07ab428388d38814f3424626",by:"IU Indianapolis University Library",note:"Modèle représentant une déchirure radiaire du ménisque latéral."},
  aclImplant:{name:"JewelACL — Partial Tissue Graft Sparing Technique",uid:"08757bdcb84849eebc2ff379391191a6",url:"https://sketchfab.com/3d-models/jewelacl-partial-tissue-graft-sparing-technique-08757bdcb84849eebc2ff379391191a6",by:"Xiros",note:"Modèle du dispositif / concept de reconstruction LCA, pas une maquette complète de genou opéré."},
  hip:{name:"Hip Joint",uid:"827f5703006e49bfbd7982a6577c738c",url:"https://sketchfab.com/3d-models/hip-joint-827f5703006e49bfbd7982a6577c738c",by:"UBC Medicine — Educational Media",note:"Vraie maquette anatomique de l’articulation de hanche."},
+ hipOsteoarthritis:{name:"Hip Osteoarthritis",uid:"ff34a7d4c4804ef08df5eeb74ae7c3f4",url:"https://sketchfab.com/3d-models/hip-osteoarthritis-ff34a7d4c4804ef08df5eeb74ae7c3f4",by:"IU Indianapolis University Library",note:"Maquette 3D consacrée à l’arthrose de hanche."},
+ ankle:{name:"Foot, Ankle and Ligaments",uid:"2e2d0f64ecb743c8844304ff5cf693cf",url:"https://sketchfab.com/3d-models/foot-ankle-and-ligaments-2e2d0f64ecb743c8844304ff5cf693cf",by:"Soma3D",note:"Maquette anatomique humaine du pied et de la cheville avec ligaments."},
  hipReplacement:{name:"Hip Replacement",uid:"a314ca9bf00142aab0a42aeaace8e8af",url:"https://sketchfab.com/3d-models/hip-replacement-a314ca9bf00142aab0a42aeaace8e8af",by:"Auteur sur Sketchfab",note:"Modèle de remplacement prothétique de hanche."},
  foot:{name:"Normal Foot Anatomy",uid:"eec7918028db41808255030915c9f15d",url:"https://sketchfab.com/3d-models/normal-foot-anatomy-eec7918028db41808255030915c9f15d",by:"IRevans",note:"Modèle anatomique 3D du pied ; licence affichée par l’auteur : CC Attribution."},
  hallux:{name:"Hallux Valgus",uid:"a04b1c136bdb417eb431aa45b72c287f",url:"https://sketchfab.com/3d-models/hallux-valgus-a04b1c136bdb417eb431aa45b72c287f",by:"IRevans",note:"Modèle anatomique représentant un hallux valgus."},
@@ -87,12 +90,12 @@ const ASSETS = {
  lumbarOp:{name:"Lumbar Laminectomy And Fusion",uid:"497a6ffed8aa4138800e89940b86d518",url:"https://sketchfab.com/3d-models/lumbar-laminectomy-and-fusion-497a6ffed8aa4138800e89940b86d518",by:"3D Atlas of Neurological Surgery",note:"Modèle 3D d’une laminectomie et arthrodèse lombaire."}
 };
 const CASES=[
-{id:"knee-oa",name:"Arthrose du genou",region:"Genou",group:"Membre inférieur",anatomy:"knee",path:null,operations:[{id:"tka",name:"Prothèse totale du genou",asset:"kneeReplacement"}]},
+{id:"knee-oa",name:"Arthrose du genou",region:"Genou",group:"Membre inférieur",anatomy:"knee",path:"kneeOsteoarthritis",operations:[{id:"tka",name:"Prothèse totale du genou",asset:"kneeReplacement"}]},
 {id:"meniscus",name:"Lésion méniscale",region:"Genou",group:"Membre inférieur",anatomy:"knee",path:"meniscusTear",operations:[{id:"repair",name:"Suture méniscale",asset:null}]},
 {id:"acl",name:"Rupture du LCA",region:"Genou",group:"Membre inférieur",anatomy:"kneeACL",path:null,operations:[{id:"acl-reconstruction",name:"Reconstruction du LCA — dispositif",asset:"aclImplant"}]},
-{id:"hip-oa",name:"Arthrose de hanche",region:"Hanche",group:"Membre inférieur",anatomy:"hip",path:null,operations:[{id:"tha",name:"Prothèse totale de hanche",asset:"hipReplacement"}]},
-{id:"ankle",name:"Entorse latérale de cheville",region:"Cheville",group:"Membre inférieur",anatomy:"foot",path:null,operations:[{id:"ankle-repair",name:"Réparation ligamentaire",asset:null}]},
-{id:"achilles",name:"Rupture du tendon d’Achille",region:"Arrière-pied",group:"Membre inférieur",anatomy:"foot",path:"achilles",operations:[{id:"achilles-repair",name:"Suture du tendon",asset:null}]},
+{id:"hip-oa",name:"Arthrose de hanche",region:"Hanche",group:"Membre inférieur",anatomy:"hip",path:"hipOsteoarthritis",operations:[{id:"tha",name:"Prothèse totale de hanche",asset:"hipReplacement"}]},
+{id:"ankle",name:"Entorse latérale de cheville",region:"Cheville",group:"Membre inférieur",anatomy:"ankle",path:null,operations:[{id:"ankle-repair",name:"Réparation ligamentaire",asset:null}]},
+{id:"achilles",name:"Rupture du tendon d’Achille",region:"Arrière-pied",group:"Membre inférieur",anatomy:"ankle",path:"achilles",operations:[{id:"achilles-repair",name:"Suture du tendon",asset:null}]},
 {id:"hallux",name:"Hallux valgus",region:"Avant-pied",group:"Membre inférieur",anatomy:"foot",path:"hallux",operations:[{id:"hallux-op",name:"Ostéotomie correctrice",asset:null}]},
 {id:"cuff",name:"Rupture de la coiffe",region:"Épaule",group:"Membre supérieur",anatomy:"cuff",path:"cuffTear",operations:[{id:"cuff-patch",name:"Modèle du patch de réparation",asset:"cuffPatch"}]},
 {id:"carpal",name:"Canal carpien",region:"Poignet / main",group:"Membre supérieur",anatomy:"hand",path:"carpal",operations:[{id:"carpal-release",name:"Libération du canal carpien",asset:null}]},
@@ -111,7 +114,7 @@ function stageLabel(){return stage==="normal"?"ANATOMIE DE RÉFÉRENCE":stage===
 function showAsset(asset){
  const frame=$("modelFrame"),notice=$("notice");
  if(asset){
-  frame.src="https://sketchfab.com/models/"+asset.uid+"/embed?autostart=1&ui_infos=0&ui_watermark=0&ui_hint=0&ui_controls=1";
+  frame.src="https://sketchfab.com/models/"+asset.uid+"/embed?autostart=1&ui_infos=0&ui_hint=0&ui_controls=1";
   frame.style.display="block";notice.style.display="none";
   $("modelTitle").textContent=asset.name;$("credit").textContent="Maquette hébergée par Sketchfab · auteur : "+asset.by;
   $("modelLink").href=asset.url;$("modelLink").style.display="inline-flex";
@@ -166,7 +169,7 @@ function renderChain(){
  else if(chain==="hipflex"||chain==="pelvis")modelKey="hip";
  const asset=ASSETS[modelKey];
  $("modelTitle").textContent=asset.name;$("credit").textContent="Maquette anatomique de référence ; géométrie non déformée.";
- const frame=$("modelFrame");frame.src="https://sketchfab.com/models/"+asset.uid+"/embed?autostart=1&ui_infos=0&ui_watermark=0&ui_hint=0&ui_controls=1";frame.style.display="block";$("notice").style.display="none";$("stageState").textContent="MAQUETTE DE RÉFÉRENCE";
+ const frame=$("modelFrame");frame.src="https://sketchfab.com/models/"+asset.uid+"/embed?autostart=1&ui_infos=0&ui_hint=0&ui_controls=1";frame.style.display="block";$("notice").style.display="none";$("stageState").textContent="MAQUETTE DE RÉFÉRENCE";
  $("modelLink").href=asset.url;$("modelLink").style.display="inline-flex";$("sourceLink").href=asset.url;$("sourceLink").textContent="Ouvrir la source";$("sourceLink").style.display="inline-flex";
  const list=$("effects");list.innerHTML="";effects[chain].forEach((row,i)=>{const d=document.createElement("div");d.className="effect";const b=document.createElement("b");b.textContent=row[0];const span=document.createElement("span");const magnitude=deg===0?"À l’état de référence : ":deg<8?"Effet potentiel faible : ":deg<17?"Effet potentiel modéré : ":"Effet potentiel important : ";span.textContent=magnitude+row[1];d.append(b,span);list.appendChild(d);});
 }
