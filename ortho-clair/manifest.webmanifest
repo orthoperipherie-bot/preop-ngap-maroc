@@ -1,12 +1,12 @@
 {
-  "name": "OrthoClair — Éducation du patient",
+  "name": "OrthoClair — Maquettes de consultation",
   "short_name": "OrthoClair",
-  "description": "Schémas et explications pour la consultation orthopédique, sportive et rachidienne.",
+  "description": "Maquettes 3D anatomiques et simulation de chaîne cinétique pour la consultation orthopédique.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f7f5",
-  "theme_color": "#102c36",
+  "background_color": "#f2f5f2",
+  "theme_color": "#0b252b",
   "lang": "fr",
   "icons": [
     {
