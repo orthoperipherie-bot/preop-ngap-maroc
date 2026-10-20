@@ -340,236 +340,428 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 (() => {
-  const host = () => document.getElementById('anatomy3d');
-  let renderer, scene, camera, controls, figure, raf = 0, materials = [];
-  let layerMode = 'both', motionOn = true, ready = false, failed = false, lastDisease = '';
-  let focusedMeshes = [], selectedMesh = null, highlighted = new Set(), home = null, clockStart = performance.now();
-  let pointerDown = null, lastUserInteraction = 0, loadStarted = false;
-  const RED = new THREE.Color(0xb83832);
-  const modelUrl = 'https://raw.githubusercontent.com/Charleeh/ecorche/320805e06aee51e2e6f6b22533eb2a59d43f2d4d/model/ecorche.meshopt.glb';
-  const focusSettings = {
-    'arthrose-genou': {y:-0.34,x:0.00,z:0,dist:1.02, pattern:/femur|tibia|patella|meniscus|menisci|fibula/i},
-    'menisque': {y:-0.34,x:0.00,z:0,dist:1.02, pattern:/femur|tibia|patella|meniscus|menisci|fibula/i},
-    'lca': {y:-0.34,x:0.00,z:0,dist:1.02, pattern:/femur|tibia|patella|fibula/i},
-    'coiffe': {y:0.42,x:0.08,z:0,dist:1.05, pattern:/humerus|scapula|clavicle|supraspinatus|infraspinatus|subscapularis|teres minor|deltoid/i},
-    'arthrose-hanche': {y:-0.01,x:0,z:0,dist:1.15, pattern:/femur|hip bone|acetabulum|pelvis|ilium|pubis/i},
-    'canal-carpien': {y:-0.00,x:0.40,z:0,dist:0.8, pattern:/carpal|metacarpal|radius|ulna|phalanx of (left|right) (thumb|index finger|middle finger|ring finger|little finger)/i},
-    'entorse-cheville': {y:-0.73,x:0.0,z:0,dist:0.80, pattern:/tibia|fibula|talus|calcaneus|tarsal|metatarsal/i},
-    'hernie-discale': {y:-0.02,x:0,z:0,dist:1.20, pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
-    'canal-lombaire': {y:-0.01,x:0,z:0,dist:1.2, pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
-    'spondylolisthesis': {y:-0.01,x:0,z:0,dist:1.2, pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
-    'hallux-valgus': {y:-0.82,x:0.09,z:0,dist:0.65, pattern:/metatarsal.*big toe|big toe|great toe|hallux|proximal phalanx.*toe|cuneiform/i},
-    'achille': {y:-0.71,x:0.02,z:0,dist:0.88, pattern:/calcaneus|gastrocnemius|soleus|plantaris|tendocalcaneus|achilles/i}
+  const $ = id => document.getElementById(id);
+  let renderer, scene, camera, controls, figure, raf, ready=false, failed=false, mode='compare';
+  let normalGroup, pathologyGroup, kineticGroup, lesionGroup, surgeryGroup, normalMeshes=[], pathologyMeshes=[], sourceMeshes=[], allMeshes=[];
+  let layerMode='both', motionOn=true, selectedDisease=null, selectedSurgery=null, chainType='varus', chainDegrees=15;
+  let compareAngle=0, compareDistance=1.25, drag=null, lastFrame=performance.now(), clock=0;
+  const modelUrl='https://raw.githubusercontent.com/Charleeh/ecorche/320805e06aee51e2e6f6b22533eb2a59d43f2d4d/model/ecorche.meshopt.glb';
+  const focusSettings={
+    'arthrose-genou':{x:0,y:-.34,z:0,dist:1.00,pattern:/femur|tibia|patella|meniscus|menisci|fibula|quadriceps|gastrocnemius/i},
+    'menisque':{x:0,y:-.34,z:0,dist:.94,pattern:/femur|tibia|patella|meniscus|menisci|fibula/i},
+    'lca':{x:0,y:-.34,z:0,dist:.94,pattern:/femur|tibia|patella|fibula|quadriceps|gastrocnemius/i},
+    'coiffe':{x:.08,y:.42,z:0,dist:.99,pattern:/humerus|scapula|clavicle|supraspinatus|infraspinatus|subscapularis|teres minor|deltoid/i},
+    'arthrose-hanche':{x:0,y:-.01,z:0,dist:1.08,pattern:/femur|hip bone|acetabulum|pelvis|ilium|pubis/i},
+    'canal-carpien':{x:.4,y:0,z:0,dist:.78,pattern:/carpal|metacarpal|radius|ulna|phalanx of (left|right) (thumb|index finger|middle finger|ring finger|little finger)/i},
+    'entorse-cheville':{x:0,y:-.73,z:0,dist:.76,pattern:/tibia|fibula|talus|calcaneus|tarsal|metatarsal|gastrocnemius|soleus/i},
+    'hernie-discale':{x:0,y:-.02,z:0,dist:1.13,pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
+    'canal-lombaire':{x:0,y:-.01,z:0,dist:1.1,pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
+    'spondylolisthesis':{x:0,y:-.01,z:0,dist:1.08,pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
+    'hallux-valgus':{x:.08,y:-.82,z:0,dist:.66,pattern:/metatarsal|big toe|great toe|hallux|phalanx.*toe|cuneiform/i},
+    'achille':{x:.02,y:-.71,z:0,dist:.82,pattern:/calcaneus|gastrocnemius|soleus|plantaris|tendocalcaneus|achilles/i}
   };
-
-  function setStatus(message) {
-    const el = document.getElementById('viewerStatus');
-    if (el) el.textContent = message;
-  }
-  function setLabel(message) {
-    const el = document.getElementById('viewerLabel');
-    if (el) el.textContent = message;
-  }
-  function setup() {
-    const el = host();
-    if (!el || renderer || failed) return;
-    try {
-      renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:'low-power'});
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-      renderer.setSize(el.clientWidth || 300, el.clientHeight || 330, false);
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.05;
-      renderer.domElement.style.width = '100%';
-      renderer.domElement.style.height = '100%';
-      renderer.domElement.setAttribute('aria-label','Modèle anatomique 3D : glisser pour tourner, pincer pour zoomer');
-      el.appendChild(renderer.domElement);
-
-      scene = new THREE.Scene();
-      scene.background = null;
-      const pmrem = new THREE.PMREMGenerator(renderer);
-      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      scene.environmentIntensity = 0.75;
-      scene.add(new THREE.HemisphereLight(0xffffff, 0xb9c9c5, 2.1));
-      const keyLight = new THREE.DirectionalLight(0xfff4e8, 2.0);
-      keyLight.position.set(2.2, 3.3, 3.2); scene.add(keyLight);
-      const rimLight = new THREE.DirectionalLight(0xd7e8ff, 1.0);
-      rimLight.position.set(-2.7, 1.4, -2.4); scene.add(rimLight);
-      camera = new THREE.PerspectiveCamera(33, (el.clientWidth || 300)/(el.clientHeight || 330), 0.01, 50);
-      camera.position.set(0.62,0.25,3.35);
-      controls = new OrbitControls(camera, renderer.domElement);
-      controls.target.set(0,0,0);
-      controls.enableDamping = true; controls.dampingFactor = 0.08;
-      controls.minDistance = 0.32; controls.maxDistance = 7;
-      controls.maxPolarAngle = Math.PI * 0.92;
-      controls.addEventListener('change',()=>{lastUserInteraction=performance.now();});
-      renderer.domElement.addEventListener('pointerdown',e=>{pointerDown={x:e.clientX,y:e.clientY};});
+  const chainLabels={
+    varus:['Hanche','Adaptation possible de l’axe','Genou en varus','Déviation de l’axe','Cheville / pied','Réorientation du pied'],
+    valgus:['Hanche','Adaptation possible de l’axe','Genou en valgus','Déviation de l’axe','Cheville / pied','Réorientation du pied'],
+    pronation:['Genou','Rotation compensatrice possible','Pied en pronation','Affaissement de l’arche','Hanche','Rotation secondaire possible'],
+    ankle:['Genou','Adaptation possible du pas','Cheville raide','Mobilité réduite','Pied','Déroulé du pas modifié'],
+    hip:['Bassin','Bascule compensatrice possible','Hanche en flexum','Extension limitée','Genou','Flexion compensatrice possible'],
+    pelvis:['Rachis lombaire','Adaptation posturale possible','Bascule du bassin','Inclinaison du bassin','Hanche','Répartition asymétrique possible']
+  };
+  const setStatus=s=>{const e=$('viewerStatus');if(e)e.textContent=s;};
+  const setLabel=s=>{const e=$('viewerLabel');if(e)e.textContent=s;};
+  function init(){
+    const host=$('anatomy3d'); if(!host||renderer||failed)return;
+    try{
+      renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+      renderer.setSize(host.clientWidth||330,host.clientHeight||380,false);
+      renderer.outputColorSpace=THREE.SRGBColorSpace;
+      renderer.toneMapping=THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure=1.02;
+      renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';renderer.domElement.style.display='block';
+      host.prepend(renderer.domElement);
+      scene=new THREE.Scene(); scene.background=null;
+      const pmrem=new THREE.PMREMGenerator(renderer);
+      scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
+      scene.environmentIntensity=.8;
+      const hemi=new THREE.HemisphereLight(0xffffff,0xb9c9c5,2.2);scene.add(hemi);
+      const key=new THREE.DirectionalLight(0xfff4e8,2.2);key.position.set(2.4,3.6,3.3);scene.add(key);
+      const rim=new THREE.DirectionalLight(0xd7e8ff,1.1);rim.position.set(-2.7,1.6,-2.5);scene.add(rim);
+      camera=new THREE.PerspectiveCamera(32,(host.clientWidth||330)/(host.clientHeight||380),.01,50);
+      camera.position.set(.5,0,2.5);
+      controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);
+      controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=.34;controls.maxDistance=6;controls.maxPolarAngle=Math.PI*.92;
+      controls.addEventListener('change',()=>{});
+      renderer.domElement.addEventListener('pointerdown',e=>{
+        drag={x:e.clientX,y:e.clientY,angle:compareAngle,moved:false};
+      });
+      renderer.domElement.addEventListener('pointermove',e=>{
+        if(!drag||mode!=='compare')return;
+        const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+        if(Math.abs(dx)+Math.abs(dy)>4)drag.moved=true;
+        if(drag.moved){compareAngle=drag.angle+dx*.008;updateCompareCameras();renderNow();}
+      });
       renderer.domElement.addEventListener('pointerup',e=>{
-        if (!pointerDown || Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y)>6) {pointerDown=null;return;}
-        pointerDown=null;
-        const rect=renderer.domElement.getBoundingClientRect();
-        const mouse=new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1,-(((e.clientY-rect.top)/rect.height)*2-1));
-        const ray=new THREE.Raycaster(); ray.setFromCamera(mouse,camera);
-        const hits=ray.intersectObjects(focusedMeshes.filter(m=>m.visible),false);
-        if(hits.length){
-          const m=hits[0].object;
-          setLabel((m.userData.name||m.name||'Structure anatomique')+' · Touchez et faites glisser pour tourner le modèle.');
-          if(selectedMesh && selectedMesh!==m) restoreMaterial(selectedMesh);
-          selectedMesh=m; highlightOne(m);
-        }
+        if(drag&&!drag.moved&&mode==='compare')pickStructure(e.clientX,e.clientY);
+        drag=null;
       });
-      renderer.domElement.addEventListener('pointercancel',()=>pointerDown=null);
-      const observer = new ResizeObserver(() => {
-        if (!renderer || !camera) return;
-        const h = host(); if(!h) return;
-        const w = Math.max(240,h.clientWidth), ht = Math.max(260,h.clientHeight);
-        renderer.setSize(w,ht,false); camera.aspect=w/ht; camera.updateProjectionMatrix();
-      });
-      observer.observe(el);
-      window.addEventListener('resize',()=>{if(!renderer||!camera)return;const h=host();if(!h)return;camera.aspect=Math.max(1,h.clientWidth)/Math.max(1,h.clientHeight);camera.updateProjectionMatrix();renderer.setSize(h.clientWidth,h.clientHeight,false);});
-      home={position:new THREE.Vector3(0.62,0.25,3.35),target:new THREE.Vector3(0,0,0)};
-      renderLoop();
-    } catch(err) {
-      failed=true; setStatus('3D indisponible'); showFallback();
-      console.error('OrthoClair 3D initialization failed',err);
+      renderer.domElement.addEventListener('pointercancel',()=>drag=null);
+      renderer.domElement.addEventListener('wheel',e=>{
+        if(mode!=='compare')return;
+        e.preventDefault();compareDistance=THREE.MathUtils.clamp(compareDistance+e.deltaY*.002,.55,2.8);updateCompareCameras();renderNow();
+      },{passive:false});
+      let pinchDistance=null;
+      renderer.domElement.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);},{passive:true});
+      renderer.domElement.addEventListener('touchmove',e=>{if(mode!=='compare'||e.touches.length!==2||!pinchDistance)return;const next=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);compareDistance=THREE.MathUtils.clamp(compareDistance*pinchDistance/Math.max(1,next),.55,2.8);pinchDistance=next;updateCompareCameras();renderNow();},{passive:true});
+      renderer.domElement.addEventListener('touchend',()=>pinchDistance=null,{passive:true});
+      const resize=new ResizeObserver(()=>{
+        const el=$('anatomy3d');if(!renderer||!camera||!el)return;
+        const w=Math.max(240,el.clientWidth),h=Math.max(260,el.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();updateCompareCameras();renderNow();
+      });resize.observe(host);
+      window.addEventListener('resize',()=>{if(!renderer||!camera)return;const el=$('anatomy3d');if(!el)return;camera.aspect=Math.max(1,el.clientWidth)/Math.max(1,el.clientHeight);camera.updateProjectionMatrix();renderer.setSize(el.clientWidth,el.clientHeight,false);updateCompareCameras();});
+      buildChain();
+      animate();
+    }catch(err){console.error(err);failed=true;setStatus('3D indisponible');fallback();}
+  }
+  function fallback(){
+    const fb=$('viewerFallback');if(fb)fb.hidden=false;
+    if($('viewerStatus'))$('viewerStatus').textContent='Mode schématique';
+    const v=$('anatomy3d');if(v)v.style.display='none';
+    document.querySelectorAll('.viewer-controls,.viewer-split-labels,.viewer-center-line').forEach(e=>e.style.display='none');
+  }
+  const baseName=m=>String(m.userData.name||m.name||'');
+  function cloneForMode(){
+    if(!figure)return;
+    if(normalGroup)scene.remove(normalGroup);
+    if(pathologyGroup)scene.remove(pathologyGroup);
+    normalGroup=figure.clone(true);pathologyGroup=figure.clone(true);
+    normalGroup.position.x=-.62;pathologyGroup.position.x=.62;
+    normalMeshes=[];pathologyMeshes=[];
+    normalGroup.traverse(m=>{if(!m.isMesh)return;m.userData.__baseMaterial=m.material;normalMeshes.push(m);});
+    pathologyGroup.traverse(m=>{if(!m.isMesh)return;m.userData.__baseMaterial=m.material;pathologyMeshes.push(m);});
+    scene.add(normalGroup,pathologyGroup);
+  }
+  function getSettings(d){return focusSettings[d?.id]||{x:0,y:0,z:0,dist:1.2,pattern:/femur|tibia|vertebra|muscle|scapula/i};}
+  function setMeshEmphasis(mesh,color){
+    const original=mesh.userData.__baseMaterial||mesh.material;
+    const mats=Array.isArray(original)?original:[original];
+    mesh.material=mats.map(mat=>{
+      const m=mat.clone();
+      if('emissive' in m){m.emissive=new THREE.Color(color);m.emissiveIntensity=.26;}
+      if('color' in m)m.color.lerp(new THREE.Color(color),.25);
+      return m;
+    });
+    if(!Array.isArray(original))mesh.material=mesh.material[0];
+    mesh.userData.__orthoGenerated=true;
+  }
+  function restoreMeshes(meshes){
+    for(const m of meshes){if(m.userData.__orthoGenerated){if(Array.isArray(m.material))m.material.forEach(x=>x.dispose());else m.material.dispose();m.material=m.userData.__baseMaterial||m.material;delete m.userData.__orthoGenerated;}}
+  }
+  function regionOnly(meshes,d,emphasize){
+    const opts=getSettings(d);
+    for(const m of meshes){
+      const match=opts.pattern.test(baseName(m));
+      m.visible=match&&layerAllowed(m.userData.layer||'skeleton');
+      if(match&&emphasize&&m.visible)setMeshEmphasis(m,0x6f8f86);
     }
   }
-  function showFallback() {
-    const fb=document.getElementById('viewerFallback'); if(fb) fb.hidden=false;
-    const status=document.getElementById('viewerStatus'); if(status) status.textContent='Mode schématique';
-    const v=host(); if(v) v.style.display='none';
-    const l=document.getElementById('viewerLabel'); if(l) l.style.display='none';
-    const c=document.querySelector('.viewer-controls'); if(c) c.style.display='none';
+  function layerAllowed(layer){return layerMode==='both'||(layerMode==='bones'&&layer==='skeleton')||(layerMode==='muscles'&&layer!=='skeleton');}
+  function removeGroup(g){if(g){scene.remove(g);g.traverse?.(o=>{if(o.geometry&&o.userData?.__ownedGeometry)o.geometry.dispose();if(o.material&&o.userData?.__ownedMaterial)o.material.dispose();});}}
+  function makeMaterial(color,rough=.48,metal=.05,transparent=false,opacity=1){
+    return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal,transparent,opacity,depthWrite:!transparent});
   }
-  function materialForHighlight(material) {
-    const c=material.clone();
-    if('emissive' in c){c.emissive=RED.clone();c.emissiveIntensity=0.30;}
-    if('color' in c) c.color.lerp(new THREE.Color(0xff6a5a),0.20);
-    c.needsUpdate=true; return c;
+  function rod(a,b,r,color,metal=.1){
+    const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,16),makeMaterial(color,.35,metal));
+    m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return m;
   }
-  function restoreMaterial(mesh) {
-    const h=mesh.userData.__orthoHighlight;
-    if(h) {mesh.material=mesh.userData.__orthoBaseMaterial;h.dispose();delete mesh.userData.__orthoHighlight;}
-    highlighted.delete(mesh);
+  function ball(p,r,color,transparent=false){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(r,20,14),makeMaterial(color,.3,.12,transparent,transparent?.65:1));m.position.copy(p);return m;
   }
-  function highlightOne(mesh) {
-    if(!mesh || mesh.userData.__orthoHighlight) return;
-    mesh.userData.__orthoBaseMaterial=mesh.material;
-    mesh.userData.__orthoHighlight=Array.isArray(mesh.material)?mesh.material.map(materialForHighlight):materialForHighlight(mesh.material);
-    mesh.material=mesh.userData.__orthoHighlight; highlighted.add(mesh);
+  function buildLesion(d,offsetX){
+    removeGroup(lesionGroup);
+    lesionGroup=new THREE.Group();
+    const cfg=getSettings(d),c=new THREE.Vector3(cfg.x+offsetX,cfg.y,cfg.z+.07);
+    const red=0xdd6359,shade=makeMaterial(red,.26,.08,true,.72),dark=makeMaterial(0xb83f35,.25,.08);
+    if(['arthrose-genou','menisque','lca'].includes(d.id)){
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(d.id==='lca'?.09:.14,.022,10,40),d.id==='menisque'?dark:shade);
+      ring.position.copy(c);ring.rotation.x=.24;lesionGroup.add(ring);
+      if(d.id==='lca'){lesionGroup.add(rod(c.clone().add(new THREE.Vector3(-.06,.14,0)),c.clone().add(new THREE.Vector3(-.015,.03,.01)),.018,red));lesionGroup.add(rod(c.clone().add(new THREE.Vector3(.018,-.025,.01)),c.clone().add(new THREE.Vector3(.07,-.13,0)),.018,red));}
+      if(d.id==='arthrose-genou'){lesionGroup.add(ball(c.clone().add(new THREE.Vector3(-.12,-.015,.01)),.04,red,true));lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.12,-.015,.01)),.04,red,true));}
+    }else if(d.id==='hernie-discale'||d.id==='canal-lombaire'||d.id==='spondylolisthesis'){
+      lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.115,.015,.02)),.075,red,true));
+      lesionGroup.add(rod(c.clone().add(new THREE.Vector3(.05,-.12,.015)),c.clone().add(new THREE.Vector3(.05,.12,.015)),.012,red));
+    }else if(d.id==='coiffe'){
+      lesionGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,.12,0)),c.clone().add(new THREE.Vector3(.12,.09,0)),.025,red));
+      lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.13,.08,.01)),.035,red,true));
+    }else{
+      lesionGroup.add(new THREE.Mesh(new THREE.TorusGeometry(.105,.022,8,32),shade)).position.copy(c);
+      lesionGroup.add(ball(c,.04,red,true));
+    }
+    lesionGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
+    scene.add(lesionGroup);
   }
-  function resetHighlights() {
-    for(const m of [...highlighted]) restoreMaterial(m);
-    selectedMesh=null;
+  function updateCompareCameras(){
+    if(!camera||!normalGroup||!pathologyGroup)return;
+    const cfg=getSettings(selectedDisease),offsets=[-.62,.62],cameras=[compareCameras.left,compareCameras.right];
+    offsets.forEach((ox,i)=>{
+      const c=cameras[i];c.aspect=Math.max(1,renderer.domElement.clientWidth/2)/Math.max(1,renderer.domElement.clientHeight);
+      c.position.set(ox+cfg.x+compareDistance*Math.sin(compareAngle),cfg.y+.07+compareDistance*.09,compareDistance*Math.cos(compareAngle));
+      c.lookAt(ox+cfg.x,cfg.y,cfg.z);c.updateProjectionMatrix();
+    });
   }
-  function setLayer(mode) {
-    layerMode=mode;
+  const compareCameras={left:new THREE.PerspectiveCamera(31,1,.01,30),right:new THREE.PerspectiveCamera(31,1,.01,30)};
+  function renderCompare(){
+    const w=renderer.domElement.width,h=renderer.domElement.height;
+    const cssW=renderer.domElement.clientWidth,cssH=renderer.domElement.clientHeight,half=Math.floor(cssW/2);
+    normalGroup.visible=true;pathologyGroup.visible=false;lesionGroup.visible=false;surgeryGroup.visible=false;figure.visible=false;kineticGroup.visible=false;
+    renderer.setScissorTest(true);
+    renderer.setViewport(0,0,Math.max(1,Math.floor(w/2)),h);renderer.setScissor(0,0,Math.max(1,Math.floor(w/2)),h);renderer.render(scene,compareCameras.left);
+    normalGroup.visible=false;pathologyGroup.visible=true;lesionGroup.visible=true;
+    renderer.setViewport(Math.floor(w/2),0,Math.max(1,w-Math.floor(w/2)),h);renderer.setScissor(Math.floor(w/2),0,Math.max(1,w-Math.floor(w/2)),h);renderer.render(scene,compareCameras.right);
+    renderer.setScissorTest(false);renderer.setViewport(0,0,w,h);
+  }
+  function buildOperation(d,id){
+    removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();
+    const cfg=getSettings(d),c=new THREE.Vector3(cfg.x,cfg.y,cfg.z+.09);
+    const silver=0xc5d1d1,gold=0xd6a85b,steel=0x9baeb2,red=0xb83f35;
+    if(['acl-recon'].includes(id)){
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.075,.15,.01)),c.clone().add(new THREE.Vector3(.04,-.15,.01)),.018,gold));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.095,.14,.015)),c.clone().add(new THREE.Vector3(.04,-.15,.015)),.014,0x73b99f));
+      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(-.075,.15,.01)),.027,steel));surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.04,-.15,.01)),.027,steel));
+    }else if(['knee-total','knee-uni'].includes(id)){
+      const width=id==='knee-uni'?.11:.21;
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-width/2,.055,0)),c.clone().add(new THREE.Vector3(width/2,.055,0)),.028,silver,.75));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-width/2,-.045,0)),c.clone().add(new THREE.Vector3(width/2,-.045,0)),.025,steel,.75));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(0,.045,0)),c.clone().add(new THREE.Vector3(0,.14,0)),.014,gold,.5));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(0,-.04,0)),c.clone().add(new THREE.Vector3(0,-.14,0)),.014,gold,.5));
+    }else if(id==='hip-tha'){
+      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.06,.01,.015)),.085,silver));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.04,-.02,.015)),c.clone().add(new THREE.Vector3(-.02,-.23,.015)),.035,steel,.7));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.03,.01,.02)),c.clone().add(new THREE.Vector3(.13,.01,.02)),.045,gold,.65));
+    }else if(['stenosis-fusion','spond-fusion'].includes(id)){
+      [-.08,.08].forEach(x=>{
+        surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,.16,.025)),c.clone().add(new THREE.Vector3(x,-.16,.025)),.012,gold,.7));
+        [.10,0,-.10].forEach(y=>surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,y,.0)),c.clone().add(new THREE.Vector3(x*1.25,y,.10)),.012,steel,.7)));
+      });
+    }else if(['cuff-repair'].includes(id)){
+      [-.07,.07].forEach(x=>{
+        surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,.015,.02)),c.clone().add(new THREE.Vector3(x,.10,.02)),.014,gold,.6));
+        surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(x,.015,.02)),.022,steel));
+      });
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.08,.11,.02)),c.clone().add(new THREE.Vector3(.08,.11,.02)),.018,0x6cb49b));
+    }else if(['men-repair','men-trim'].includes(id)){
+      surgeryGroup.add(new THREE.Mesh(new THREE.TorusGeometry(.12,.016,8,36, id==='men-repair'?Math.PI*1.7:Math.PI),makeMaterial(gold,.28,.55)));
+    }else if(id==='carp-release'){
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.13,.05,.02)),c.clone().add(new THREE.Vector3(-.03,0,.02)),.025,gold,.6));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.03,0,.02)),c.clone().add(new THREE.Vector3(.13,.05,.02)),.025,gold,.6));
+    }else{
+      surgeryGroup.add(new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35)));
+      surgeryGroup.add(ball(c,.045,0xd6a85b,true));
+    }
+    surgeryGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
+    scene.add(surgeryGroup);
+  }
+  function setSurgeryMode(d,id){
+    selectedDisease=d;selectedSurgery=id;const cfg=getSettings(d);
+    normalGroup.visible=false;pathologyGroup.visible=false;figure.visible=true;kineticGroup.visible=false;lesionGroup.visible=false;
+    for(const m of sourceMeshes){
+      const match=cfg.pattern.test(baseName(m));
+      m.visible=match&&layerAllowed(m.userData.layer||'skeleton');
+      if(m.visible)setMeshEmphasis(m,0x7d8d8b);
+    }
+    buildOperation(d,id);
+    surgeryGroup.visible=true;
+    controls.enabled=true;controls.target.set(cfg.x,cfg.y,cfg.z);camera.position.set(cfg.x+.25,cfg.y+.05,cfg.dist);camera.lookAt(controls.target);controls.update();
+    const label=$('rightViewLabel');if(label)label.textContent='CHIRURGIE';
+    const split=$('splitLabels');if(split)split.style.display='none';
+    const line=$('viewerCenterLine');if(line)line.style.display='none';
+    setStatus('Principe opératoire · '+(d.options.find(o=>o.id===id)?.name||'option sélectionnée'));
+    setLabel('Modèle anatomique régional et repère 3D du geste. Le matériel coloré illustre le principe, pas une planification opératoire.');
+  }
+  function makeChainBone(a,b,r,color){
+    const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();
+    const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r*.72,r,len,18),makeMaterial(color,.33,.08));
+    mesh.position.copy(a).add(b).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return mesh;
+  }
+  function makeJoint(p,r,color){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),makeMaterial(color,.32,.12));m.position.copy(p);return m;
+  }
+  function chainPoints(type,degree,offset,normal){
+    const sign=normal?0:(type==='valgus'?-1:1),v=normal?0:degree/30;
+    const hip=new THREE.Vector3(offset, .62, 0);
+    const pelvis=new THREE.Vector3(offset, .84, 0);
+    let hx=0,kx=0,ax=0,fx=0,fy=-.86,az=0,footZ=.19;
+    if(!normal){
+      if(type==='varus'){kx=.19*v;ax=.08*v;fx=.11*v;}
+      if(type==='valgus'){kx=-.19*v;ax=-.08*v;fx=-.11*v;}
+      if(type==='pronation'){ax=.08*v;fx=.17*v;footZ=.30;az=.18*v;}
+      if(type==='ankle'){ax=.015*v;fx=.06*v;fy=-.81+.04*v;footZ=.18-.04*v;}
+      if(type==='hip'){hx=-.10*v;kx=-.06*v;ax=.07*v;fy=-.86+.035*v;}
+      if(type==='pelvis'){hx=.06*v;kx=.035*v;ax=-.035*v;}
+    }
+    const hipJ=new THREE.Vector3(offset+hx,.40,0);
+    const knee=new THREE.Vector3(offset+kx,-.03,0);
+    const ankle=new THREE.Vector3(offset+ax,-.47,az);
+    const forefoot=new THREE.Vector3(offset+fx,fy,footZ);
+    return {pelvis,hip:hipJ,knee,ankle,foot:forefoot};
+  }
+  function drawChain(points,normal,type,degree){
+    const group=new THREE.Group();const color=normal?0x7baea0:0xc8d2d0;
+    const adjacent=normal?color:0xd8a04f,primary=normal?color:0xd9534b;
+    const pelvisLeft=points.pelvis.clone().add(new THREE.Vector3(-.13,0,0)),pelvisRight=points.pelvis.clone().add(new THREE.Vector3(.13,0,0));
+    group.add(makeChainBone(pelvisLeft,pelvisRight,.035,normal?0x7baea0:0x9caaa8));
+    group.add(makeChainBone(points.hip,points.knee,.045,color));
+    group.add(makeChainBone(points.knee,points.ankle,.035,normal?color:primary));
+    group.add(makeChainBone(points.ankle,points.foot,.026,normal?color:adjacent));
+    group.add(makeJoint(points.pelvis,.065,normal?0x7baea0:0xa8b7b4));
+    group.add(makeJoint(points.hip,.06,normal?0x7baea0:adjacent));
+    group.add(makeJoint(points.knee,.063,normal?0x7baea0:primary));
+    group.add(makeJoint(points.ankle,.055,normal?0x7baea0:adjacent));
+    group.add(makeJoint(points.foot,.045,normal?0x7baea0:0x93b9ad));
+    // Small luminous rings identify the primary and adjacent joints.
+    if(!normal){
+      const main=new THREE.Mesh(new THREE.TorusGeometry(.085,.008,7,30),makeMaterial(0xdf635a,.4,.04,true,.7));main.position.copy(points.knee);main.rotation.x=.35;group.add(main);
+      const upper=new THREE.Mesh(new THREE.TorusGeometry(.078,.006,7,30),makeMaterial(0xd8a04f,.4,.04,true,.62));upper.position.copy(points.hip);group.add(upper);
+      const lower=new THREE.Mesh(new THREE.TorusGeometry(.07,.006,7,30),makeMaterial(0xd8a04f,.4,.04,true,.62));lower.position.copy(points.ankle);group.add(lower);
+    }
+    group.position.z=.0;return group;
+  }
+  function buildChain(){
+    removeGroup(kineticGroup);kineticGroup=new THREE.Group();
+    const baseOffset=-.31,sideOffset=.31;
+    kineticGroup.add(drawChain(chainPoints(chainType,chainDegrees,baseOffset,true),true,chainType,chainDegrees));
+    kineticGroup.add(drawChain(chainPoints(chainType,chainDegrees,sideOffset,false),false,chainType,chainDegrees));
+    // A faint alignment guide runs through each limb.
+    [-.31,.31].forEach(x=>{
+      const guide=new THREE.Mesh(new THREE.CylinderGeometry(.002,.002,1.7,5),makeMaterial(0xa9c4be,.7,0,true,.42));guide.position.set(x,.0,-.045);kineticGroup.add(guide);
+    });
+    scene.add(kineticGroup);kineticGroup.visible=mode==='kinetic';
+    if(mode==='kinetic'){
+      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,2.85);camera.lookAt(controls.target);controls.update();
+    }
+  }
+  function setLayer(m){layerMode=m;if(ready&&mode==='surgery')setSurgeryMode(selectedDisease,selectedSurgery);}
+  function modeVisibility(){
+    const compare=mode==='compare',surgery=mode==='surgery',kinetic=mode==='kinetic';
+    const split=$('splitLabels');if(split)split.style.display=compare?'grid':'none';
+    const line=$('viewerCenterLine');if(line)line.style.display=compare?'block':'none';
+    const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display=kinetic?'none':'flex';
     if(!ready)return;
-    for(const mesh of focusedMeshes){
-      const layer=mesh.userData.layer;
-      mesh.visible=mode==='both' || (mode==='bones' && layer==='skeleton') || (mode==='muscles' && layer!=='skeleton');
-    }
-    setStatus(mode==='bones'?'Os affichés':mode==='muscles'?'Muscles affichés':'Os + muscles');
+    normalGroup.visible=compare;pathologyGroup.visible=compare;figure.visible=surgery;kineticGroup.visible=kinetic;
+    lesionGroup.visible=compare;
+    surgeryGroup.visible=surgery;
+    controls.enabled=!compare;
+    if(compare){updateCompareCameras();setStatus('Anatomie normale / pathologie');setLabel('Touchez et faites glisser pour tourner les deux vues. Repères rouges : zone étudiée, schéma illustratif.');}
   }
-  function diseaseFocus(d) {
-    if(!ready || !d || d.id===lastDisease)return;
-    lastDisease=d.id;
-    resetHighlights();
-    const opts=focusSettings[d.id]||{y:0,x:0,z:0,dist:2.5,pattern:/femur|tibia|vertebra|muscle/i};
-    const target=new THREE.Vector3(opts.x,opts.y,opts.z);
-    let hits=0;
-    for(const mesh of focusedMeshes){
-      const name=(mesh.userData.name||mesh.name||'');
-      // Select anatomically relevant bones and muscles; highlight remains a teaching cue, not a lesion contour.
-      if(opts.pattern.test(name)){
-        mesh.visible=layerMode==='both'||(layerMode==='bones'&&mesh.userData.layer==='skeleton')||(layerMode==='muscles'&&mesh.userData.layer!=='skeleton');
-        if(mesh.visible){highlightOne(mesh);hits++;}
-      }
+  function setMode(next,d,surgery){
+    mode=next||'compare';selectedDisease=d||selectedDisease;selectedSurgery=surgery||selectedSurgery;
+    if(!ready)return;
+    if(mode==='compare'){
+      resetMeshes(sourceMeshes);restoreMeshes(normalMeshes);restoreMeshes(pathologyMeshes);
+      const opts=getSettings(selectedDisease);
+      regionOnly(normalMeshes,selectedDisease,false);regionOnly(pathologyMeshes,selectedDisease,true);
+      // Show the local region at the same scale on both sides.
+      normalGroup.position.x=-.62;pathologyGroup.position.x=.62;
+      buildLesion(selectedDisease,.62);
+      removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
+      camera.position.set(.5,opts.y+0.05,2.5);controls.target.set(0,opts.y,0);
+      updateCompareCameras();modeVisibility();
+    }else if(mode==='surgery'){
+      resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
+      setSurgeryMode(selectedDisease,selectedSurgery);
+    }else{
+      resetMeshes(sourceMeshes);resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
+      if(figure)figure.visible=false;normalGroup.visible=false;pathologyGroup.visible=false;kineticGroup.visible=true;
+      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,2.85);camera.lookAt(controls.target);controls.update();
+      const status=$('viewerStatus');if(status)status.textContent='Chaîne cinétique · comparaison 3D';
+      setLabel('À gauche : chaîne de référence. À droite : segments modifiés selon le curseur. Les répercussions sont illustratives, non diagnostiques.');
+      const lbl=$('splitLabels');if(lbl){lbl.style.display='grid';lbl.children[0].textContent='NORMALE';lbl.children[1].textContent='CHAÎNE MODIFIÉE';}
+      const line=$('viewerCenterLine');if(line)line.style.display='none';
+      const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display='none';
+      buildChain();
     }
-    controls.target.copy(target);
-    const direction=new THREE.Vector3(0.20,0.07,1).normalize();
-    const goal=target.clone().addScaledVector(direction,opts.dist);
-    camera.position.copy(goal);
-    camera.lookAt(target);
-    controls.update();
-    setStatus('3D · '+d.region);
-    setLabel(hits+' structures anatomiques mises en évidence. La rotation et le zoom sont libres ; les lésions sont illustrées à visée pédagogique.');
+    const rl=$('rightViewLabel');if(rl)rl.textContent=mode==='surgery'?'CHIRURGIE':mode==='kinetic'?'CHAÎNE MODIFIÉE':'PATHOLOGIE';
+    renderNow();
   }
-  function loadModel() {
-    if(loadStarted)return; loadStarted=true;
+  function resetMeshes(meshes){restoreMeshes(meshes);for(const m of meshes)m.visible=false;}
+  function pickStructure(x,y){
+    if(!ready)return;
+    const el=renderer.domElement,rect=el.getBoundingClientRect(),isRight=(x-rect.left)>=rect.width/2;
+    const meshes=isRight?pathologyMeshes:normalMeshes;const cam=isRight?compareCameras.right:compareCameras.left;
+    const localX=x-rect.left-(isRight?rect.width/2:0),localW=rect.width/2;
+    const mouse=new THREE.Vector2(localX/localW*2-1,-((y-rect.top)/rect.height*2-1));
+    const ray=new THREE.Raycaster();ray.setFromCamera(mouse,cam);
+    const hit=ray.intersectObjects(meshes.filter(m=>m.visible),false)[0];
+    if(hit){const title=baseName(hit.object);setLabel(title+' · '+(isRight?'Pathologie':'Anatomie normale')+'. Déplacez le doigt pour explorer la vue.');}
+  }
+  function renderNow(){
+    if(!renderer||!scene||!camera)return;
+    const host=$('anatomy3d');if(!host)return;
+    if(mode==='compare'&&ready){renderCompare();return;}
+    renderer.setScissorTest(false);renderer.setViewport(0,0,renderer.domElement.width,renderer.domElement.height);
+    if(controls)controls.update();renderer.render(scene,camera);
+  }
+  function animate(){
+    raf=requestAnimationFrame(animate);
+    const now=performance.now();const dt=Math.min(.06,(now-lastFrame)/1000);lastFrame=now;if(motionOn)clock+=dt;
+    if(mode==='compare'&&ready){
+      if(motionOn&&lesionGroup)lesionGroup.scale.setScalar(1+.025*Math.sin(clock*2.4));
+      updateCompareCameras();
+      renderCompare();
+    }else{
+      if(motionOn&&surgeryGroup)surgeryGroup.rotation.z=Math.sin(clock*1.4)*.018;
+      if(motionOn&&kineticGroup)kineticGroup.rotation.y=Math.sin(clock*.45)*.025;
+      if(controls)controls.update();
+      if(renderer&&scene&&camera)renderer.render(scene,camera);
+    }
+  }
+  function reset(){
+    compareAngle=0;compareDistance=1.25;
+    if(mode==='kinetic'){buildChain();return;}
+    if(mode==='compare'){updateCompareCameras();renderNow();}
+    else{const cfg=getSettings(selectedDisease);controls.target.set(cfg.x,cfg.y,cfg.z);camera.position.set(cfg.x+.25,cfg.y+.05,cfg.dist);camera.lookAt(controls.target);controls.update();renderNow();}
+  }
+  function setKinetics(type,degree){
+    chainType=type||'varus';chainDegrees=THREE.MathUtils.clamp(Number(degree)||0,0,30);
+    if(ready&&mode==='kinetic')buildChain();
+  }
+  function setMotion(value){motionOn=Boolean(value);}
+  function attach(){
+    if(failed)return;const el=$('anatomy3d');if(!el)return;
+    if(!renderer)init();
+    if(renderer&&renderer.domElement.parentElement!==el){el.prepend(renderer.domElement);}
+    if(ready){modeVisibility();renderNow();}
+    if(!ready&&renderer&&!figure)load();
+  }
+  let loading=false;
+  function load(){
+    if(loading)return;loading=true;
     const loader=new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     loader.load(modelUrl,gltf=>{
       figure=gltf.scene;
-      const bbox=new THREE.Box3().setFromObject(figure);
-      const center=bbox.getCenter(new THREE.Vector3());
+      const bbox=new THREE.Box3().setFromObject(figure),center=bbox.getCenter(new THREE.Vector3());
       figure.position.sub(center);
-      scene.add(figure);
-      figure.traverse(obj=>{
-        if(!obj.isMesh)return;
-        const layer=obj.userData.layer||'skeleton';
-        obj.userData.layer=layer;
-        obj.userData.__orthoBaseMaterial=obj.material;
-        focusedMeshes.push(obj);
-        materials.push(obj.material);
+      scene.add(figure);sourceMeshes=[];
+      figure.traverse(m=>{
+        if(!m.isMesh)return;
+        m.userData.__baseMaterial=m.material;sourceMeshes.push(m);m.visible=false;
       });
-      const finalBox=new THREE.Box3().setFromObject(figure);
-      const size=finalBox.getSize(new THREE.Vector3());
-      // Normalize the viewer around the full adult figure; zoom-to-region happens per pathology.
-      const h=Math.max(size.y,0.8);
-      home={position:new THREE.Vector3(0.62,h*0.12,h*2.0),target:new THREE.Vector3(0,0,0)};
-      camera.position.copy(home.position);controls.target.copy(home.target);camera.lookAt(home.target);
-      ready=true;setStatus('3D anatomique chargé');setLabel('Glisser pour tourner · Pincer pour zoomer · Toucher une structure pour l’identifier.');
-      setLayer(layerMode);
-      diseaseFocus(window.__orthoClairDisease||{id:'arthrose-genou',region:'Genou'});
-      const fb=document.getElementById('viewerFallback');if(fb)fb.hidden=true;
-      render();
-    },evt=>{
-      if(evt.total){setStatus('Chargement 3D '+Math.round(evt.loaded/evt.total*100)+' %');}
+      cloneForMode();figure.visible=false;
+      kineticGroup=new THREE.Group();scene.add(kineticGroup);kineticGroup.visible=false;
+      lesionGroup=new THREE.Group();scene.add(lesionGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
+      ready=true;
+      const label=$('viewerStatus');if(label)label.textContent='Modèle 3D chargé';
+      setMode(mode,window.__orthoClairDisease||{id:'arthrose-genou',title:'Arthrose du genou',region:'Genou'},selectedSurgery||'knee-rehab');
+      setKinetics(chainType,chainDegrees);
+    },progress=>{
+      if(progress.total)setStatus('Chargement de l’anatomie 3D · '+Math.round(progress.loaded/progress.total*100)+' %');
     },err=>{
-      console.error('OrthoClair model load failed',err);failed=true;showFallback();
+      console.error('OrthoClair 3D load failed',err);failed=true;fallback();
     });
   }
-  function renderLoop() {
-    if(raf)return;
-    const tick=()=>{
-      raf=requestAnimationFrame(tick);
-      if(!renderer||!scene||!camera)return;
-      if(controls)controls.update();
-      if(motionOn && ready){
-        const pulse=0.20+0.12*(0.5+0.5*Math.sin((performance.now()-clockStart)/430));
-        for(const m of highlighted){
-          const ms=m.userData.__orthoHighlight;
-          const arr=Array.isArray(ms)?ms:[ms];
-          arr.forEach(mat=>{if(mat && 'emissiveIntensity' in mat)mat.emissiveIntensity=pulse;});
-        }
-      }
-      renderer.render(scene,camera);
-    };
-    tick();
-  }
-  function attach() {
-    const el=host(); if(!el||failed)return;
-    if(!renderer){setup();if(renderer)loadModel();return;}
-    if(renderer.domElement.parentElement!==el)el.appendChild(renderer.domElement);
-    renderer.domElement.style.display='block';
-    const fb=document.getElementById('viewerFallback');if(fb)fb.hidden=true;
-    const l=document.getElementById('viewerLabel');if(l)l.style.display='';
-    const c=document.querySelector('.viewer-controls');if(c)c.style.display='flex';
-    if(ready && window.__orthoClairDisease)diseaseFocus(window.__orthoClairDisease);
-  }
-  function focus(d) { if(d && ready && d.id!==lastDisease)diseaseFocus(d); }
-  function reset() {
-    if(!ready||!home)return;
-    resetHighlights();lastDisease='';
-    const d=window.__orthoClairDisease;
-    camera.position.copy(home.position);controls.target.copy(home.target);camera.lookAt(home.target);controls.update();
-    if(d)diseaseFocus(d);
-  }
-  function render(){ if(renderer&&scene&&camera)renderer.render(scene,camera); }
-  function setMotion(v){motionOn=Boolean(v);}
-  window.OrthoClair3D={attach,focus,setLayer,setMotion,reset};
-  window.addEventListener('orthoclair:pathology',e=>focus(e.detail));
-  // First render is initiated by the consultation UI, and this also covers a delayed module load.
+  window.OrthoClair3D={attach,setMode,setLayer,setMotion,reset,setKinetics,focus:d=>setMode(mode,d,selectedSurgery)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach,{once:true});else attach();
 })();
 </script>
