@@ -27,7 +27,7 @@
 <header class="top">
   <div class="brand"><div class="logo">O</div><div><strong>OrthoClair</strong><small>Illustrations de consultation</small></div></div>
   <div class="top-sub">Comprendre · montrer · décider</div>
-  <div class="top-pill">VISUEL RAPIDE · SANS CHARGEMENT 3D</div>
+  <button class="top-pill" id="chainSwitch" type="button">Chaîne cinétique ↗</button>
 </header>
 <main class="layout" id="app">
 <aside class="panel left">
@@ -156,7 +156,7 @@ function listCases(q){const host=$("caseList");host.innerHTML="";const query=(q|
 function renderStages(){const host=$("stagesAside");host.innerHTML="";[["normal","Normal"],["pathology","Pathologie"],["surgery","Traitement"]].forEach(row=>{const b=document.createElement("button");b.className="option"+(stage===row[0]?" active":"");b.innerHTML='<span class="option-mark"></span><span></span>';b.querySelector("span:last-child").textContent=row[1];b.addEventListener("click",()=>{stage=row[0];renderIllustration();});host.appendChild(b);});
  const ops=$("operationList");ops.innerHTML="";selected.ops.forEach(op=>{const b=document.createElement("button");b.className="option"+(selectedOp===op.id?" active":"");b.innerHTML='<span class="option-mark"></span><span></span><span class="option-tag"></span>';b.querySelectorAll("span")[1].textContent=op.name;b.querySelectorAll("span")[2].textContent=op.tag;b.addEventListener("click",()=>{selectedOp=op.id;stage="surgery";renderIllustration();});ops.appendChild(b);});
  $("treatmentNote").textContent=stage==="surgery"?(selected.surgeryAsset?"Principe illustré ici ; modèle réel complémentaire disponible via le lien.":"Principe du geste dessiné de façon schématique."):"Les options sont des supports visuels, pas une indication opératoire personnalisée.";}
-function switchView(next){view=next;document.body.classList.toggle("chain-mode",next==="chain");$("top-pill");if(next==="models"){renderIllustration();}else{renderChain();}}
+function switchView(next){view=next;document.body.classList.toggle("chain-mode",next==="chain");if(next==="models"){renderIllustration();}else{renderChain();}}
 document.querySelectorAll("[data-stage]").forEach(b=>b.addEventListener("click",()=>{stage=b.dataset.stage;renderIllustration();}));
 $("search").addEventListener("input",e=>listCases(e.target.value));
 function renderChain(){
@@ -180,10 +180,9 @@ function renderChain(){
 }
 document.querySelectorAll("[data-chain]").forEach(b=>b.addEventListener("click",()=>{chain=b.dataset.chain;document.querySelectorAll("[data-chain]").forEach(x=>x.classList.toggle("active",x===b));renderChain();}));
 $("angleRange").addEventListener("input",renderChain);
-const addTab=document.createElement("button");
-function ensureTopControls(){const host=document.querySelector(".top");const btn=document.createElement("button");btn.className="top-pill";btn.textContent="Chaîne cinétique";btn.id="chainSwitch";btn.style.cursor="pointer";btn.addEventListener("click",()=>{switchView(view==="models"?"chain":"models");btn.textContent=view==="models"?"Chaîne cinétique":"Retour aux illustrations";});host.appendChild(btn);}
+$("chainSwitch").addEventListener("click",()=>{const next=view==="models"?"chain":"models";switchView(next);$("chainSwitch").textContent=next==="chain"?"Retour aux illustrations":"Chaîne cinétique ↗";});
 function render(){view="models";document.body.classList.remove("chain-mode");renderIllustration();}
-ensureTopControls();listCases("");render();
+listCases("");render();
 </script>
 </body>
 </html>
