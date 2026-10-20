@@ -513,13 +513,13 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
   }
   const compareCameras={left:new THREE.PerspectiveCamera(31,1,.01,30),right:new THREE.PerspectiveCamera(31,1,.01,30)};
   function renderCompare(){
-    const w=renderer.domElement.width,h=renderer.domElement.height;
-    const cssW=renderer.domElement.clientWidth,cssH=renderer.domElement.clientHeight,half=Math.floor(cssW/2);
+    // WebGLRenderer viewport/scissor coordinates are CSS pixels; Three.js applies the pixel ratio.
+    const w=renderer.domElement.clientWidth,h=renderer.domElement.clientHeight,half=Math.floor(w/2);
     normalGroup.visible=true;pathologyGroup.visible=false;lesionGroup.visible=false;surgeryGroup.visible=false;figure.visible=false;kineticGroup.visible=false;
     renderer.setScissorTest(true);
-    renderer.setViewport(0,0,Math.max(1,Math.floor(w/2)),h);renderer.setScissor(0,0,Math.max(1,Math.floor(w/2)),h);renderer.render(scene,compareCameras.left);
+    renderer.setViewport(0,0,Math.max(1,half),h);renderer.setScissor(0,0,Math.max(1,half),h);renderer.render(scene,compareCameras.left);
     normalGroup.visible=false;pathologyGroup.visible=true;lesionGroup.visible=true;
-    renderer.setViewport(Math.floor(w/2),0,Math.max(1,w-Math.floor(w/2)),h);renderer.setScissor(Math.floor(w/2),0,Math.max(1,w-Math.floor(w/2)),h);renderer.render(scene,compareCameras.right);
+    renderer.setViewport(half,0,Math.max(1,w-half),h);renderer.setScissor(half,0,Math.max(1,w-half),h);renderer.render(scene,compareCameras.right);
     renderer.setScissorTest(false);renderer.setViewport(0,0,w,h);
   }
   function buildOperation(d,id){
@@ -716,7 +716,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     if(!renderer||!scene||!camera)return;
     const host=$('anatomy3d');if(!host)return;
     if(mode==='compare'&&ready){renderCompare();return;}
-    renderer.setScissorTest(false);renderer.setViewport(0,0,renderer.domElement.width,renderer.domElement.height);
+    renderer.setScissorTest(false);renderer.setViewport(0,0,renderer.domElement.clientWidth,renderer.domElement.clientHeight);
     if(controls)controls.update();renderer.render(scene,camera);
   }
   function animate(){
