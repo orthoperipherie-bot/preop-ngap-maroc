@@ -1,5 +1,18 @@
 # Fiche préopératoire NGAP Maroc
 
+## OrthoClair — support visuel patient en 3D
+
+Application de consultation orientée visuels plutôt que longs textes :
+- **Norme / maladie** : comparaison anatomique 3D côte à côte, rotation et zoom.
+- **Options chirurgicales** : choix d'une intervention avec repères 3D animés pour en illustrer le principe.
+- **Chaînes cinétiques** : modèle segmentaire interactif avec intensité réglable et mise en évidence qualitative des articulations adjacentes.
+- Les simulations pathologiques, implants et compensations sont des illustrations éducatives, pas des modèles biomécaniques validés ni un outil de planification opératoire.
+
+**[Ouvrir OrthoClair 3D](https://orthoperipherie-bot.github.io/preop-ngap-maroc/ortho-clair/)** · [Code de l'application](https://github.com/orthoperipherie-bot/preop-ngap-maroc/tree/main/ortho-clair)
+
+Le visualiseur utilise le modèle anatomique [Écorché](https://github.com/Charleeh/ecorche), sous licence **CC BY-SA 4.0**, basé sur BodyParts3D et Z-Anatomy. Les notices d'attribution et de licence doivent être conservées lors de la redistribution. Le modèle couvre les os et les muscles ; certaines structures ligamentaires/cartilagineuses et les lésions sont donc représentées par des repères schématiques, pas par une anatomie pathologique déformée réelle.
+
+
 Application interactive mobile pour estimer le budget d’une intervention orthopédique ou traumatologique et distinguer les postes de dépense par acteur.
 
 ## Dans l’application
