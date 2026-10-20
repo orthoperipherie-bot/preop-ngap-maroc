@@ -285,7 +285,7 @@ function renderContent(d){
   return '<div class="mode-heading"><h3>Comparer avec l’anatomie normale</h3><span>Vue 3D côte à côte</span></div>'+viewer+'<div class="compare-legend"><div><strong>● Anatomie normale</strong><span>Référence anatomique</span></div><div class="lesion"><strong>● '+escapeHtml(d.title)+'</strong><span>Structures concernées mises en évidence</span></div></div>'+controls+credit+'<div class="actions"><button class="primary-btn" data-goto="options">Explorer les options chirurgicales →</button><button class="secondary-btn" data-goto="kinetique">Simuler une chaîne cinétique</button></div>';
  }
  if(activeTab==="options"){
-  const opts=d.options||[];
+  const opts=(d.options||[]).filter(o=>/chirurgie|arthroscopie/i.test(o.type)||/prothèse|reconstruction|libération|suture méniscale|méniscectomie|discectomie|décompression|fusion|correction chirurgicale|réparation|stabilisation/i.test(o.name));
   if(!selectedSurgery||!opts.some(o=>o.id===selectedSurgery))selectedSurgery=opts[0]?.id||null;
   return '<div class="mode-heading"><h3>Simuler le geste chirurgical</h3><span>Choisir une option ci-dessous</span></div>'+viewer+'<div class="surgery-list">'+opts.map(o=>'<button type="button" class="surgery-choice '+(selectedSurgery===o.id?'active':'')+'" data-surgery="'+o.id+'" aria-pressed="'+(selectedSurgery===o.id)+'"><span class="surgery-symbol">'+(o.type.toLowerCase().includes("sans")?"↗":o.type.toLowerCase().includes("médical")?"✚":"⚒")+'</span><span><strong>'+escapeHtml(o.name)+'</strong><small>'+escapeHtml(o.type)+'</small></span></button>').join("")+'</div><div class="actions"><button class="secondary-btn" data-goto="comprendre">← Retour à la comparaison</button><span class="feedback">La simulation illustre le principe, pas le geste exact.</span></div>'+controls+credit;
  }
@@ -304,7 +304,7 @@ function renderDetail(){
  }
  document.querySelectorAll("[data-surgery]").forEach(btn=>btn.addEventListener("click",()=>{selectedSurgery=btn.dataset.surgery;if(window.OrthoClair3D)window.OrthoClair3D.setMode("surgery",window.__orthoClairDisease,selectedSurgery);document.querySelectorAll("[data-surgery]").forEach(b=>{b.classList.toggle("active",b===btn);b.setAttribute("aria-pressed",String(b===btn));});const label=$("rightViewLabel");if(label)label.textContent="CHIRURGIE";}));
  const chainType=$("chainType"), chainDeviation=$("chainDeviation");
- const updateKinetic=()=>{const type=chainType?.value||"varus",degree=Number(chainDeviation?.value||15);const output=$("chainDeviationOut");if(output)output.textContent=degree+" / 30";const labels={varus:["Hanche","Adaptation possible de l’axe","Genou en varus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],valgus:["Hanche","Adaptation possible de l’axe","Genou en valgus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],pronation:["Genou","Rotation compensatrice possible","Pied en pronation","Affaissement de l’arche","Hanche","Rotation secondaire possible"],ankle:["Genou","Adaptation de la marche","Cheville raide","Mobilité limitée","Pied","Déroulé du pas modifié"],hip:["Bassin","Bascule compensatrice possible","Hanche en flexum","Extension limitée","Genou","Flexion compensatrice possible"],pelvis:["Rachis lombaire","Adaptation posturale","Bascule du bassin","Inclinaison du bassin","Hanche","Répartition asymétrique possible"]};const a=labels[type]||labels.varus;["impactTop","impactTopText","impactMain","impactMainText","impactBottom","impactBottomText"].forEach((id,i)=>{const e=$(id);if(e)e.textContent=a[i];});if(window.OrthoClair3D)window.OrthoClair3D.setKinetics(type,degree);};
+ const updateKinetic=()=>{const type=chainType?.value||"varus",degree=Number(chainDeviation?.value||15);const output=$("chainDeviationOut");if(output)output.textContent=degree+" / 30";const labels={varus:["Hanche","Adaptation possible de l’axe","Genou en varus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],valgus:["Hanche","Adaptation possible de l’axe","Genou en valgus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],pronation:["Genou","Rotation compensatrice possible","Pied en pronation","Affaissement de l’arche","Hanche","Rotation secondaire possible"],ankle:["Genou","Adaptation de la marche","Cheville raide","Mobilité limitée","Pied","Déroulé du pas modifié"],hip:["Bassin","Bascule compensatrice possible","Hanche en flexum","Extension limitée","Genou","Flexion compensatrice possible"],pelvis:["Rachis lombaire","Adaptation posturale","Bascule du bassin","Inclinaison du bassin","Hanche","Répartition asymétrique possible"]};const a=labels[type]||labels.varus;const severity=degree<=7?"Faible":degree<=18?"Modérée":"Marquée";["impactTop","impactTopText","impactMain","impactMainText","impactBottom","impactBottomText"].forEach((id,i)=>{const e=$(id);if(e)e.textContent=a[i];});const topText=$("impactTopText"),mainText=$("impactMainText"),bottomText=$("impactBottomText"),rightLabel=$("rightViewLabel");if(topText)topText.textContent=a[1]+" · "+severity.toLowerCase();if(mainText)mainText.textContent=a[3]+" · "+degree+"°";if(bottomText)bottomText.textContent=a[5]+" · "+severity.toLowerCase();if(rightLabel)rightLabel.textContent="MODIFIÉE · "+severity.toUpperCase();if(window.OrthoClair3D)window.OrthoClair3D.setKinetics(type,degree);};
  if(chainType)chainType.addEventListener("change",updateKinetic);if(chainDeviation)chainDeviation.addEventListener("input",updateKinetic);
  document.querySelectorAll("[data-layer-view]").forEach(btn=>{btn.classList.toggle("active",btn.dataset.layerView===viewerLayer);btn.setAttribute("aria-pressed",String(btn.dataset.layerView===viewerLayer));btn.addEventListener("click",()=>{viewerLayer=btn.dataset.layerView;if(window.OrthoClair3D)window.OrthoClair3D.setLayer(viewerLayer);document.querySelectorAll("[data-layer-view]").forEach(b=>{b.classList.toggle("active",b.dataset.layerView===viewerLayer);b.setAttribute("aria-pressed",String(b.dataset.layerView===viewerLayer));});});});
  const motionButton = $("viewerMotion"); if(motionButton){motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent="Animation : "+(viewerMotion?"oui":"non");motionButton.addEventListener("click",()=>{viewerMotion=!viewerMotion;if(window.OrthoClair3D)window.OrthoClair3D.setMotion(viewerMotion);motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent="Animation : "+(viewerMotion?"oui":"non");});}
@@ -556,8 +556,23 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     }else if(id==='carp-release'){
       surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.13,.05,.02)),c.clone().add(new THREE.Vector3(-.03,0,.02)),.025,gold,.6));
       surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.03,0,.02)),c.clone().add(new THREE.Vector3(.13,.05,.02)),.025,gold,.6));
+    }else if(id==='hallux-surgery'){
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,-.11,.01)),c.clone().add(new THREE.Vector3(.10,.10,.01)),.012,gold,.65));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.08,-.07,.04)),c.clone().add(new THREE.Vector3(.08,.07,.04)),.018,steel,.7));
+      [-.04,.04].forEach(t=>surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(t,t,.06)),.018,gold)));
+    }else if(id==='achilles-surgery'){
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(0,-.18,.02)),c.clone().add(new THREE.Vector3(0,.16,.02)),.018,gold));
+      [-.03,.03].forEach(x=>surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,-.13,.03)),c.clone().add(new THREE.Vector3(-x,.10,.03)),.008,steel)));
+    }else if(id==='ankle-surgery'){
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,.12,.02)),c.clone().add(new THREE.Vector3(.12,-.08,.02)),.012,gold,.55));
+      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(-.12,.12,.02)),.025,steel));
+      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.12,-.08,.02)),.025,steel));
+    }else if(['stenosis-decomp','disc-surgery'].includes(id)){
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.13,-.12,.02)),c.clone().add(new THREE.Vector3(-.13,.12,.02)),.014,gold,.5));
+      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.13,-.12,.02)),c.clone().add(new THREE.Vector3(.13,.12,.02)),.014,gold,.5));
+      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.08,.02,.04)),.04,0xd6a85b,true));
     }else{
-      const implantRing=new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35));implantRing.position.copy(c);surgeryGroup.add(implantRing);
+      const surgicalFocus=new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35));surgicalFocus.position.copy(c);surgeryGroup.add(surgicalFocus);
       surgeryGroup.add(ball(c,.045,0xd6a85b,true));
     }
     surgeryGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
@@ -626,7 +641,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       const upper=new THREE.Mesh(new THREE.TorusGeometry(.078,.006,7,30),makeMaterial(0xd8a04f,.4,.04,true,.62));upper.position.copy(points.hip);group.add(upper);
       const lower=new THREE.Mesh(new THREE.TorusGeometry(.07,.006,7,30),makeMaterial(0xd8a04f,.4,.04,true,.62));lower.position.copy(points.ankle);group.add(lower);
     }
-    group.position.z=.0;return group;
+    group.position.z=.0;group.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});return group;
   }
   function buildChain(){
     removeGroup(kineticGroup);kineticGroup=new THREE.Group();
@@ -639,7 +654,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     });
     scene.add(kineticGroup);kineticGroup.visible=mode==='kinetic';
     if(mode==='kinetic'){
-      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,2.85);camera.lookAt(controls.target);controls.update();
+      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,3.25);camera.lookAt(controls.target);controls.update();
     }
   }
   function setLayer(m){layerMode=m;if(ready)setMode(mode,selectedDisease,selectedSurgery);}
