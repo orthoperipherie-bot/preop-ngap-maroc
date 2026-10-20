@@ -221,7 +221,7 @@ function buildAnkle(id){
 function buildFoot(id){
  const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
  ellipsoid(B,[0,-.08,-.02],[.19,.22,.15],M.bone2);ellipsoid(B,[.16,-.20,.01],[.19,.10,.12],M.bone);
- for(let i=0;i<5;i++){const x=-.20+i*.105;const toeBend=(id==='hallux'&&stage==='lesion'&&i===0)?-.20:0;const a=[x,-.18,.035],b=[x+toeBend,-.52,.035];makeLongBone(B,a,b,i===0?.052:.035,i===0?.036:.025,M.bone,.012);ellipsoid(B,[b[0]+(id==='hallux'&&i===0?-.07:0),-.60,.04],[i===0?.055:.035,.10,.04],M.bone2);if(i===0)ellipsoid(B,[x+toeBend,-.52,.035],[.065,.07,.05],M.bone2);}
+ for(let i=0;i<5;i++){const x=-.20+i*.105;const toeBend=(id==='hallux'&&stage==='lesion'&&i===0)?-.20:0;const a=[x,-.18,.035],b=[x+toeBend,-.52,.035];makeLongBone(B,a,b,i===0?.052:.035,i===0?.036:.025,M.bone,.012);ellipsoid(B,[b[0]+(id==='hallux'&&stage==='lesion'&&i===0?-.07:0),-.60,.04],[i===0?.055:.035,.10,.04],M.bone2);if(i===0)ellipsoid(B,[x+toeBend,-.52,.035],[.065,.07,.05],M.bone2);}
  tube(S,[[-.19,-.16,.10],[-.05,-.12,.13],[.12,-.18,.11],[.28,-.28,.09]],.024,M.softLight);tube(S,[[-.20,-.17,.14],[-.23,-.29,.14],[-.21,-.41,.13]],.02,id==='hallux'?M.lesion:M.soft);
  if(id==='hallux'){ellipsoid(L,[-.24,-.28,.15],[.075,.06,.04],M.lesionGlass);tube(L,[[-.20,-.20,.13],[-.27,-.29,.16],[-.35,-.37,.14]],.025,M.lesion);}
 }
