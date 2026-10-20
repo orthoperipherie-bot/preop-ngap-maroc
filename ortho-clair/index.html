@@ -3,988 +3,279 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#102c36">
-<meta name="description" content="Support visuel de consultation pour expliquer les pathologies orthopédiques, sportives et du rachis et discuter des options thérapeutiques.">
+<meta name="theme-color" content="#0b252b">
+<meta name="description" content="Maquettes 3D interactives pour la consultation en chirurgie orthopédique et traumatologique.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>OrthoClair — comprendre, visualiser, décider</title>
+<title>OrthoClair — Maquettes de consultation</title>
 <style>
-:root{color-scheme:light;--ink:#142f38;--muted:#64777c;--line:#dce6e4;--paper:#f4f7f5;--white:#fff;--teal:#087e79;--mint:#d8f2eb;--gold:#e8a44d;--rose:#f8e7e3;--blue:#e8f0fb;--shadow:0 12px 34px rgba(16,44,54,.08);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #e8a44d;outline-offset:3px}.shell{max-width:1440px;margin:auto;min-height:100vh}.topbar{display:flex;align-items:center;gap:14px;padding:17px clamp(16px,4vw,52px);background:var(--ink);color:white}.brand-mark{height:40px;width:40px;border-radius:13px;display:grid;place-items:center;background:#1c5559;color:#c8f2e7;font-weight:900;font-size:21px}.brand{display:flex;align-items:center;gap:11px;min-width:0}.brand-name{font-size:18px;font-weight:800;letter-spacing:-.5px}.brand-sub{font-size:11px;color:#b7c9c9;letter-spacing:1.4px;text-transform:uppercase}.top-note{margin-left:auto;font-size:12px;color:#c0d1cf;border:1px solid #456066;border-radius:99px;padding:7px 12px;white-space:nowrap}.hero{padding:30px clamp(16px,4vw,52px) 26px;background:linear-gradient(120deg,#edf7f2 0%,#f4f7f5 60%,#e6f3f1 100%);border-bottom:1px solid var(--line)}.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--teal)}.hero h1{font-size:clamp(28px,4vw,45px);line-height:1.08;letter-spacing:-1.7px;max-width:790px;margin:10px 0 12px}.hero p{max-width:760px;margin:0;color:#50666b;font-size:16px}.hero-row{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap}.search-wrap{min-width:min(100%,320px);max-width:420px;flex:1;position:relative}.search-wrap label{display:block;font-size:12px;font-weight:750;margin-bottom:6px}.search-wrap input{width:100%;border:1px solid #cbdad6;background:white;border-radius:14px;padding:13px 15px 13px 42px;color:var(--ink);box-shadow:0 4px 14px #102c360d}.search-icon{position:absolute;left:14px;bottom:13px;color:#6a8283}.filterbar{display:flex;gap:8px;flex-wrap:wrap;padding:18px clamp(16px,4vw,52px) 10px}.filter{border:1px solid var(--line);background:white;color:#52696d;border-radius:99px;padding:8px 13px;font-size:12px;font-weight:750}.filter.active{background:var(--ink);border-color:var(--ink);color:white}.layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;padding:12px clamp(16px,4vw,52px) 46px;align-items:start}.catalog{position:sticky;top:14px;background:white;border:1px solid var(--line);border-radius:19px;padding:16px;box-shadow:var(--shadow);max-height:calc(100vh - 28px);overflow:auto}.catalog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.catalog-head h2{font-size:14px;margin:0}.count{font-size:11px;color:var(--muted)}.disease-list{display:grid;gap:5px}.disease-btn{border:1px solid transparent;border-radius:13px;background:white;text-align:left;padding:10px 11px;display:flex;gap:10px;align-items:center;color:var(--ink);width:100%}.disease-btn:hover{background:#f5f9f7}.disease-btn.active{background:#e6f4ef;border-color:#abd9ca}.disease-icon{flex:0 0 33px;width:33px;height:33px;border-radius:11px;background:#eef4f2;display:grid;place-items:center;font-size:17px}.disease-btn.active .disease-icon{background:#ccece1}.disease-title{display:block;font-weight:750;font-size:12px;line-height:1.25}.disease-region{display:block;font-size:10px;color:var(--muted);margin-top:3px}.mainpanel{min-width:0}.panel-card{background:white;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}.detail-header{padding:23px clamp(17px,3vw,30px) 18px;border-bottom:1px solid var(--line)}.detail-top{display:flex;gap:16px;align-items:start}.region-art{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:#e5f5ee;font-size:26px}.detail-meta{min-width:0;flex:1}.detail-meta h2{font-size:clamp(23px,3vw,32px);line-height:1.13;letter-spacing:-.8px;margin:3px 0 8px}.pills{display:flex;gap:6px;flex-wrap:wrap}.pill{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:5px 8px;border-radius:99px;background:#f0f4f3;color:#607174}.pill.green{background:var(--mint);color:#14665d}.patient-toggle{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;font-size:11px;font-weight:800;white-space:nowrap}.patient-toggle.on{background:var(--ink);color:white}.summary{font-size:15px;color:#52666b;max-width:880px;margin:16px 0 0}.tabs{display:flex;overflow:auto;gap:5px;padding:11px clamp(13px,2vw,26px);border-bottom:1px solid var(--line);background:#fbfcfb}.tab{border:0;background:transparent;color:#697b7f;padding:10px 13px;border-radius:10px;font-size:12px;font-weight:800;white-space:nowrap}.tab.active{background:var(--ink);color:white}.content{padding:clamp(14px,2.5vw,28px)}.intro-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px}.viz-card{border:1px solid #dcebe5;border-radius:17px;background:linear-gradient(145deg,#f1faf6,#fbfdfb);padding:12px;min-width:0}.viz-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:2px 4px 8px}.viz-heading strong{font-size:12px}.live-label{font-size:10px;color:#18746a;font-weight:800}.diagram{width:100%;height:auto;display:block;min-height:210px;max-height:310px}.anatomy-label{font-size:11px;color:#617578;padding:4px 7px 0}.key-row{display:flex;gap:12px;flex-wrap:wrap;padding:9px 7px 2px;font-size:10px;color:#617578}.key{display:flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:99px;background:#e97567}.dot.normal{background:#64bca3}.info-stack{display:grid;gap:10px;align-content:start}.info-box{border:1px solid var(--line);border-radius:15px;padding:15px 16px}.info-box h3{font-size:13px;margin:0 0 7px;display:flex;gap:8px;align-items:center}.info-box p{color:#566b70;font-size:13px;margin:0}.info-box.mint{background:#f1faf6;border-color:#d4eae1}.info-box.blue{background:#f4f7fd;border-color:#e0e7f3}.info-box.amber{background:#fff8ee;border-color:#f0e1c9}.section-title{font-size:19px;letter-spacing:-.4px;margin:0 0 6px}.section-sub{font-size:13px;color:var(--muted);margin:0 0 18px}.evolution{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.stage{border:1px solid var(--line);border-radius:15px;padding:15px 14px;background:#fff;position:relative}.stage-num{width:26px;height:26px;border-radius:9px;background:var(--mint);display:grid;place-items:center;font-weight:900;font-size:11px;color:#14665d;margin-bottom:10px}.stage h3{font-size:13px;margin:0 0 6px}.stage p{font-size:12px;color:#63777a;margin:0}.note{background:#f4f7f6;border-left:3px solid #7bbba8;padding:12px 14px;font-size:12px;color:#52666b;border-radius:0 10px 10px 0}.options-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.option-card{border:1px solid var(--line);border-radius:17px;padding:17px;background:white;display:flex;flex-direction:column;gap:8px;min-width:0}.option-card.selected{border-color:#64b9a3;box-shadow:0 0 0 2px #bde9db}.option-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.option-top h3{font-size:14px;margin:0}.option-type{font-size:9px;text-transform:uppercase;letter-spacing:.8px;font-weight:850;color:var(--teal);background:#e5f6ef;padding:5px 7px;border-radius:7px}.option-card p{font-size:12px;color:#5e7276;margin:0}.option-card h4{font-size:11px;margin:5px 0 0}.option-card ul{font-size:12px;color:#5e7276;padding-left:17px;margin:0}.compare-check{border:1px solid #cadbd5;background:white;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;color:#315257;align-self:flex-start;margin-top:auto}.compare-check[aria-pressed="true"]{background:var(--ink);color:white;border-color:var(--ink)}.compare-area{margin-top:19px;border-radius:17px;padding:16px;background:#eff7f3;border:1px solid #cfe7dc}.compare-area h3{margin:0 0 12px;font-size:14px}.compare-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.compare-item{padding:12px;background:white;border-radius:12px}.compare-item strong{display:block;font-size:12px;margin-bottom:5px}.compare-item span{font-size:11px;color:#5d7276}.questions{display:grid;gap:9px}.question{padding:12px 14px;border:1px solid var(--line);border-radius:13px;display:flex;gap:10px;align-items:start;font-size:13px}.question input{accent-color:var(--teal);margin-top:4px}.question label{flex:1}.redflag{margin-top:18px;border:1px solid #f0d1c9;background:#fff5f2;border-radius:15px;padding:15px}.redflag h3{font-size:13px;color:#8d4137;margin:0 0 6px}.redflag p{font-size:12px;color:#775851;margin:0}.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px}.primary-btn,.secondary-btn{border-radius:11px;border:1px solid var(--ink);padding:11px 14px;font-size:12px;font-weight:850}.primary-btn{background:var(--ink);color:white}.secondary-btn{background:white;color:var(--ink);border-color:var(--line)}.feedback{font-size:11px;color:var(--muted);margin-left:auto}.footer{padding:0 clamp(16px,4vw,52px) 28px;color:#7a898a;font-size:10px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.empty{padding:26px;text-align:center;color:var(--muted);font-size:13px}.mobile-catalog{display:none}.skeleton-note{font-size:11px;color:#78908d}.print-only{display:none}
-@keyframes breathe{0%,100%{opacity:.58;transform:scale(.96)}50%{opacity:1;transform:scale(1.08)}}@keyframes flow{to{stroke-dashoffset:-22}}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}.pulse-lesion{transform-box:fill-box;transform-origin:center;animation:breathe 2.2s ease-in-out infinite}.flow-line{stroke-dasharray:6 6;animation:flow 1.8s linear infinite}.float-part{animation:bob 3s ease-in-out infinite}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.catalog{position:static;max-height:none;order:1}.mainpanel{order:2}.disease-list{grid-template-columns:repeat(2,minmax(0,1fr))}.disease-btn{padding:8px}.intro-grid{grid-template-columns:1fr}.diagram{max-height:280px}.catalog-head{margin-bottom:8px}}
-@media(max-width:580px){.topbar{padding:13px 16px}.brand-sub{font-size:9px}.top-note{font-size:10px;padding:6px 9px}.hero{padding:24px 17px}.hero h1{letter-spacing:-1px}.hero p{font-size:14px}.hero-row{align-items:stretch}.search-wrap{max-width:none}.filterbar{padding:14px 16px 8px;flex-wrap:nowrap;overflow:auto}.filter{white-space:nowrap}.layout{padding:8px 12px 28px;gap:12px}.catalog{padding:12px;border-radius:15px}.disease-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.disease-btn{gap:7px;padding:8px 6px}.disease-icon{width:28px;height:28px;flex-basis:28px;border-radius:9px;font-size:15px}.disease-title{font-size:11px}.disease-region{font-size:9px}.panel-card{border-radius:17px}.detail-header{padding:16px}.detail-top{gap:10px}.region-art{width:43px;height:43px;flex-basis:43px;border-radius:13px;font-size:22px}.detail-meta h2{font-size:24px}.patient-toggle{font-size:10px;padding:7px 8px}.summary{font-size:13px;margin-top:12px}.tabs{padding:9px;gap:3px}.tab{font-size:11px;padding:9px 10px}.content{padding:12px}.viz-card{padding:8px}.diagram{min-height:180px}.evolution,.options-grid{grid-template-columns:1fr}.stage{display:grid;grid-template-columns:28px 1fr;column-gap:10px;align-items:start;padding:13px}.stage-num{grid-row:span 2;margin:0}.stage h3{align-self:end}.stage p{grid-column:2}.options-grid{gap:9px}.option-card{padding:14px}.compare-cards{grid-template-columns:1fr}.feedback{margin-left:0;width:100%}.footer{padding:0 16px 24px}}
-@media print{body{background:#fff}.topbar{background:#fff;color:#142f38;border-bottom:2px solid #142f38}.top-note,.search-wrap,.filterbar,.catalog,.tabs,.patient-toggle,.actions,.footer{display:none!important}.hero{background:#fff;padding:12px 0}.hero h1{font-size:24px}.layout{display:block;padding:10px 0}.panel-card{box-shadow:none;border:0}.content,.detail-header{padding:10px 0}.print-only{display:block}.viz-card{break-inside:avoid}.options-grid{grid-template-columns:repeat(2,1fr)}}
-
-.viewer3d-wrap {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 14px;
-  background: radial-gradient(circle at 50% 35%, #fbfffd 0%, #e4f0ec 72%, #d9e8e5 100%);
-  border: 1px solid #dcebe5;
-}
-.anatomy3d {
-  width: 100%;
-  height: clamp(285px, 38vw, 420px);
-  min-height: 285px;
-  touch-action: none;
-  position: relative;
-}
-.anatomy3d canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-}
-.viewer-overlay {
-  position: absolute;
-  inset: 10px 10px auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  pointer-events: none;
-  gap: 8px;
-}
-.viewer-status {
-  border-radius: 99px;
-  background: #ffffffde;
-  border: 1px solid #d6e4df;
-  padding: 6px 9px;
-  color: #27645c;
-  font-size: 10px;
-  font-weight: 800;
-  box-shadow: 0 2px 8px #102c360c;
-}
-.viewer-help {
-  border-radius: 99px;
-  background: #ffffffde;
-  padding: 6px 9px;
-  color: #526b6b;
-  font-size: 10px;
-}
-.viewer-label {
-  padding: 8px 9px 4px;
-  font-size: 11px;
-  color: #4d686a;
-  min-height: 27px;
-}
-.viewer-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 0 2px;
-}
-.viewer-controls button {
-  border: 1px solid #cfdfd9;
-  background: #fff;
-  color: #526b6b;
-  border-radius: 9px;
-  padding: 7px 9px;
-  font-size: 10px;
-  font-weight: 800;
-}
-.viewer-controls button.active {
-  color: #fff;
-  border-color: #173b42;
-  background: #173b42;
-}
-.viewer-credit {
-  font-size: 10px;
-  color: #728381;
-  margin: 8px 3px 0;
-}
-.viewer-credit a { color: #1d746b; text-underline-offset: 2px; }
-.viewer-fallback { margin-top: 10px; }
-.viewer-fallback[hidden] { display: none !important; }
-@media (max-width: 580px) {
-  .anatomy3d { height: 330px; min-height: 290px; }
-  .viewer-help { max-width: 155px; }
-  .viewer-controls button { font-size: 10px; padding: 7px 8px; }
-}
-
-/* Visual-first patient consultation interface */
-.compare-stage{position:relative}
-.viewer-split-labels{position:absolute;left:10px;right:10px;top:43px;z-index:3;display:grid;grid-template-columns:1fr 1fr;pointer-events:none;gap:10px}
-.viewer-split-labels span{justify-self:start;border-radius:8px;background:#fffffff0;border:1px solid #d3e3de;padding:6px 9px;color:#254e50;font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase}
-.viewer-split-labels span:last-child{justify-self:end;color:#913e37}
-.viewer-center-line{position:absolute;top:0;bottom:0;left:50%;border-left:1px solid #ffffffa8;pointer-events:none;z-index:2}
-.anatomy3d{height:clamp(350px,48vw,510px);min-height:340px}
-.compare-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 2px}
-.compare-legend>div{border:1px solid var(--line);border-radius:11px;padding:10px 11px;background:#fff}
-.compare-legend strong{display:block;font-size:11px;margin-bottom:2px}
-.compare-legend span{display:block;font-size:10px;color:var(--muted)}
-.compare-legend .lesion strong{color:#a13e35}
-.surgery-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
-.surgery-choice{border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;display:flex;align-items:center;gap:10px;padding:12px;min-height:68px;color:var(--ink)}
-.surgery-choice.active{background:#e6f4ef;border-color:#67b7a0;box-shadow:0 0 0 1px #8bcbb6}
-.surgery-symbol{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#edf3f1;display:grid;place-items:center;color:#335e61;font-size:17px}
-.surgery-choice.active .surgery-symbol{background:#c8eadf}
-.surgery-choice strong{font-size:12px;display:block;line-height:1.3}
-.surgery-choice small{font-size:10px;color:var(--muted);display:block;margin-top:3px}
-.kinetic-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,.7fr);gap:10px;margin:0 0 10px}
-.kinetic-box{background:white;border:1px solid var(--line);border-radius:13px;padding:11px 12px}
-.kinetic-box label{font-size:11px;color:#4f666a;font-weight:800;display:block;margin-bottom:7px}
-.kinetic-box select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff;color:var(--ink);font:inherit;font-size:12px}
-.kinetic-box input[type=range]{width:100%;accent-color:var(--teal);display:block}
-.kinetic-box output{font-size:11px;color:#8f4038;font-weight:850}
-.impact-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
-.impact-card{background:white;border:1px solid var(--line);border-radius:12px;padding:10px}
-.impact-card span{display:block;text-transform:uppercase;font-size:9px;letter-spacing:.65px;font-weight:850;color:#738583}
-.impact-card strong{display:block;font-size:11px;margin-top:4px}
-.impact-card small{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.3}
-.impact-card.primary{background:#fff4f1;border-color:#efc9c0}
-.impact-card.primary strong{color:#9d3c33}
-.kinetic-disclaimer{font-size:10px;color:#687a7b;margin:9px 2px 0}
-.mode-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px}
-.mode-heading h3{margin:0;font-size:16px;letter-spacing:-.25px}
-.mode-heading span{font-size:10px;font-weight:800;color:#27766d;background:#e4f4ed;padding:6px 9px;border-radius:99px}
-.viewer-credit{line-height:1.4}
-@media(max-width:580px){
- .anatomy3d{height:370px;min-height:340px}
- .surgery-list{grid-template-columns:1fr 1fr;gap:7px}
- .surgery-choice{padding:9px;gap:7px;min-height:65px}
- .surgery-choice strong{font-size:11px}
- .surgery-choice small{font-size:9px}
- .surgery-symbol{width:29px;height:29px;flex-basis:29px}
- .kinetic-controls{grid-template-columns:1fr}
- .impact-row{grid-template-columns:1fr 1fr}
- .impact-card:last-child{grid-column:span 2}
-}
-@media(prefers-reduced-motion:reduce){.pulse-lesion,.flow-line,.float-part{animation:none!important}}
-
-
-/* consultation mode: minimal copy, large visual canvas */
-.hero h1{font-size:clamp(26px,3.2vw,36px);letter-spacing:-1px;margin:8px 0 0;max-width:none}
-.hero p,.summary,.pills,.patient-toggle,.disease-region,.mode-heading span,.viewer-label,.kinetic-disclaimer,.feedback{display:none!important}
-.hero{padding-top:20px;padding-bottom:20px}
-.brand-sub{font-size:10px}
-.top-note{font-size:11px}
-.layout{grid-template-columns:230px minmax(0,1fr);gap:15px}
-.catalog{padding:10px}
-.catalog-head{padding:2px 3px 5px}
-.disease-title{font-size:12px}
-.disease-btn{padding:8px 6px;gap:7px}
-.disease-icon{width:28px;height:28px;flex-basis:28px;font-size:15px}
-.detail-header{padding:14px 20px}
-.detail-top{align-items:center}
-.region-art{width:40px;height:40px;flex-basis:40px;font-size:20px}
-.detail-meta h2{font-size:22px;margin:0}
-.content{padding:14px}
-.mode-heading{margin-bottom:8px}
-.mode-heading h3{font-size:14px}
-.compare-legend{margin:7px 0 0}
-.compare-legend>div{padding:8px 10px}
-.compare-legend strong{font-size:11px;margin:0}
-.compare-legend span{display:none}
-.viewer-credit{font-size:9px;margin-top:5px}
-.viewer-controls{padding:5px 0 0;gap:5px}
-.viewer-controls button{padding:8px 10px}
-.surgery-list{margin-top:8px}
-.surgery-choice{min-height:60px;padding:9px}
-.actions{margin-top:10px}
-.kinetic-controls{margin-bottom:8px}
-.kinetic-box{padding:9px 10px}
-.kinetic-box label{margin-bottom:5px}
-.kinetic-box .skeleton-note{display:none}
-.impact-row{margin-top:8px}
-.impact-card small{display:none}
-.impact-card{padding:8px}
-.impact-card span{font-size:8px}
-.impact-card strong{font-size:11px;margin-top:3px}
-.footer{font-size:9px;padding-bottom:12px}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr;gap:10px}
- .catalog{max-height:142px;overflow:hidden}
- .catalog-head{margin-bottom:4px}
- .disease-list{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 0 5px;scroll-snap-type:x mandatory}
- .disease-btn{flex:0 0 150px;width:150px;scroll-snap-align:start;border-color:#e6eeeb}
- .disease-icon{display:none}
- .disease-title{font-size:11px}
- .disease-region{display:none!important}
- .mainpanel{order:2}
- .catalog{order:1}
- .detail-header{padding:12px 14px}
- .content{padding:10px}
-}
-@media(max-width:580px){
- .topbar{padding:10px 13px}
- .hero{padding:14px 15px}
- .hero h1{font-size:25px;line-height:1.1;margin-top:4px}
- .search-wrap{max-width:none;min-width:0}
- .search-wrap label{font-size:11px}
- .layout{padding:7px 9px 20px;gap:9px}
- .catalog{padding:8px 9px;border-radius:14px;max-height:117px}
- .catalog-head h2{font-size:12px}
- .disease-btn{flex-basis:135px;width:135px;border-radius:10px;padding:8px}
- .disease-title{font-size:11px}
- .panel-card{border-radius:15px}
- .detail-meta h2{font-size:19px}
- .region-art{width:34px;height:34px;flex-basis:34px;font-size:18px}
- .tabs{padding:6px;gap:3px}
- .tab{font-size:11px;padding:9px 10px}
- .anatomy3d{height:clamp(340px,56vh,470px);min-height:330px}
- .viewer-split-labels{top:42px}
- .viewer-split-labels span{font-size:9px;padding:5px 7px}
- .viewer-help{display:none}
- .surgery-list{grid-template-columns:1fr 1fr;gap:6px}
- .surgery-choice{padding:8px;gap:6px;min-height:60px}
- .surgery-choice strong{font-size:10px}
- .surgery-choice small{font-size:8px}
- .surgery-symbol{width:26px;height:26px;flex-basis:26px}
- .viewer-controls button{font-size:10px;padding:7px 8px}
- .compare-legend>div{padding:8px}
- .compare-legend strong{font-size:10px}
- .kinetic-controls{grid-template-columns:1fr 1fr;gap:7px}
- .kinetic-box{padding:8px}
- .kinetic-box label{font-size:10px}
- .kinetic-box select{font-size:11px;padding:7px}
- .impact-row{grid-template-columns:1fr 1fr;gap:5px}
- .impact-card:last-child{grid-column:span 2}
- .footer{display:none}
-}
-
-
-/* Clinician-operated maquette UI: visual canvas first */
-.maquette-stage{display:flex;align-items:center;gap:8px;justify-content:space-between;margin:0 0 9px}
-.stage-switch{display:flex;gap:4px;padding:4px;background:#e9f0ed;border-radius:11px}
-.stage-switch button{padding:8px 14px;border-radius:8px;background:transparent;color:#607578;font-size:12px;font-weight:850;border:0}
-.stage-switch button.active{background:#173b42;color:#fff;box-shadow:0 2px 8px #102c3617}
-.stage-number,.stage-current{font-size:10px;font-weight:900;color:#54706f;letter-spacing:1px}
-.stage-current{background:#e3f3ed;color:#17685f;padding:6px 9px;border-radius:8px}
-.detail-header{padding:12px 18px}
-.detail-top{align-items:center}
-.region-art{width:36px;height:36px;flex-basis:36px;font-size:19px}
-.detail-meta h2{font-size:19px;letter-spacing:-.3px;margin:0}
-.tabs{padding:7px;gap:5px;background:#f1f5f3}
-.tab{flex:1;text-align:center;font-size:12px;padding:11px 8px}
-.content{padding:12px}
-.anatomy3d{height:clamp(390px,60vh,650px);min-height:350px}
-.viewer3d-wrap{border-radius:16px;box-shadow:0 5px 20px #102c360b}
-.viewer-overlay{inset:9px 9px auto}
-.viewer-status{font-size:10px}
-.viewer-help{font-size:10px}
-.viewer-controls{justify-content:center;gap:7px;padding-top:8px}
-.viewer-controls button{font-size:11px;padding:9px 12px}
-.surgery-list{margin-top:9px;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-.surgery-choice{min-height:62px;padding:8px;gap:7px}
-.surgery-choice strong{font-size:11px}
-.surgery-symbol{width:28px;height:28px;flex-basis:28px}
-.viewer-fallback[hidden]{display:none!important}
-.viewer-split-labels,.viewer-center-line,.compare-legend,.mode-heading,.actions,.viewer-credit,.feedback,.skeleton-note{display:none!important}
-.hero{padding:11px clamp(16px,4vw,52px)}
-.hero h1{display:none}
-.search-wrap{max-width:360px}
-.layout{padding-top:8px}
-.catalog{padding:10px;max-height:calc(100vh - 100px)}
-.disease-region{display:none!important}
-.count{font-size:10px}
-.disease-btn{padding:8px}
-.disease-title{font-size:12px}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr;gap:8px}
- .catalog{position:static;max-height:100px;overflow:hidden;order:1}
- .catalog-head{margin:0 0 4px}
- .disease-list{display:flex;overflow-x:auto;gap:6px;padding-bottom:5px}
- .disease-btn{flex:0 0 140px;width:140px;border:1px solid var(--line);padding:8px}
- .disease-icon{display:none}
- .mainpanel{order:2}
- .detail-header{padding:9px 12px}
- .content{padding:9px}
-}
-@media(max-width:580px){
- .hero{padding:9px 12px}
- .hero-row{gap:8px}
- .search-wrap{min-width:100%}
- .search-wrap label{font-size:10px;margin-bottom:4px}
- .search-wrap input{padding-top:10px;padding-bottom:10px;border-radius:11px}
- .search-icon{bottom:11px}
- .filterbar{padding:7px 10px;gap:5px}
- .filter{font-size:10px;padding:7px 9px}
- .layout{padding:7px 8px 20px}
- .catalog{padding:7px 8px;max-height:92px}
- .catalog-head h2{font-size:11px}
- .disease-btn{flex-basis:125px;width:125px;padding:7px}
- .disease-title{font-size:10px}
- .detail-meta h2{font-size:17px}
- .tabs{padding:5px;gap:3px}
- .tab{font-size:11px;padding:9px 5px}
- .content{padding:7px}
- .anatomy3d{height:clamp(350px,58vh,530px);min-height:340px}
- .stage-switch button{font-size:11px;padding:8px 12px}
- .stage-number,.stage-current{font-size:9px}
- .viewer-help{display:none}
- .surgery-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
- .surgery-choice{min-height:56px;padding:7px}
- .surgery-choice strong{font-size:10px}
- .viewer-controls button{padding:8px 9px;font-size:10px}
- .top-note{display:none}
-}
-
+:root{color-scheme:light;--ink:#132e34;--ink2:#29454b;--muted:#728489;--line:#dce5e2;--paper:#f2f5f2;--white:#fff;--teal:#087e78;--mint:#d9f2eb;--gold:#d79b43;--red:#cf5e54;--blue:#7299ad;--bone:#e5d9c3;--shadow:0 14px 36px rgba(20,49,55,.08);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink)}body{min-height:100vh}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #6bbeb0;outline-offset:2px}.shell{min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:72px;flex:0 0 72px;background:#0b252b;color:#f2f8f5;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:18px;border-bottom:1px solid rgba(255,255,255,.09)}
+.brand{display:flex;align-items:center;gap:12px;min-width:200px}.brand-mark{width:36px;height:36px;border-radius:12px;background:linear-gradient(145deg,#81d9c5,#087e78);display:grid;place-items:center;box-shadow:0 6px 18px rgba(8,126,120,.26)}.brand-mark svg{width:23px;height:23px}.brand-name{font-weight:760;letter-spacing:-.04em;font-size:19px}.brand-sub{font-size:10px;color:#9ab6b6;letter-spacing:.15em;text-transform:uppercase;margin-top:3px}
+.topbar-center{font-size:12px;color:#b6c9c8;letter-spacing:.055em;text-transform:uppercase;white-space:nowrap}.view-switch{display:flex;align-items:center;gap:4px;padding:4px;background:#15363c;border:1px solid #2a4a50;border-radius:12px}.view-switch button{border:0;color:#b8cac8;background:transparent;border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700}.view-switch button.active{background:#eaf5f1;color:#12353a;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.workspace{display:grid;grid-template-columns:236px minmax(420px,1fr) 246px;gap:14px;padding:14px;flex:1;min-height:0}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);min-width:0;overflow:hidden}.left-panel{display:flex;flex-direction:column;min-height:calc(100vh - 100px)}.panel-head{padding:19px 17px 13px;border-bottom:1px solid #edf1ef}.eyebrow{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:#76908f}.panel-title{font-size:15px;font-weight:750;letter-spacing:-.02em;margin-top:5px}.search-wrap{padding:12px 12px 7px}.search-box{display:flex;align-items:center;gap:8px;border:1px solid #dce6e2;background:#f8faf8;border-radius:10px;padding:9px 10px}.search-box svg{width:14px;height:14px;stroke:#71858a;flex-shrink:0}.search-box input{border:0;outline:none;background:transparent;width:100%;min-width:0;font-size:12px;color:var(--ink)}.case-list{padding:3px 8px 12px;overflow:auto;flex:1}.region-label{padding:13px 8px 5px;font-size:9px;letter-spacing:.14em;font-weight:850;color:#9aabaa;text-transform:uppercase}.case-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 9px;border:1px solid transparent;background:transparent;text-align:left;border-radius:11px;color:#405a5e;font-size:12px;line-height:1.25;margin:2px 0}.case-btn:hover{background:#f4f8f5}.case-btn.active{background:#e4f4ef;border-color:#c8e9df;color:#0b615d;font-weight:750}.case-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#b3c6c2}.case-btn.active .case-dot{background:#0b9384;box-shadow:0 0 0 3px #c7e9df}.case-name{flex:1}.case-code{font-size:9px;color:#9bafad;font-weight:750;letter-spacing:.04em}
+.viewer-panel{min-width:0;display:flex;flex-direction:column;position:relative;overflow:hidden;background:#eaf0ec}.viewer-head{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(255,255,255,.86);border-bottom:1px solid rgba(205,219,213,.8);gap:12px;z-index:2}.selected-info{min-width:0}.selected-region{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#738b89;font-weight:850}.selected-name{font-size:15px;font-weight:760;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stage-indicator{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:9px;background:#edf5f1;color:#40706b;font-size:10px;font-weight:800;white-space:nowrap}.stage-indicator i{display:block;width:6px;height:6px;border-radius:50%;background:#239d89}
+#viewport{position:relative;flex:1;min-height:440px;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#f7faf7 0%,#eef3ef 47%,#e5ece8 100%)}#threeMount{position:absolute;inset:0}#threeMount canvas{display:block;width:100%;height:100%;touch-action:none}
+.scene-label{position:absolute;left:18px;top:16px;pointer-events:none;display:flex;align-items:center;gap:8px;color:#68807d;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:850}.scene-label:before{content:"";width:18px;height:1px;background:#7ca9a0}.axis-cue{position:absolute;right:17px;top:16px;width:42px;height:42px;border:1px solid rgba(101,134,129,.23);border-radius:50%;display:grid;place-items:center;color:#8ea29c;font-size:9px;font-weight:800;pointer-events:none}
+.viewer-bottom{z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;background:rgba(255,255,255,.91);border-top:1px solid rgba(205,219,213,.9)}.stage-buttons{display:flex;align-items:center;gap:5px;padding:4px;border:1px solid #dde7e2;background:#f7faf8;border-radius:12px}.stage-buttons button{border:0;background:transparent;padding:10px 13px;border-radius:8px;color:#6b8080;font-size:11px;font-weight:750;white-space:nowrap}.stage-buttons button.active{background:#15383d;color:#f4faf7;box-shadow:0 3px 8px rgba(13,49,54,.15)}.tool-buttons{display:flex;align-items:center;gap:6px}.tool-btn{border:1px solid #dbe5e0;background:#fff;color:#536c6c;padding:9px 10px;border-radius:9px;font-size:10px;font-weight:750;white-space:nowrap}.tool-btn:hover{border-color:#9abdb2;color:#146b66}.tool-btn svg{width:14px;height:14px;vertical-align:middle;margin-right:4px}
+.right-panel{display:flex;flex-direction:column;min-height:0}.right-section{padding:17px 15px;border-bottom:1px solid #edf1ef}.right-section:last-child{border-bottom:0}.right-title{font-size:12px;font-weight:800;letter-spacing:-.01em}.right-hint{font-size:10px;color:#8a9a9a;margin-top:4px;line-height:1.4}.stage-choice{margin-top:12px;display:grid;gap:7px}.stage-card{display:flex;align-items:center;gap:10px;padding:11px 10px;border:1px solid #e0e8e4;border-radius:11px;background:#fff;text-align:left;color:#4d6669}.stage-card.active{border-color:#91cdbd;background:#eaf7f2;box-shadow:inset 0 0 0 1px #d1eee4;color:#0b625c}.stage-icon{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:#f0f4f1;color:#63817f;flex-shrink:0}.stage-card.active .stage-icon{background:#cfeee3;color:#0d776b}.stage-icon svg{width:16px;height:16px}.stage-card strong{display:block;font-size:11px}.stage-card small{display:block;font-size:9px;color:#8b9b99;margin-top:3px}.stage-card.active small{color:#588781}
+.ops-list{display:grid;gap:7px;margin-top:12px}.op-btn{padding:10px 11px;border-radius:10px;text-align:left;display:flex;gap:8px;align-items:center;border:1px solid #e0e8e4;background:#fff;color:#536c6d}.op-btn:before{content:"";width:6px;height:6px;background:#b7c9c4;border-radius:50%;flex-shrink:0}.op-btn.active{background:#eef7f3;border-color:#9bcdbf;color:#0d635d;font-weight:750}.op-btn.active:before{background:#078b7e;box-shadow:0 0 0 3px #d2eee5}.op-name{font-size:10px;line-height:1.35}.op-tag{font-size:9px;color:#8fa4a0;margin-left:auto;white-space:nowrap}
+.layer-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.layer-chip{border:1px solid #dde7e2;background:#f8faf8;border-radius:8px;padding:8px 9px;font-size:10px;font-weight:750;color:#6d8181}.layer-chip.active{background:#14383d;border-color:#14383d;color:#f5faf8}
+.chain-panel{padding:0}.chain-head{padding:18px;border-bottom:1px solid #e9efec}.chain-control{padding:16px 17px;border-bottom:1px solid #edf1ef}.chain-label{font-size:11px;font-weight:800}.deformity-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:11px}.deformity-btn{border:1px solid #dfe8e3;background:#fff;border-radius:9px;padding:10px 8px;color:#5e7777;text-align:left;font-size:10px;font-weight:750}.deformity-btn.active{background:#e6f5ef;border-color:#9dcfbe;color:#0d6962}.slider-row{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:10px;color:#778b89}.degree{font-weight:850;color:#0e6b63;font-size:14px;font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:#0a8b7d;margin:14px 0 0}.impact-list{display:grid;gap:8px;margin-top:12px}.impact-row{display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:start}.impact-key{font-size:8px;letter-spacing:.08em;font-weight:850;color:#7d9892;text-transform:uppercase;padding-top:2px}.impact-text{font-size:10px;line-height:1.45;color:#4c6668}.bottom-note{font-size:9px;color:#95a6a2;padding:11px 15px;background:#fbfcfb;border-top:1px solid #edf1ef}
+.app-shell.kinetic-mode .workspace{grid-template-columns:minmax(0,1fr) 294px}.app-shell.kinetic-mode .left-panel{display:none}.app-shell.kinetic-mode #modelControls{display:none}.app-shell.kinetic-mode .viewer-panel{grid-column:1}.app-shell.kinetic-mode #chainPanel{grid-column:2}
+@media(max-width:1120px){.workspace{grid-template-columns:205px minmax(350px,1fr);}.right-panel:not(.chain-panel){grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}.right-section{border-right:1px solid #edf1ef;border-bottom:0}.right-section:last-child{border-right:0}.app-shell.kinetic-mode .workspace{grid-template-columns:minmax(0,1fr) 280px}.app-shell.kinetic-mode #chainPanel{display:flex;grid-column:2}.app-shell.kinetic-mode .left-panel{display:none}}
+@media(max-width:760px){.topbar{height:auto;min-height:67px;flex-wrap:wrap;padding:12px 13px;gap:10px}.brand{min-width:0}.brand-sub{display:none}.topbar-center{display:none}.view-switch{margin-left:auto}.view-switch button{padding:9px 10px;font-size:10px}.workspace{display:flex;flex-direction:column;padding:8px;gap:9px}.left-panel{min-height:0;max-height:none}.left-panel .panel-head{padding:12px 13px 5px;border:0}.left-panel .panel-head .panel-title{margin-top:3px}.search-wrap{padding:7px 10px}.case-list{display:flex;gap:7px;overflow-x:auto;padding:4px 10px 12px}.region-label{display:none}.case-btn{width:auto;white-space:nowrap;flex:0 0 auto;margin:0;padding:10px 11px;border:1px solid #e2e9e5;background:#fff}.case-name{max-width:145px}.case-code{display:none}.viewer-panel{order:2;min-height:0}.viewer-head{height:58px;padding:0 12px}.selected-name{font-size:13px}.stage-indicator{font-size:9px;padding:7px 8px}.stage-indicator span{display:none}#viewport{min-height:47vh;height:47vh;flex:none}.viewer-bottom{flex-direction:column;align-items:stretch;padding:10px;gap:8px}.stage-buttons{justify-content:space-between}.stage-buttons button{padding:9px 8px;flex:1;font-size:10px}.tool-buttons{justify-content:space-between}.tool-btn{padding:9px;font-size:10px}.right-panel:not(.chain-panel){display:flex;order:3}.right-section{padding:14px;border-right:0;border-bottom:1px solid #edf1ef}.right-section:last-child{border-bottom:0}.stage-choice{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stage-card{display:block;text-align:center;padding:10px 5px}.stage-icon{margin:0 auto 7px}.stage-card strong{font-size:10px}.stage-card small{font-size:8px}.ops-list{grid-template-columns:1fr 1fr}.layer-list{gap:5px}.app-shell.kinetic-mode .workspace{display:flex;flex-direction:column}.app-shell.kinetic-mode .left-panel{display:none}.app-shell.kinetic-mode .viewer-panel{order:1}.app-shell.kinetic-mode #chainPanel{display:flex;order:2}.app-shell.kinetic-mode #modelControls{display:none}.app-shell.kinetic-mode #viewport{height:51vh;min-height:360px}.app-shell.kinetic-mode .right-section{padding:14px}.app-shell.kinetic-mode .viewer-bottom{display:none}.deformity-list{grid-template-columns:repeat(3,1fr)}.deformity-btn{text-align:center;padding:10px 4px}.impact-list{gap:9px}.bottom-note{display:none}}
+@media(min-width:761px) and (max-height:760px){.left-panel{min-height:calc(100vh - 100px)}#viewport{min-height:350px}.viewer-head{height:56px}.viewer-bottom{padding:9px 12px}.right-section{padding:13px}.case-btn{padding:8px 9px}}
 </style>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
-  }
-}
-</script>
 </head>
 <body>
-<div class="shell">
+<div class="shell app-shell" id="appShell">
 <header class="topbar">
-  <div class="brand"><div class="brand-mark" aria-hidden="true">O+</div><div><div class="brand-name">OrthoClair</div><div class="brand-sub">Visualisation anatomique 3D</div></div></div>
-  <div class="top-note">Consultation · 3D</div>
-</header>
-<section class="hero">
-  <div class="hero-row">
-    <div><div class="eyebrow">Décision partagée</div><h1>Visualiser. Comparer. Décider.</h1></div>
-    <div class="search-wrap"><label for="search">Rechercher une pathologie</label><span class="search-icon" aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Ex. : ménisque, sciatique, épaule…" autocomplete="off"></div>
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#073c3a" stroke-width="2.2" stroke-linecap="round"><path d="M7 3v5a5 5 0 0 0 10 0V3"/><path d="M7 21v-3a5 5 0 0 1 10 0v3"/><path d="M8 12h8"/></svg></div>
+    <div><div class="brand-name">OrthoClair</div><div class="brand-sub">Atlas de consultation</div></div>
   </div>
-</section>
-<nav class="filterbar" aria-label="Filtrer par spécialité">
-  <button class="filter active" data-filter="Toutes">Toutes les pathologies</button>
-  <button class="filter" data-filter="Articulations">Articulations</button>
-  <button class="filter" data-filter="Sport">Médecine du sport</button>
-  <button class="filter" data-filter="Rachis">Rachis</button>
-  <button class="filter" data-filter="Main">Main & poignet</button>
-  <button class="filter" data-filter="Pied">Pied & cheville</button>
-</nav>
-<div class="layout">
-  <aside class="catalog" aria-label="Catalogue des pathologies">
-    <div class="catalog-head"><h2>Explorer les sujets</h2><span class="count" id="count">12 fiches</span></div>
-    <div class="disease-list" id="diseaseList"></div>
+  <div class="topbar-center">Anatomie · Pathologie · Geste</div>
+  <div class="view-switch" role="tablist" aria-label="Mode de visualisation">
+    <button id="modelsTab" class="active" role="tab" aria-selected="true">Maquettes 3D</button>
+    <button id="chainTab" role="tab" aria-selected="false">Chaîne cinétique</button>
+  </div>
+</header>
+<section class="workspace" id="workspace">
+  <aside class="panel left-panel" aria-label="Choix de l'anatomie">
+    <div class="panel-head"><div class="eyebrow">Bibliothèque clinique</div><div class="panel-title">Choisir une maquette</div></div>
+    <div class="search-wrap"><div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input type="search" id="caseSearch" placeholder="Articulation, pathologie…" aria-label="Rechercher une pathologie"></div></div>
+    <div class="case-list" id="caseList"></div>
   </aside>
-  <main class="mainpanel">
-    <article class="panel-card" id="detail" aria-live="polite"></article>
+  <main class="panel viewer-panel" id="viewerPanel">
+    <div class="viewer-head">
+      <div class="selected-info"><div class="selected-region" id="selectedRegion">Genou</div><div class="selected-name" id="selectedName">Arthrose du genou</div></div>
+      <div class="stage-indicator"><i></i><span id="statusText">MAQUETTE PATHOLOGIQUE</span></div>
+    </div>
+    <div id="viewport">
+      <div id="threeMount"></div>
+      <div class="scene-label" id="sceneLabel">VUE ANATOMIQUE CIBLÉE</div>
+      <div class="axis-cue" aria-hidden="true">3D</div>
+    </div>
+    <div class="viewer-bottom">
+      <div class="stage-buttons" role="group" aria-label="Étape de consultation">
+        <button data-stage="normal">Anatomie saine</button><button class="active" data-stage="lesion">Pathologie</button><button data-stage="operation">Geste opératoire</button>
+      </div>
+      <div class="tool-buttons">
+        <button class="tool-btn" id="resetView" title="Recentrer la maquette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11a9 9 0 1 1 2.5 6.3"/><path d="M3 4v7h7"/></svg>Recentrer</button>
+        <button class="tool-btn" id="motionBtn" title="Activer ou arrêter l'animation">Mouvement : off</button>
+      </div>
+    </div>
+    <div class="bottom-note">Maquettes anatomiques schématiques · rotation et zoom tactiles</div>
   </main>
+  <aside class="panel right-panel" id="modelControls" aria-label="Commandes de la maquette">
+    <section class="right-section">
+      <div class="right-title">Séquence de consultation</div><div class="right-hint">Une vue à la fois, sans comparaison en écran partagé.</div>
+      <div class="stage-choice">
+        <button class="stage-card" data-stage="normal"><span class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 8c2-3 12-3 14 0M5 16c2 3 12 3 14 0"/></svg></span><strong>Anatomie saine</strong><small>Référence</small></button>
+        <button class="stage-card active" data-stage="lesion"><span class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 20h18L12 2Z"/><path d="M12 9v5m0 3h.01"/></svg></span><strong>Pathologie</strong><small>Lésion visible</small></button>
+        <button class="stage-card" data-stage="operation"><span class="stage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 3 14 14-4 4L3 7l4-4Z"/><path d="m14 10 4-4"/></svg></span><strong>Chirurgie</strong><small>Maquette opératoire</small></button>
+      </div>
+    </section>
+    <section class="right-section">
+      <div class="right-title">Option chirurgicale</div><div class="right-hint">Choisir le geste à présenter sur la seconde maquette.</div>
+      <div class="ops-list" id="opsList"></div>
+    </section>
+    <section class="right-section">
+      <div class="right-title">Couches anatomiques</div><div class="right-hint">Afficher ou masquer les structures pendant la rotation.</div>
+      <div class="layer-list">
+        <button class="layer-chip active" data-layer="bone">Os</button>
+        <button class="layer-chip active" data-layer="cartilage">Cartilage</button>
+        <button class="layer-chip active" data-layer="soft">Ligaments / tendons</button>
+      </div>
+    </section>
+  </aside>
+  <aside class="panel right-panel chain-panel" id="chainPanel" style="display:none" aria-label="Simulation de chaîne cinétique">
+    <div class="chain-head"><div class="eyebrow">Simulation fonctionnelle</div><div class="panel-title">Chaîne cinétique</div><div class="right-hint">Modifier un axe et observer les compensations dessinées autour.</div></div>
+    <div class="chain-control">
+      <div class="chain-label">Anomalie à simuler</div>
+      <div class="deformity-list" id="deformityList">
+        <button class="deformity-btn active" data-deformity="varus">Genou varum</button><button class="deformity-btn" data-deformity="valgus">Genou valgum</button><button class="deformity-btn" data-deformity="pronation">Pronation</button><button class="deformity-btn" data-deformity="equinus">Équin de cheville</button><button class="deformity-btn" data-deformity="hipflex">Flexum de hanche</button><button class="deformity-btn" data-deformity="pelvis">Bascule pelvienne</button>
+      </div>
+      <div class="slider-row"><label for="angleRange">Amplitude simulée</label><span class="degree" id="degreeValue">10°</span></div>
+      <input id="angleRange" type="range" min="0" max="25" step="1" value="10" aria-label="Amplitude de l'anomalie">
+    </div>
+    <div class="chain-control"><div class="chain-label">Effets dans la chaîne</div><div class="impact-list" id="impactList"></div></div>
+    <div class="bottom-note">Simulation pédagogique simplifiée · non destinée à la planification opératoire.</div>
+  </aside>
+</section>
 </div>
-<footer class="footer"><span>OrthoClair · Outil pédagogique destiné à la consultation</span><span>Modèle : Écorché, CC BY-SA 4.0 · BodyParts3D / Z-Anatomy. <a href="https://github.com/Charleeh/ecorche" target="_blank" rel="noreferrer">Crédits et licence</a>.</span><span>Ne remplace ni l’examen clinique ni une décision médicale individualisée.</span></footer>
-</div>
-<script>
-const diseases = [
-{id:"arthrose-genou",title:"Arthrose du genou",region:"Genou",group:"Articulations",emoji:"🦵",tag:"Usure articulaire",summary:"Le cartilage qui permet aux surfaces du genou de glisser s’amincit. La douleur vient de l’ensemble de l’articulation, pas seulement du cartilage.",mechanism:"Le cartilage devient irrégulier et plus mince. L’os sous-jacent et la membrane de l’articulation peuvent réagir, ce qui favorise douleur, raideur et gonflement.",symptoms:"Douleur à la marche, aux escaliers ou au lever après une période assise ; raideur et parfois gonflement.",evolution:["Les symptômes peuvent fluctuer : une poussée douloureuse ne signifie pas forcément une aggravation définitive.","Le mouvement adapté et le renforcement peuvent améliorer la fonction même si le cartilage ne repousse pas.","La décision opératoire dépend de la gêne, de l’examen, des radiographies et de ce que les traitements non chirurgicaux permettent."],options:[{id:"knee-rehab",name:"Rééducation & activité adaptée",type:"Sans chirurgie",summary:"Renforcement musculaire, mobilité, gestion des charges et activité physique adaptée.",when:"Souvent la base du traitement, à adapter à la douleur, au poids et aux objectifs.",limits:"Les bénéfices demandent une pratique régulière ; la douleur peut persister si l’arthrose est avancée."},{id:"knee-meds",name:"Antalgiques / infiltrations",type:"Traitement médical",summary:"Traitements choisis avec le médecin selon les symptômes, les contre-indications et le contexte.",when:"Pour faciliter le quotidien ou permettre la rééducation lors de poussées sélectionnées.",limits:"Effet variable et souvent temporaire ; aucune infiltration ne reconstitue le cartilage."},{id:"knee-uni",name:"Prothèse partielle",type:"Chirurgie ciblée",summary:"Remplace uniquement le compartiment atteint chez des patients soigneusement sélectionnés.",when:"Arthrose localisée avec compartiments et ligaments compatibles.",limits:"Ne convient pas à toutes les formes ; une évolution des autres compartiments reste possible."},{id:"knee-total",name:"Prothèse totale du genou",type:"Chirurgie",summary:"Les surfaces articulaires abîmées sont remplacées par des composants prothétiques.",when:"Douleur et limitation importantes malgré un traitement non chirurgical bien conduit.",limits:"Rééducation nécessaire ; risques opératoires et possibilité d’une gêne résiduelle."}],redflag:"Un genou très chaud et gonflé accompagné de fièvre, ou une douleur brutale après traumatisme avec impossibilité d’appui, nécessite une évaluation rapide."},
-{id:"menisque",title:"Lésion méniscale",region:"Genou",group:"Sport",emoji:"🌀",tag:"Amortisseur du genou",summary:"Le ménisque est un coussinet en forme de croissant qui répartit les contraintes entre le fémur et le tibia.",mechanism:"Une torsion peut déchirer un ménisque. Avec l’âge, il peut aussi se fissurer progressivement, parfois sans traumatisme net.",symptoms:"Douleur localisée sur le côté du genou, gonflement parfois retardé, gêne en flexion ou sensation d’accrochage.",evolution:["Certaines lésions traumatiques sont réparables ; d’autres sont stables et peuvent devenir moins gênantes.","Une lésion dégénérative peut coexister avec l’arthrose : l’IRM seule ne décide pas d’une opération.","Un véritable blocage mécanique persistant mérite un examen rapide."],options:[{id:"men-rehab",name:"Rééducation & adaptation",type:"Sans chirurgie",summary:"Renforcement, récupération de mobilité et adaptation temporaire des activités déclenchantes.",when:"Souvent proposée en premier pour une lésion dégénérative ou non bloquante.",limits:"N’efface pas nécessairement la fissure anatomique ; amélioration clinique possible malgré la lésion."},{id:"men-repair",name:"Suture méniscale",type:"Chirurgie conservatrice",summary:"Les bords de la déchirure sont rapprochés pour préserver le ménisque.",when:"Certaines lésions traumatiques, bien situées et de qualité favorable.",limits:"Cicatrisation non garantie ; protocole de rééducation plus protecteur."},{id:"men-trim",name:"Méniscectomie partielle",type:"Arthroscopie",summary:"Retrait limité du fragment instable lorsqu’il est responsable des symptômes.",when:"Cas sélectionnés avec fragment instable ou symptômes mécaniques persistants.",limits:"Perte de tissu méniscal pouvant augmenter les contraintes et le risque d’arthrose."}],redflag:"Un genou réellement bloqué, impossible à tendre, surtout après une torsion, justifie un avis médical rapide."},
-{id:"lca",title:"Rupture du ligament croisé antérieur",region:"Genou",group:"Sport",emoji:"🏃",tag:"Stabilité du genou",summary:"Le ligament croisé antérieur aide à contrôler le déplacement et la rotation du tibia. Sa rupture peut provoquer une sensation de dérobement.",mechanism:"Le ligament se rompt souvent lors d’un changement de direction, d’un pivot ou d’une réception, parfois sans contact direct.",symptoms:"Craquement parfois entendu, gonflement rapide, douleur initiale puis instabilité au pivot ou lors du sport.",evolution:["La phase initiale vise à calmer le genou et retrouver extension, mobilité et force.","Certaines personnes reprennent une vie quotidienne stable sans reconstruction ; d’autres gardent une instabilité.","Le choix dépend notamment du niveau d’activité, des épisodes de dérobement et des lésions associées."],options:[{id:"acl-rehab",name:"Rééducation structurée",type:"Sans chirurgie",summary:"Récupération de l’amplitude, force, contrôle neuromusculaire et gestes sportifs.",when:"Profil sans instabilité gênante, exigences compatibles ou choix partagé après information.",limits:"Le ligament rompu ne se reconstitue généralement pas ; des dérobements peuvent persister."},{id:"acl-recon",name:"Reconstruction du LCA",type:"Chirurgie",summary:"Remplacement du ligament par une greffe tendineuse, suivi d’une rééducation longue et progressive.",when:"Instabilité persistante, sport avec pivots ou besoin fonctionnel après discussion personnalisée.",limits:"Risques opératoires, raideur ou nouvelle rupture ; le retour au sport n’est pas une date garantie."}],redflag:"Après un traumatisme, une impossibilité d’appui, un gonflement massif ou une douleur inhabituelle nécessite une évaluation."},
-{id:"coiffe",title:"Rupture des tendons de la coiffe",region:"Épaule",group:"Articulations",emoji:"🦴",tag:"Tendons de l’épaule",summary:"La coiffe des rotateurs est un ensemble de tendons qui aide à lever le bras et à stabiliser l’épaule.",mechanism:"Un tendon peut s’user progressivement ou se rompre lors d’un traumatisme. La taille, la rétraction et la qualité du tendon influencent les options.",symptoms:"Douleur nocturne, gêne pour lever le bras, perte de force ou difficulté à porter des objets.",evolution:["La douleur et la fonction peuvent s’améliorer sans que le tendon se recolle anatomiquement.","Certaines ruptures restent fonctionnelles ; d’autres peuvent s’agrandir ou devenir plus difficiles à réparer.","L’âge, la force, la taille de la rupture, la qualité musculaire et les objectifs guident le choix."],options:[{id:"cuff-rehab",name:"Rééducation & contrôle de la douleur",type:"Sans chirurgie",summary:"Travail progressif de mobilité, contrôle de l’omoplate et renforcement des muscles restants.",when:"Douleur sans perte fonctionnelle majeure ou profil pour lequel une prise en charge non chirurgicale est adaptée.",limits:"Améliore surtout la fonction ; la rupture peut rester présente."},{id:"cuff-repair",name:"Réparation tendineuse",type:"Chirurgie",summary:"Le tendon est réattaché à l’os, souvent sous arthroscopie, si sa réparation est possible.",when:"Rupture symptomatique et réparable, notamment après traumatisme ou déficit fonctionnel pertinent.",limits:"Protection et rééducation prolongées ; risque de non-cicatrisation ou de nouvelle rupture."},{id:"cuff-prosthesis",name:"Prothèse inversée",type:"Chirurgie spécialisée",summary:"Prothèse utilisée dans certains tableaux complexes quand la coiffe est irréparable.",when:"Sélection de patients avec rupture massive irréparable et perte fonctionnelle importante, parfois arthrose associée.",limits:"Ce n’est pas le traitement d’une rupture simple ; restrictions et risques spécifiques."}],redflag:"Une perte brutale de force ou une impossibilité de lever le bras après traumatisme doit être évaluée sans tarder."},
-{id:"arthrose-hanche",title:"Arthrose de la hanche",region:"Hanche",group:"Articulations",emoji:"⚙️",tag:"Coxarthrose",summary:"Le cartilage de la hanche s’amincit, ce qui peut rendre les mouvements douloureux et réduire le périmètre de marche.",mechanism:"La tête fémorale et le bassin glissent moins facilement. La douleur peut être ressentie dans l’aine, la cuisse ou parfois le genou.",symptoms:"Douleur dans l’aine, gêne pour les chaussures, raideur et marche plus limitée.",evolution:["L’évolution varie beaucoup : les symptômes peuvent progresser lentement avec des périodes plus faciles.","L’activité adaptée, le renforcement et les traitements de la douleur peuvent aider.","La prothèse se discute quand la gêne reste importante malgré les traitements adaptés, pas sur une radiographie seule."],options:[{id:"hip-rehab",name:"Activité adaptée & rééducation",type:"Sans chirurgie",summary:"Maintien de la mobilité, renforcement, adaptation des charges et aides à la marche si besoin.",when:"À différents stades, selon les capacités et les symptômes.",limits:"Ne fait pas disparaître l’arthrose ; les bénéfices peuvent être partiels."},{id:"hip-med",name:"Traitement médical",type:"Traitement médical",summary:"Antalgie et autres options selon antécédents, contre-indications et objectifs.",when:"Poussées douloureuses ou aide à rester actif.",limits:"Effet variable ; choix à individualiser, notamment pour les anti-inflammatoires."},{id:"hip-tha",name:"Prothèse totale de hanche",type:"Chirurgie",summary:"Remplacement des surfaces articulaires pour réduire la douleur et améliorer la fonction.",when:"Gêne et douleur importantes avec arthrose concordante malgré une prise en charge appropriée.",limits:"Comme toute chirurgie, risques d’infection, luxation, fracture ou usure ; durée de vie non illimitée."}],redflag:"Une douleur aiguë après chute avec impossibilité d’appui, ou une articulation douloureuse avec fièvre, nécessite une évaluation urgente."},
-{id:"canal-carpien",title:"Syndrome du canal carpien",region:"Main & poignet",group:"Main",emoji:"✋",tag:"Compression d’un nerf",summary:"Le nerf médian est comprimé dans un passage étroit au niveau du poignet, ce qui provoque fourmillements et parfois perte de force.",mechanism:"La pression augmente dans le canal carpien et irrite le nerf. Les symptômes touchent souvent le pouce, l’index, le majeur et une partie de l’annulaire.",symptoms:"Fourmillements nocturnes, besoin de secouer la main, engourdissement ou maladresse ; dans les formes avancées, faiblesse du pouce.",evolution:["Les symptômes peuvent être intermittents au début puis devenir plus fréquents.","Une perte persistante de sensibilité ou une fonte musculaire peut indiquer une atteinte plus importante.","L’examen clinique, parfois complété par un électromyogramme, aide à préciser la situation."],options:[{id:"carp-splint",name:"Attelle nocturne",type:"Sans chirurgie",summary:"Maintient le poignet dans une position neutre pendant le sommeil.",when:"Symptômes nocturnes légers ou modérés, surtout au début.",limits:"Peut ne pas suffire si la compression est importante."},{id:"carp-infil",name:"Infiltration ciblée",type:"Traitement médical",summary:"Injection locale proposée dans certains cas pour diminuer les symptômes.",when:"Soulagement temporaire recherché selon le tableau clinique.",limits:"Effet souvent temporaire ; ne convient pas à toutes les situations."},{id:"carp-release",name:"Libération du canal carpien",type:"Chirurgie",summary:"Le ligament qui forme le toit du canal est sectionné pour réduire la pression sur le nerf.",when:"Symptômes persistants, déficit sensitif ou moteur, ou atteinte confirmée jugée significative.",limits:"La récupération nerveuse peut être lente et incomplète si le nerf est atteint depuis longtemps."}],redflag:"Une faiblesse qui progresse, une perte de sensibilité persistante ou une fonte du muscle à la base du pouce mérite un avis rapide."},
-{id:"entorse-cheville",title:"Entorse de la cheville",region:"Cheville",group:"Sport",emoji:"👟",tag:"Ligaments latéraux",summary:"Une entorse étire ou déchire un ou plusieurs ligaments, souvent après que le pied a tourné vers l’intérieur.",mechanism:"Le ligament latéral peut être étiré ou rompu. Le degré de gonflement ne suffit pas à lui seul pour connaître la gravité.",symptoms:"Douleur, gonflement, bleu et difficulté à poser le pied ; parfois sensation d’instabilité.",evolution:["Une mobilisation protégée et une reprise progressive des appuis sont souvent préférables à une immobilisation prolongée systématique.","Le travail d’équilibre et de proprioception réduit le risque de récidive.","Une douleur osseuse localisée ou l’impossibilité d’appui peut justifier un examen et une radiographie."],options:[{id:"ankle-brace",name:"Protection & rééducation",type:"Sans chirurgie",summary:"Brace ou strapping si indiqué, reprise des appuis progressive, mobilité puis équilibre et force.",when:"La majorité des entorses, avec adaptation au niveau de gravité.",limits:"La récupération varie ; une instabilité ou une douleur peut persister."},{id:"ankle-surgery",name:"Réparation / stabilisation ligamentaire",type:"Chirurgie sélectionnée",summary:"Répare ou renforce les ligaments si l’instabilité chronique reste gênante.",when:"Instabilité persistante malgré une rééducation bien menée et bilan spécialisé.",limits:"Pas le traitement initial de la plupart des entorses ; comporte les risques de toute chirurgie."}],redflag:"Une déformation, un pied froid ou engourdi, une plaie importante ou l’impossibilité totale d’appui justifie une évaluation rapide."},
-{id:"hernie-discale",title:"Hernie discale lombaire",region:"Bas du dos",group:"Rachis",emoji:"🧠",tag:"Nerf irrité ou comprimé",summary:"Une partie du disque intervertébral fait saillie et peut irriter une racine nerveuse, entraînant une douleur qui descend dans la jambe.",mechanism:"La hernie est un déplacement de matériel discal. L’image doit être rapprochée des symptômes et de l’examen : toutes les hernies vues à l’IRM ne sont pas douloureuses.",symptoms:"Lombalgie possible, sciatique, fourmillements ou baisse de sensibilité ; parfois faiblesse musculaire.",evolution:["De nombreuses sciatiques liées à une hernie s’améliorent en plusieurs semaines avec un traitement adapté.","L’imagerie n’impose pas à elle seule une opération ; la force musculaire et l’évolution des symptômes comptent.","Une chirurgie peut être discutée si la douleur reste très invalidante malgré un traitement approprié ou en cas de déficit neurologique pertinent."],options:[{id:"disc-conservative",name:"Traitement conservateur",type:"Sans chirurgie",summary:"Rester en mouvement selon tolérance, traitements de la douleur et accompagnement adapté.",when:"En l’absence de signe d’urgence ou de déficit nécessitant une intervention rapide.",limits:"L’amélioration peut demander du temps et n’est pas toujours linéaire."},{id:"disc-injection",name:"Infiltration ciblée",type:"Option interventionnelle",summary:"Une infiltration épidurale ou foraminale peut être discutée dans des situations sélectionnées.",when:"Douleur radiculaire persistante après évaluation et traitement initial.",limits:"Le soulagement n’est pas garanti et peut être temporaire ; risques spécifiques à discuter."},{id:"disc-surgery",name:"Discectomie",type:"Chirurgie",summary:"Retrait du fragment discal responsable de la compression nerveuse.",when:"Sciatique très invalidante persistante ou certaines déficiences neurologiques après évaluation spécialisée.",limits:"Risque de récidive et de complications ; la chirurgie traite surtout la compression radiculaire."}],redflag:"Urgence immédiate en cas de difficulté nouvelle à uriner, perte de contrôle des selles, anesthésie de la région périnéale ou faiblesse rapidement progressive."},
-{id:"canal-lombaire",title:"Canal lombaire étroit",region:"Bas du dos",group:"Rachis",emoji:"🧍",tag:"Réduction de l’espace nerveux",summary:"Le canal où passent les nerfs devient plus étroit. La marche peut déclencher douleur, lourdeur ou engourdissement dans les jambes.",mechanism:"L’arthrose, l’épaississement des ligaments ou un glissement vertébral peuvent réduire l’espace disponible pour les nerfs.",symptoms:"Marche limitée par douleurs, lourdeur ou fourmillements des jambes, souvent soulagés en s’asseyant ou en se penchant en avant.",evolution:["Le rythme d’évolution varie ; les symptômes peuvent rester stables ou augmenter progressivement.","Rééducation, activité adaptée et contrôle des facteurs associés peuvent aider la fonction.","La chirurgie se discute selon le handicap, l’examen neurologique et le résultat du traitement non chirurgical."],options:[{id:"stenosis-rehab",name:"Rééducation & adaptation",type:"Sans chirurgie",summary:"Travail de l’endurance, force, équilibre et stratégies pour mieux tolérer la marche.",when:"Symptômes modérés sans progression neurologique préoccupante.",limits:"Ne modifie pas toujours le rétrécissement anatomique ; bénéfice variable."},{id:"stenosis-decomp",name:"Décompression",type:"Chirurgie",summary:"Libération des structures nerveuses en retirant une partie des tissus responsables du rétrécissement.",when:"Limitation importante persistante ou symptômes neurologiques concordants.",limits:"Risques neurologiques, infectieux et de fuite de liquide ; l’instabilité peut modifier la stratégie."},{id:"stenosis-fusion",name:"Décompression avec fusion",type:"Chirurgie sélectionnée",summary:"Une fixation peut être ajoutée dans certaines situations d’instabilité ou de déformation.",when:"Indication fondée sur l’alignement, la stabilité et le bilan clinique-radiologique.",limits:"Intervention plus importante ; non nécessaire pour tous les canaux étroits."}],redflag:"Faiblesse rapidement progressive, anesthésie périnéale ou nouveaux troubles urinaires/sphinctériens : urgence médicale."},
-{id:"spondylolisthesis",title:"Spondylolisthésis",region:"Rachis lombaire",group:"Rachis",emoji:"🧩",tag:"Glissement vertébral",summary:"Une vertèbre glisse par rapport à celle située en dessous. Cela peut rester peu symptomatique ou participer à des douleurs et à un rétrécissement du canal.",mechanism:"Le glissement peut être lié à l’usure ou à un défaut osseux. Sa présence sur l’image ne signifie pas automatiquement qu’il faut opérer.",symptoms:"Lombalgie, gêne à la marche ou symptômes dans les jambes en cas d’irritation/compression nerveuse.",evolution:["Les symptômes et la stabilité du glissement comptent davantage que le seul mot sur le compte rendu.","Le traitement initial est souvent non chirurgical quand la situation neurologique le permet.","Le choix opératoire, lorsqu’il existe, dépend de l’instabilité, de la compression et des objectifs du patient."],options:[{id:"spond-rehab",name:"Rééducation & activité",type:"Sans chirurgie",summary:"Conditionnement, renforcement adapté, gestion de la douleur et maintien des activités possibles.",when:"Symptômes tolérables sans déficit évolutif.",limits:"Peut réduire la gêne sans modifier le glissement lui-même."},{id:"spond-decomp",name:"Décompression seule",type:"Chirurgie sélectionnée",summary:"Libère les nerfs sans fusion dans certaines configurations jugées stables.",when:"Compression nerveuse concordante et stratégie compatible avec la stabilité.",limits:"Le choix dépend de l’anatomie et du risque d’instabilité secondaire."},{id:"spond-fusion",name:"Décompression & fusion",type:"Chirurgie",summary:"Libération des nerfs et stabilisation du segment par instrumentation et greffe si indiquée.",when:"Instabilité, glissement symptomatique ou contexte anatomique le justifiant.",limits:"Récupération plus longue et risques propres à l’arthrodèse ; indication à personnaliser."}],redflag:"Une faiblesse rapidement progressive, des troubles urinaires ou une anesthésie périnéale imposent une prise en charge urgente."},
-{id:"hallux-valgus",title:"Hallux valgus (oignon)",region:"Avant-pied",group:"Pied",emoji:"🦶",tag:"Déviation du gros orteil",summary:"Le gros orteil s’oriente vers les autres orteils et une bosse apparaît sur le bord interne du pied.",mechanism:"La forme du pied, les contraintes et parfois la prédisposition familiale contribuent à la déformation. Les chaussures peuvent irriter la bosse.",symptoms:"Douleur au contact de la chaussure, rougeur locale, gêne au chaussage ou conflit avec les orteils voisins.",evolution:["La déformation peut progresser, mais son évolution est variable.","Des chaussures plus larges et des adaptations diminuent parfois la gêne sans redresser durablement l’os.","La chirurgie traite une douleur et une gêne significatives, pas uniquement l’apparence radiographique."],options:[{id:"hallux-shoes",name:"Chaussage & adaptations",type:"Sans chirurgie",summary:"Chaussures à avant-pied large, protection des zones de frottement et adaptations éventuelles.",when:"Gêne limitée ou irritation par les chaussures.",limits:"Ne corrige généralement pas la déformation osseuse."},{id:"hallux-surgery",name:"Correction chirurgicale",type:"Chirurgie",summary:"Réorientation des os avec fixation adaptée à la forme de la déformation.",when:"Douleur ou difficulté de chaussage persistante malgré des adaptations.",limits:"Œdème et récupération sur plusieurs semaines ou mois ; raideur, récidive ou douleurs résiduelles possibles."}],redflag:"Une rougeur qui s’étend avec fièvre, une plaie ou une douleur aiguë inhabituelle nécessite un avis médical rapide."},
-{id:"achille",title:"Tendinopathie d’Achille",region:"Tendon d’Achille",group:"Sport",emoji:"🏅",tag:"Surcharge du tendon",summary:"Le tendon qui relie les muscles du mollet au talon supporte des charges élevées. Une surcharge peut provoquer douleur et raideur.",mechanism:"Le tendon s’adapte aux contraintes, mais une augmentation trop rapide de la charge peut dépasser sa capacité de récupération.",symptoms:"Douleur à l’arrière du talon ou quelques centimètres au-dessus, raideur matinale ou douleur à l’effort.",evolution:["La récupération repose souvent sur une progression de charge planifiée, et non sur un repos complet prolongé.","Les tendons évoluent lentement ; les symptômes peuvent fluctuer en fonction des contraintes.","Une intervention ne concerne qu’une minorité de cas persistants sélectionnés après rééducation bien conduite."],options:[{id:"achilles-load",name:"Gestion de charge & exercices",type:"Sans chirurgie",summary:"Progression individualisée de renforcement du mollet et ajustement temporaire de la course ou des sauts.",when:"Prise en charge de première intention dans la plupart des tendinopathies.",limits:"Nécessite régularité ; progression à ajuster en fonction de la réaction du tendon."},{id:"achilles-surgery",name:"Chirurgie sélectionnée",type:"Chirurgie",summary:"Traitement adapté à la lésion lorsqu’une douleur handicapante persiste malgré un programme approprié.",when:"Cas chroniques sélectionnés après réévaluation diagnostique.",limits:"Rééducation et reprise sportive progressives ; résultat non garanti."}],redflag:"Une sensation de coup de fouet avec perte brusque de poussée ou impossibilité de se mettre sur la pointe du pied doit faire rechercher une rupture."}
-];
-let currentId = "arthrose-genou";
-let currentFilter = "Toutes";
-let activeTab = "comprendre";
-let simpleMode = true;
-let viewerLayer = "both";
-let viewerMotion = true;
-let selectedSurgery = null;
-let referenceView = "disease";
-let query = "";
-let compared = [];
-const $ = id => document.getElementById(id);
-const findDisease = () => diseases.find(d => d.id === currentId) || diseases[0];
-const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function visibleDiseases(){
-  const q = query.trim().toLowerCase();
-  return diseases.filter(d => {
-    const filterOk = currentFilter === "Toutes" || d.group === currentFilter || (currentFilter === "Articulations" && d.group === "Articulations") || (currentFilter === "Pied" && d.group === "Pied") || (currentFilter === "Main" && d.group === "Main");
-    const qOk = !q || [d.title,d.region,d.tag,d.summary,d.group].join(" ").toLowerCase().includes(q);
-    return filterOk && qOk;
-  });
-}
-function renderList(){
-  const items = visibleDiseases();
-  $("count").textContent = items.length + " fiches";
-  $("diseaseList").innerHTML = items.length ? items.map(d =>
-    '<button class="disease-btn '+(d.id === currentId ? "active" : "")+'" data-id="'+d.id+'" aria-pressed="'+(d.id === currentId)+'"><span class="disease-icon" aria-hidden="true">'+d.emoji+'</span><span><span class="disease-title">'+escapeHtml(d.title)+'</span><span class="disease-region">'+escapeHtml(d.region)+'</span></span></button>'
-  ).join("") : '<div class="empty">Aucun résultat</div>';
-  document.querySelectorAll(".disease-btn").forEach(btn => btn.addEventListener("click",() => {
-    currentId = btn.dataset.id; activeTab = "comprendre"; compared = [];
-    referenceView = "disease";
-    selectedSurgery = null;
-    renderAll();
-  }));
-}
-function anatomySvg(d){
-  const red = "#df776c", bone = "#d5dfdf", outline = "#7b9997", teal = "#53b49b", ink = "#365e63";
-  let art = "";
-  if (["arthrose-genou","menisque","lca"].includes(d.id)){
-    art = '<path d="M103 34 C88 42 82 58 86 77 L95 104 Q100 114 113 111 L132 103 Q143 96 140 82 L134 48 Q129 34 116 32Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M176 34 C191 42 197 58 193 77 L184 104 Q179 114 166 111 L147 103 Q136 96 139 82 L145 48 Q150 34 163 32Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M97 112 Q139 130 182 112 L177 151 Q139 168 102 151Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M107 109 Q139 119 171 109 L167 118 Q139 129 111 118Z" fill="'+(d.id === "menisque" ? red : teal)+'" stroke="'+outline+'" stroke-width="1.5"/>';
-    if(d.id === "arthrose-genou") art += '<path d="M107 107 Q139 119 171 107" stroke="'+red+'" stroke-width="5" stroke-linecap="round" class="pulse-lesion" fill="none"/><circle cx="96" cy="111" r="5" fill="'+red+'" class="pulse-lesion"/><circle cx="182" cy="111" r="5" fill="'+red+'" class="pulse-lesion"/>';
-    if(d.id === "menisque") art += '<path d="M107 109 Q139 118 171 109 L166 116 Q139 126 112 116Z" fill="'+red+'" class="pulse-lesion"/><path d="M153 111l-7 8" stroke="#fff" stroke-width="2"/>';
-    if(d.id === "lca") art += '<path d="M125 60 L151 111" stroke="'+teal+'" stroke-width="7" stroke-linecap="round"/><path d="M152 59 L128 111" stroke="'+red+'" stroke-width="5" stroke-dasharray="8 5" stroke-linecap="round" class="pulse-lesion"/>';
-  } else if(d.id === "coiffe"){
-    art = '<path d="M90 51 Q95 23 124 26 Q147 26 151 49 L151 71 L119 88 L94 73Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M151 61 Q176 57 190 81 L208 127 Q209 138 198 142 L180 134 L159 97Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M103 47 Q126 40 148 53 Q164 62 177 74" stroke="'+teal+'" stroke-width="12" stroke-linecap="round" fill="none"/><path d="M160 63 L177 74" stroke="'+red+'" stroke-width="13" stroke-linecap="round" class="pulse-lesion"/><path d="M86 37 Q124 10 165 41" fill="none" stroke="'+outline+'" stroke-width="2"/>';
-  } else if(["hernie-discale","canal-lombaire","spondylolisthesis"].includes(d.id)){
-    art = '<g class="float-part"><path d="M104 29 Q137 17 170 29 L166 50 Q137 61 108 50Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M108 62 Q137 52 166 62 L166 82 Q137 91 108 82Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M108 94 Q137 84 166 94 L170 115 Q137 126 104 115Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M107 55 Q137 47 167 55 L167 60 Q137 67 107 60Z" fill="'+(d.id==="hernie-discale"?red:teal)+'"/></g><path d="M137 28 L137 145" stroke="#cda86c" stroke-width="6" stroke-linecap="round"/>';
-    if(d.id==="hernie-discale") art += '<path d="M164 54 C187 55 184 72 197 76" fill="none" stroke="'+red+'" stroke-width="11" stroke-linecap="round" class="pulse-lesion"/><path d="M167 55 C186 55 188 69 199 73" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>';
-    if(d.id==="canal-lombaire") art += '<path d="M122 31 Q137 44 152 31 L151 111 Q137 123 123 111Z" fill="'+red+'" opacity=".75" class="pulse-lesion"/><path d="M137 30L137 113" stroke="#fff" stroke-width="2" stroke-dasharray="3 5"/>';
-    if(d.id==="spondylolisthesis") art += '<path d="M98 65 Q137 49 176 65 L180 88 Q137 101 94 88Z" fill="'+red+'" opacity=".75"/><path d="M99 67L174 82" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>';
-  } else if(d.id === "canal-carpien"){
-    art = '<path d="M94 119 Q88 106 88 92 L84 58 Q84 49 91 49 Q99 49 100 59 L103 80 L103 31 Q103 21 111 21 Q119 21 119 31 L119 76 L122 25 Q123 16 131 17 Q139 18 139 28 L138 78 L143 35 Q144 26 152 28 Q160 30 159 40 L154 86 L165 59 Q169 51 176 56 Q183 60 178 71 L164 111 Q158 130 142 139 L113 143Z" fill="#dfe9e5" stroke="'+outline+'" stroke-width="2"/><path d="M123 83 Q127 65 133 79 L134 113" stroke="'+teal+'" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M123 82 Q127 64 133 79 L134 113" stroke="'+red+'" stroke-width="4" fill="none" stroke-linecap="round" class="pulse-lesion"/><path d="M110 102 Q135 96 154 103" stroke="'+outline+'" stroke-width="5" fill="none"/>';
-  } else if(d.id==="arthrose-hanche"){
-    art = '<path d="M106 28 Q87 40 96 65 L110 104 Q119 114 130 108 L142 96 L139 42 Q128 23 106 28Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M170 28 Q189 40 180 65 L166 104 Q157 114 146 108 L134 96 L137 42 Q148 23 170 28Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M119 92 Q113 111 127 129 L151 146 Q163 152 168 141 Q169 131 156 119 L145 95" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><circle cx="149" cy="96" r="28" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><circle cx="149" cy="96" r="22" fill="none" stroke="'+(d.id==="arthrose-hanche"?red:teal)+'" stroke-width="6" class="pulse-lesion"/>';
-  } else if(d.id === "entorse-cheville"){
-    art = '<path d="M105 23 Q118 19 126 31 L130 90 Q133 106 148 112 L168 117 L167 140 Q144 147 122 135 Q100 123 99 99Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M167 71 L171 111 L197 129 L198 141 L162 141 Q148 130 151 111Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M126 82 Q145 90 157 113" stroke="'+red+'" stroke-width="7" fill="none" stroke-linecap="round" class="pulse-lesion"/><path d="M127 82 Q146 91 157 113" stroke="#fff" stroke-width="2" stroke-dasharray="4 4" fill="none"/>';
-  } else if(d.id === "hallux-valgus"){
-    art = '<path d="M92 126 Q101 106 115 93 L155 57 Q165 47 173 57 Q180 66 170 77 L142 104 L178 110 Q192 114 190 126 L185 137 L119 147 Q98 146 92 126Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M144 105 L171 80" stroke="'+red+'" stroke-width="10" stroke-linecap="round" class="pulse-lesion"/><circle cx="144" cy="104" r="11" fill="'+red+'" opacity=".75" class="pulse-lesion"/>';
-  } else if(d.id === "achille"){
-    art = '<path d="M104 23 Q121 19 130 31 L130 87 Q132 106 148 113 L166 119 L164 141 Q141 145 120 132 Q98 120 99 97Z" fill="'+bone+'" stroke="'+outline+'" stroke-width="2"/><path d="M126 62 Q130 85 139 103 L150 121" stroke="'+teal+'" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M132 87 L138 98" stroke="'+red+'" stroke-width="12" fill="none" stroke-linecap="round" class="pulse-lesion"/><path d="M123 86 L133 98" stroke="#fff" stroke-width="3" stroke-dasharray="3 3"/>';
-  }
-  return '<svg class="diagram" viewBox="0 0 280 190" role="img" aria-label="Schéma simplifié de '+escapeHtml(d.region)+' avec zone concernée mise en évidence"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#edf8f2"/><stop offset="1" stop-color="#e8f2f4"/></linearGradient></defs><rect x="4" y="4" width="272" height="182" rx="18" fill="url(#bg)"/><circle cx="140" cy="95" r="72" fill="#ffffff" opacity=".55"/>'+art+'<path d="M35 153 Q57 141 73 153" stroke="'+teal+'" stroke-width="2" fill="none" stroke-linecap="round" class="flow-line"/><circle cx="35" cy="153" r="4" fill="'+teal+'"/><path d="M206 38 L236 38 L236 59" stroke="'+red+'" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="206" cy="38" r="4" fill="'+red+'" class="pulse-lesion"/><text x="220" y="74" font-size="9" fill="'+ink+'" text-anchor="middle">Zone étudiée</text><text x="20" y="25" font-size="9" font-weight="700" fill="'+ink+'">SCHÉMA SIMPLIFIÉ</text></svg>';
-}
-function renderTabs(d){
- const tabs=[{id:"comprendre",label:"1 · Maladie"},{id:"options",label:"2 · Chirurgie"},{id:"kinetique",label:"3 · Chaîne cinétique"}];
- return '<div class="tabs" role="tablist" aria-label="Maquettes 3D">'+tabs.map(t=>'<button class="tab '+(activeTab===t.id?"active":"")+'" role="tab" aria-selected="'+(activeTab===t.id)+'" data-tab="'+t.id+'">'+t.label+'</button>').join("")+'</div>';
-}
-function renderOption(o){
- const picked = compared.includes(o.id);
- return '<section class="option-card '+(picked?"selected":"")+'"><div class="option-top"><h3>'+escapeHtml(o.name)+'</h3><span class="option-type">'+escapeHtml(o.type)+'</span></div><p>'+escapeHtml(simpleMode?o.summary:o.summary+' '+o.limits)+'</p><h4>Quand la discuter ?</h4><p>'+escapeHtml(o.when)+'</p><h4>À garder en tête</h4><p>'+escapeHtml(o.limits)+'</p><button class="compare-check" data-compare="'+o.id+'" aria-pressed="'+picked+'">'+(picked?"✓ Ajoutée à la comparaison":"+ Comparer cette option")+'</button></section>';
-}
-function renderContent(d){
- const viewer='<div class="viewer3d-wrap"><div id="anatomy3d" class="anatomy3d" aria-label="Maquette anatomique 3D interactive"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Chargement 3D…</span><span class="viewer-help">Tourner · Zoomer</span></div></div><div class="viewer-fallback" id="viewerFallback" hidden><div class="anatomy-label">Maquette indisponible</div></div></div>';
- const controls='<div class="viewer-controls" role="group" aria-label="Afficher la maquette"><button type="button" data-layer-view="both" class="active">Os + muscles</button><button type="button" data-layer-view="bones">Squelette</button><button type="button" data-layer-view="muscles">Muscles</button><button type="button" id="viewerMotion" aria-pressed="true">Ⅱ Pause</button><button type="button" id="viewerReset">↺ Recentrer</button></div>';
- if(activeTab==="comprendre"){
-  return '<div class="maquette-stage"><div class="stage-switch" role="group" aria-label="État anatomique"><button type="button" data-reference="normal" class="'+(referenceView==="normal"?"active":"")+'" aria-pressed="'+(referenceView==="normal")+'">Normale</button><button type="button" data-reference="disease" class="'+(referenceView!=="normal"?"active":"")+'" aria-pressed="'+(referenceView!=="normal")+'">Maladie</button></div><span class="stage-number">MAQUETTE 1 / 2</span></div>'+viewer+controls;
- }
- if(activeTab==="options"){
-  const opts=(d.options||[]).filter(o=>/chirurgie|arthroscopie/i.test(o.type)||/prothèse|reconstruction|libération|suture méniscale|méniscectomie|discectomie|décompression|fusion|correction chirurgicale|réparation|stabilisation/i.test(o.name));
-  if(!selectedSurgery||!opts.some(o=>o.id===selectedSurgery))selectedSurgery=opts[0]?.id||null;
-  return '<div class="maquette-stage"><span class="stage-number">MAQUETTE 2 / 2</span><span class="stage-current">OPTION CHIRURGICALE</span></div>'+viewer+'<div class="surgery-list">'+opts.map(o=>'<button type="button" class="surgery-choice '+(selectedSurgery===o.id?'active':'')+'" data-surgery="'+o.id+'" aria-pressed="'+(selectedSurgery===o.id)+'"><span class="surgery-symbol">'+(o.name.toLowerCase().includes("prothèse")?"◈":o.name.toLowerCase().includes("fusion")?"⊞":o.name.toLowerCase().includes("réparation")||o.name.toLowerCase().includes("suture")?"⌁":"⚒")+'</span><span><strong>'+escapeHtml(o.name)+'</strong></span></button>').join("")+'</div>'+controls;
- }
- return '<div class="maquette-stage"><span class="stage-number">SIMULATEUR 3D</span><span class="stage-current">CHAÎNE CINÉTIQUE</span></div><div class="kinetic-controls"><div class="kinetic-box"><label for="chainType">Anomalie</label><select id="chainType"><option value="varus">Genou varus</option><option value="valgus">Genou valgus</option><option value="pronation">Pronation du pied</option><option value="ankle">Cheville raide</option><option value="hip">Flexum de hanche</option><option value="pelvis">Bascule du bassin</option></select></div><div class="kinetic-box"><label for="chainDeviation">Intensité <output id="chainDeviationOut">15 / 30</output></label><input id="chainDeviation" type="range" min="0" max="30" step="1" value="15"></div></div>'+viewer+'<div class="impact-row" id="impactRow"><div class="impact-card"><span>Hanche</span><strong id="impactTop">Adaptation</strong><small id="impactTopText">—</small></div><div class="impact-card primary"><span>Articulation cible</span><strong id="impactMain">Genou</strong><small id="impactMainText">—</small></div><div class="impact-card"><span>Cheville / pied</span><strong id="impactBottom">Compensation</strong><small id="impactBottomText">—</small></div></div>'+controls;
-}
-function renderDetail(){
- const d=findDisease();
- $("detail").innerHTML='<div class="detail-header"><div class="detail-top"><div class="region-art" aria-hidden="true">'+d.emoji+'</div><div class="detail-meta"><h2>'+escapeHtml(d.title)+'</h2></div></div></div>'+renderTabs(d)+'<div class="content">'+renderContent(d)+'</div>';
- window.__orthoClairDisease={id:d.id,title:d.title,region:d.region};
- if(!d.options.some(o=>o.id===selectedSurgery))selectedSurgery=d.options[0]?.id||null;
- if(window.OrthoClair3D){
-  window.OrthoClair3D.attach();
-  window.OrthoClair3D.setLayer(viewerLayer);
-  window.OrthoClair3D.setMotion(viewerMotion);
-  window.OrthoClair3D.setReference(referenceView);
-  window.OrthoClair3D.setMode(activeTab==="comprendre"?"compare":activeTab==="options"?"surgery":"kinetic",window.__orthoClairDisease,selectedSurgery);
- }
- document.querySelectorAll("[data-reference]").forEach(btn=>btn.addEventListener("click",()=>{
-  referenceView=btn.dataset.reference;
-  document.querySelectorAll("[data-reference]").forEach(b=>{b.classList.toggle("active",b===btn);b.setAttribute("aria-pressed",String(b===btn));});
-  if(window.OrthoClair3D)window.OrthoClair3D.setReference(referenceView);
- }));
- document.querySelectorAll("[data-surgery]").forEach(btn=>btn.addEventListener("click",()=>{
-  selectedSurgery=btn.dataset.surgery;
-  document.querySelectorAll("[data-surgery]").forEach(b=>{b.classList.toggle("active",b===btn);b.setAttribute("aria-pressed",String(b===btn));});
-  if(window.OrthoClair3D)window.OrthoClair3D.setMode("surgery",window.__orthoClairDisease,selectedSurgery);
- }));
- const chainType=$("chainType"),chainDeviation=$("chainDeviation");
- const updateKinetic=()=>{
-  const type=chainType?.value||"varus",degree=Number(chainDeviation?.value||15);
-  const output=$("chainDeviationOut");if(output)output.textContent=degree+" / 30";
-  const labels={varus:["Hanche","Adaptation de l’axe","Genou varus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],valgus:["Hanche","Adaptation de l’axe","Genou valgus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],pronation:["Genou","Rotation possible","Pied en pronation","Arche abaissée","Hanche","Rotation possible"],ankle:["Genou","Adaptation du pas","Cheville raide","Mobilité réduite","Pied","Déroulé modifié"],hip:["Bassin","Bascule possible","Hanche en flexum","Extension limitée","Genou","Flexion compensatrice"],pelvis:["Rachis lombaire","Adaptation posturale","Bascule du bassin","Inclinaison","Hanche","Asymétrie possible"]};
-  const a=labels[type]||labels.varus,severity=degree<=7?"faible":degree<=18?"modérée":"marquée";
-  ["impactTop","impactTopText","impactMain","impactMainText","impactBottom","impactBottomText"].forEach((id,i)=>{const e=$(id);if(e)e.textContent=a[i];});
-  if($("impactTopText"))$("impactTopText").textContent=severity;
-  if($("impactMainText"))$("impactMainText").textContent=degree+"°";
-  if($("impactBottomText"))$("impactBottomText").textContent=severity;
-  if(window.OrthoClair3D)window.OrthoClair3D.setKinetics(type,degree);
- };
- if(chainType)chainType.addEventListener("change",updateKinetic);
- if(chainDeviation)chainDeviation.addEventListener("input",updateKinetic);
- document.querySelectorAll("[data-layer-view]").forEach(btn=>{
-  btn.classList.toggle("active",btn.dataset.layerView===viewerLayer);
-  btn.setAttribute("aria-pressed",String(btn.dataset.layerView===viewerLayer));
-  btn.addEventListener("click",()=>{
-   viewerLayer=btn.dataset.layerView;
-   if(window.OrthoClair3D)window.OrthoClair3D.setLayer(viewerLayer);
-   document.querySelectorAll("[data-layer-view]").forEach(b=>{b.classList.toggle("active",b.dataset.layerView===viewerLayer);b.setAttribute("aria-pressed",String(b.dataset.layerView===viewerLayer));});
-  });
- });
- const motionButton=$("viewerMotion");
- if(motionButton){motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.textContent=viewerMotion?"Ⅱ Pause":"▶ Animer";motionButton.addEventListener("click",()=>{viewerMotion=!viewerMotion;if(window.OrthoClair3D)window.OrthoClair3D.setMotion(viewerMotion);motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.textContent=viewerMotion?"Ⅱ Pause":"▶ Animer";});}
- const resetButton=$("viewerReset");if(resetButton)resetButton.addEventListener("click",()=>{if(window.OrthoClair3D)window.OrthoClair3D.reset();});
- document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{activeTab=btn.dataset.tab;renderAll();}));
-}
-function renderAll(){renderList();renderDetail();document.querySelectorAll(".filter").forEach(btn=>{btn.classList.toggle("active",btn.dataset.filter===currentFilter)});}
-document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
- currentFilter=btn.dataset.filter;
- const visible=visibleDiseases();
- if(!visible.some(d=>d.id===currentId)&&visible.length){currentId=visible[0].id;activeTab="comprendre";compared=[];}
- renderAll();
-}));
-$("search").addEventListener("input",e=>{
- query=e.target.value;
- const visible=visibleDiseases();
- if(visible.length&&!visible.some(d=>d.id===currentId)){currentId=visible[0].id;activeTab="comprendre";compared=[];}
- renderAll();
-});
-renderAll();
-if("serviceWorker" in navigator && location.protocol.startsWith("http")){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
-</script>
-
 <script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/controls/OrbitControls.js';
 
-(() => {
-  const $ = id => document.getElementById(id);
-  let renderer, scene, camera, controls, figure, raf, ready=false, failed=false, mode='compare';
-  let normalGroup, pathologyGroup, kineticGroup, lesionGroup, surgeryGroup, normalMeshes=[], pathologyMeshes=[], sourceMeshes=[], allMeshes=[];
-  let layerMode='both', motionOn=true, selectedDisease=null, selectedSurgery=null, referenceState='disease', chainType='varus', chainDegrees=15;
-  let compareAngle=0, compareDistance=1.25, drag=null, lastFrame=performance.now(), clock=0;
-  const modelUrl='https://raw.githubusercontent.com/Charleeh/ecorche/320805e06aee51e2e6f6b22533eb2a59d43f2d4d/model/ecorche.meshopt.glb';
-  const focusSettings={
-    'arthrose-genou':{x:0,y:-.34,z:0,dist:1.00,pattern:/femur|tibia|patella|meniscus|menisci|fibula|quadriceps|gastrocnemius/i},
-    'menisque':{x:0,y:-.34,z:0,dist:.94,pattern:/femur|tibia|patella|meniscus|menisci|fibula/i},
-    'lca':{x:0,y:-.34,z:0,dist:.94,pattern:/femur|tibia|patella|fibula|quadriceps|gastrocnemius/i},
-    'coiffe':{x:.08,y:.42,z:0,dist:.99,pattern:/humerus|scapula|clavicle|supraspinatus|infraspinatus|subscapularis|teres minor|deltoid/i},
-    'arthrose-hanche':{x:0,y:-.01,z:0,dist:1.08,pattern:/femur|hip bone|acetabulum|pelvis|ilium|pubis/i},
-    'canal-carpien':{x:.4,y:0,z:0,dist:.78,pattern:/carpal|metacarpal|radius|ulna|phalanx of (left|right) (thumb|index finger|middle finger|ring finger|little finger)/i},
-    'entorse-cheville':{x:0,y:-.73,z:0,dist:.76,pattern:/tibia|fibula|talus|calcaneus|tarsal|metatarsal|gastrocnemius|soleus/i},
-    'hernie-discale':{x:0,y:-.02,z:0,dist:1.13,pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
-    'canal-lombaire':{x:0,y:-.01,z:0,dist:1.1,pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
-    'spondylolisthesis':{x:0,y:-.01,z:0,dist:1.08,pattern:/lumbar vertebra|intervertebral disc|sacrum|multifidus|erector spinae/i},
-    'hallux-valgus':{x:.08,y:-.82,z:0,dist:.66,pattern:/metatarsal|big toe|great toe|hallux|phalanx.*toe|cuneiform/i},
-    'achille':{x:.02,y:-.71,z:0,dist:.82,pattern:/calcaneus|gastrocnemius|soleus|plantaris|tendocalcaneus|achilles/i}
-  };
-  const chainLabels={
-    varus:['Hanche','Adaptation possible de l’axe','Genou en varus','Déviation de l’axe','Cheville / pied','Réorientation du pied'],
-    valgus:['Hanche','Adaptation possible de l’axe','Genou en valgus','Déviation de l’axe','Cheville / pied','Réorientation du pied'],
-    pronation:['Genou','Rotation compensatrice possible','Pied en pronation','Affaissement de l’arche','Hanche','Rotation secondaire possible'],
-    ankle:['Genou','Adaptation possible du pas','Cheville raide','Mobilité réduite','Pied','Déroulé du pas modifié'],
-    hip:['Bassin','Bascule compensatrice possible','Hanche en flexum','Extension limitée','Genou','Flexion compensatrice possible'],
-    pelvis:['Rachis lombaire','Adaptation posturale possible','Bascule du bassin','Inclinaison du bassin','Hanche','Répartition asymétrique possible']
-  };
-  const setStatus=s=>{const e=$('viewerStatus');if(e)e.textContent=s;};
-  const setLabel=s=>{const e=$('viewerLabel');if(e)e.textContent=s;};
-  function init(){
-    const host=$('anatomy3d'); if(!host||renderer||failed)return;
-    try{
-      renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
-      renderer.setSize(host.clientWidth||330,host.clientHeight||380,false);
-      renderer.outputColorSpace=THREE.SRGBColorSpace;
-      renderer.toneMapping=THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure=1.02;
-      renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';renderer.domElement.style.display='block';
-      host.prepend(renderer.domElement);
-      scene=new THREE.Scene(); scene.background=null;
-      const pmrem=new THREE.PMREMGenerator(renderer);
-      scene.environment=pmrem.fromScene(new RoomEnvironment(),.04).texture;
-      scene.environmentIntensity=.8;
-      const hemi=new THREE.HemisphereLight(0xffffff,0xb9c9c5,2.2);scene.add(hemi);
-      const key=new THREE.DirectionalLight(0xfff4e8,2.2);key.position.set(2.4,3.6,3.3);scene.add(key);
-      const rim=new THREE.DirectionalLight(0xd7e8ff,1.1);rim.position.set(-2.7,1.6,-2.5);scene.add(rim);
-      camera=new THREE.PerspectiveCamera(32,(host.clientWidth||330)/(host.clientHeight||380),.01,50);
-      camera.position.set(.5,0,2.5);
-      controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);
-      controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=.34;controls.maxDistance=6;controls.maxPolarAngle=Math.PI*.92;
-      controls.addEventListener('change',()=>{});
-      renderer.domElement.addEventListener('pointerdown',e=>{
-        drag={x:e.clientX,y:e.clientY,angle:compareAngle,moved:false};
-      });
-      renderer.domElement.addEventListener('pointermove',e=>{
-        if(drag&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>5)drag.moved=true;
-      });
-      renderer.domElement.addEventListener('pointerup',e=>{
-        if(drag&&!drag.moved&&mode==='compare')pickStructure(e.clientX,e.clientY);
-        drag=null;
-      });
-      renderer.domElement.addEventListener('pointercancel',()=>drag=null);
+const $ = id => document.getElementById(id);
+const CASES = [
+ {id:'knee-oa',name:'Arthrose du genou',region:'Genou',group:'Membre inférieur',kind:'knee',code:'PTG',ops:[{id:'knee-tka',name:'Prothèse totale du genou',tag:'PTG'},{id:'knee-hto',name:'Ostéotomie tibiale',tag:'HTO'}]},
+ {id:'meniscus',name:'Lésion méniscale',region:'Genou',group:'Membre inférieur',kind:'knee',code:'MÉNISQUE',ops:[{id:'meniscus-repair',name:'Réparation méniscale',tag:'Suture'},{id:'meniscus-trim',name:'Méniscectomie partielle',tag:'Résection'}]},
+ {id:'acl',name:'Rupture du LCA',region:'Genou',group:'Membre inférieur',kind:'knee',code:'LCA',ops:[{id:'acl-graft',name:'Reconstruction du LCA',tag:'Greffe'}]},
+ {id:'hip-oa',name:'Arthrose de hanche',region:'Hanche',group:'Membre inférieur',kind:'hip',code:'PTH',ops:[{id:'hip-tha',name:'Prothèse totale de hanche',tag:'PTH'},{id:'hip-resurface',name:'Resurfaçage',tag:'Conservation'}]},
+ {id:'ankle',name:'Entorse latérale de cheville',region:'Cheville',group:'Membre inférieur',kind:'ankle',code:'LLA',ops:[{id:'ankle-repair',name:'Réparation ligamentaire',tag:'Suture'}]},
+ {id:'achilles',name:'Rupture du tendon d’Achille',region:'Arrière-pied',group:'Membre inférieur',kind:'ankle',code:'ACHILLE',ops:[{id:'achilles-repair',name:'Suture du tendon',tag:'Réparation'}]},
+ {id:'hallux',name:'Hallux valgus',region:'Avant-pied',group:'Membre inférieur',kind:'foot',code:'HV',ops:[{id:'hallux-osteotomy',name:'Ostéotomie correctrice',tag:'Vis'}]},
+ {id:'cuff',name:'Rupture de la coiffe',region:'Épaule',group:'Membre supérieur',kind:'shoulder',code:'COIFFE',ops:[{id:'cuff-repair',name:'Réparation transosseuse / ancres',tag:'Ancres'}]},
+ {id:'carpal',name:'Canal carpien',region:'Poignet',group:'Membre supérieur',kind:'wrist',code:'NERF MÉDIAN',ops:[{id:'carpal-release',name:'Section du rétinaculum',tag:'Libération'}]},
+ {id:'disc',name:'Hernie discale lombaire',region:'Rachis',group:'Rachis',kind:'spine',code:'DISQUE',ops:[{id:'disc-micro',name:'Microdiscectomie',tag:'Discectomie'}]},
+ {id:'stenosis',name:'Canal lombaire étroit',region:'Rachis',group:'Rachis',kind:'spine',code:'CANAL',ops:[{id:'spine-decomp',name:'Décompression postérieure',tag:'Laminectomie'}]},
+ {id:'spondy',name:'Spondylolisthésis',region:'Rachis',group:'Rachis',kind:'spine',code:'L4–L5',ops:[{id:'spine-fusion',name:'Réduction / arthrodèse',tag:'Vis + tiges'}]}
+];
+const D = {bone:'#e4d7bf',boneDark:'#c4b293',cart:'#67bcb6',soft:'#3d8585',nerve:'#dfb658',lesion:'#d8584c',metal:'#849ca5',metalDark:'#425b65',poly:'#9bd7ce',white:'#f9f7f1',shadow:'#203f40',gold:'#c58e43'};
+const material = (color,roughness=.55,metalness=0,transparent=false,opacity=1) => new THREE.MeshStandardMaterial({color,roughness,metalness,transparent,opacity,side:THREE.DoubleSide});
+const M = {bone:material(D.bone,.66),bone2:material(D.boneDark,.66),cart:material(D.cart,.35),soft:material(D.soft,.43),softLight:material('#83aaa0',.45),nerve:material(D.nerve,.42),lesion:material(D.lesion,.34),lesionGlass:material('#dd7164',.45,0,true,.55),metal:material(D.metal,.24,.82),metalDark:material(D.metalDark,.32,.7),poly:material(D.poly,.32,.12),white:material(D.white,.5),dark:material('#31464a',.5),ink:material('#1c4445',.6)};
+let renderer,scene,camera,controls,root,kineticRoot,layers={},stage='lesion',viewMode='models',selected=CASES[0],selectedOp=CASES[0].ops[0].id,chainType='varus',chainAngle=10,motion=false,clock=0,resizeObserver;
 
-
-      const resize=new ResizeObserver(()=>{
-        const el=$('anatomy3d');if(!renderer||!camera||!el)return;
-        const w=Math.max(240,el.clientWidth),h=Math.max(260,el.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();updateCompareCameras();renderNow();
-      });resize.observe(host);
-      window.addEventListener('resize',()=>{if(!renderer||!camera)return;const el=$('anatomy3d');if(!el)return;camera.aspect=Math.max(1,el.clientWidth)/Math.max(1,el.clientHeight);camera.updateProjectionMatrix();renderer.setSize(el.clientWidth,el.clientHeight,false);updateCompareCameras();});
-      buildChain();
-      animate();
-    }catch(err){console.error(err);failed=true;setStatus('3D indisponible');fallback();}
-  }
-  function fallback(){
-    const fb=$('viewerFallback');if(fb)fb.hidden=false;
-    if($('viewerStatus'))$('viewerStatus').textContent='Mode schématique';
-    const v=$('anatomy3d');if(v)v.style.display='none';
-    document.querySelectorAll('.viewer-controls,.viewer-split-labels,.viewer-center-line').forEach(e=>e.style.display='none');
-  }
-  const baseName=m=>String(m.userData.name||m.name||'');
-  function cloneForMode(){
-    if(!figure)return;
-    if(normalGroup)scene.remove(normalGroup);
-    if(pathologyGroup)scene.remove(pathologyGroup);
-    normalGroup=figure.clone(true);pathologyGroup=figure.clone(true);
-    normalGroup.position.x=0;pathologyGroup.position.x=0;
-    normalMeshes=[];pathologyMeshes=[];
-    normalGroup.traverse(m=>{if(!m.isMesh)return;m.userData.__baseMaterial=m.material;normalMeshes.push(m);});
-    pathologyGroup.traverse(m=>{if(!m.isMesh)return;m.userData.__baseMaterial=m.material;pathologyMeshes.push(m);});
-    scene.add(normalGroup,pathologyGroup);
-  }
-  function getSettings(d){return focusSettings[d?.id]||{x:0,y:0,z:0,dist:1.2,pattern:/femur|tibia|vertebra|muscle|scapula/i};}
-  function setMeshEmphasis(mesh,color){
-    const original=mesh.userData.__baseMaterial||mesh.material;
-    const mats=Array.isArray(original)?original:[original];
-    mesh.material=mats.map(mat=>{
-      const m=mat.clone();
-      if('emissive' in m){m.emissive=new THREE.Color(color);m.emissiveIntensity=.26;}
-      if('color' in m)m.color.lerp(new THREE.Color(color),.25);
-      return m;
-    });
-    if(!Array.isArray(original))mesh.material=mesh.material[0];
-    mesh.userData.__orthoGenerated=true;
-  }
-  function restoreMeshes(meshes){
-    for(const m of meshes){if(m.userData.__orthoGenerated){if(Array.isArray(m.material))m.material.forEach(x=>x.dispose());else m.material.dispose();m.material=m.userData.__baseMaterial||m.material;delete m.userData.__orthoGenerated;}}
-  }
-  function regionOnly(meshes,d,emphasize){
-    const opts=getSettings(d);
-    for(const m of meshes){
-      const match=opts.pattern.test(baseName(m));
-      m.visible=match&&layerAllowed(m.userData.layer||'skeleton');
-      if(match&&emphasize&&m.visible)setMeshEmphasis(m,0x6f8f86);
-    }
-  }
-  function layerAllowed(layer){return layerMode==='both'||(layerMode==='bones'&&layer==='skeleton')||(layerMode==='muscles'&&layer!=='skeleton');}
-  function removeGroup(g){if(g){scene.remove(g);g.traverse?.(o=>{if(o.geometry&&o.userData?.__ownedGeometry)o.geometry.dispose();if(o.material&&o.userData?.__ownedMaterial)o.material.dispose();});}}
-  function makeMaterial(color,rough=.48,metal=.05,transparent=false,opacity=1){
-    return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal,transparent,opacity,depthWrite:!transparent});
-  }
-  function rod(a,b,r,color,metal=.1){
-    const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();
-    const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,16),makeMaterial(color,.35,metal));
-    m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return m;
-  }
-  function ball(p,r,color,transparent=false){
-    const m=new THREE.Mesh(new THREE.SphereGeometry(r,20,14),makeMaterial(color,.3,.12,transparent,transparent?.65:1));m.position.copy(p);return m;
-  }
-  function buildLesion(d,offsetX){
-    removeGroup(lesionGroup);
-    lesionGroup=new THREE.Group();
-    const cfg=getSettings(d),c=new THREE.Vector3(cfg.x,cfg.y,cfg.z+.07);
-    const red=0xdd6359,shade=makeMaterial(red,.26,.08,true,.72),dark=makeMaterial(0xb83f35,.25,.08);
-    if(['arthrose-genou','menisque','lca'].includes(d.id)){
-      const ring=new THREE.Mesh(new THREE.TorusGeometry(d.id==='lca'?.09:.14,.022,10,40),d.id==='menisque'?dark:shade);
-      ring.position.copy(c);ring.rotation.x=.24;lesionGroup.add(ring);
-      if(d.id==='lca'){lesionGroup.add(rod(c.clone().add(new THREE.Vector3(-.06,.14,0)),c.clone().add(new THREE.Vector3(-.015,.03,.01)),.018,red));lesionGroup.add(rod(c.clone().add(new THREE.Vector3(.018,-.025,.01)),c.clone().add(new THREE.Vector3(.07,-.13,0)),.018,red));}
-      if(d.id==='arthrose-genou'){lesionGroup.add(ball(c.clone().add(new THREE.Vector3(-.12,-.015,.01)),.04,red,true));lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.12,-.015,.01)),.04,red,true));}
-    }else if(d.id==='hernie-discale'||d.id==='canal-lombaire'||d.id==='spondylolisthesis'){
-      lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.115,.015,.02)),.075,red,true));
-      lesionGroup.add(rod(c.clone().add(new THREE.Vector3(.05,-.12,.015)),c.clone().add(new THREE.Vector3(.05,.12,.015)),.012,red));
-    }else if(d.id==='coiffe'){
-      lesionGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,.12,0)),c.clone().add(new THREE.Vector3(.12,.09,0)),.025,red));
-      lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.13,.08,.01)),.035,red,true));
-    }else{
-      const genericRing=new THREE.Mesh(new THREE.TorusGeometry(.105,.022,8,32),shade);genericRing.position.copy(c);lesionGroup.add(genericRing);
-      lesionGroup.add(ball(c,.04,red,true));
-    }
-    lesionGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive){m.emissive=new THREE.Color(0xb9433a);m.emissiveIntensity=.18;}});}});
-    scene.add(lesionGroup);
-  }
-  function updateCompareCameras(){
-    if(!camera||!normalGroup||!pathologyGroup)return;
-    const cfg=getSettings(selectedDisease),offsets=[-.62,.62],cameras=[compareCameras.left,compareCameras.right];
-    offsets.forEach((ox,i)=>{
-      const c=cameras[i];c.aspect=Math.max(1,renderer.domElement.clientWidth/2)/Math.max(1,renderer.domElement.clientHeight);
-      c.position.set(ox+cfg.x+compareDistance*Math.sin(compareAngle),cfg.y+.07+compareDistance*.09,compareDistance*Math.cos(compareAngle));
-      c.lookAt(ox+cfg.x,cfg.y,cfg.z);c.updateProjectionMatrix();
-    });
-  }
-  const compareCameras={left:new THREE.PerspectiveCamera(31,1,.01,30),right:new THREE.PerspectiveCamera(31,1,.01,30)};
-  function renderCompare(){
-    if(!renderer||!camera||!normalGroup||!pathologyGroup)return;
-    const isNormal=referenceState==='normal';
-    normalGroup.visible=isNormal;
-    pathologyGroup.visible=!isNormal;
-    lesionGroup.visible=!isNormal;
-    surgeryGroup.visible=false;
-    figure.visible=false;
-    kineticGroup.visible=false;
-    renderer.setScissorTest(false);
-    renderer.setViewport(0,0,renderer.domElement.clientWidth,renderer.domElement.clientHeight);
-    renderer.render(scene,camera);
-  }
-  function buildOperation(d,id){
-    removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();
-    const cfg=getSettings(d),c=new THREE.Vector3(cfg.x,cfg.y,cfg.z+.09);
-    const silver=0xc5d1d1,gold=0xd6a85b,steel=0x9baeb2,red=0xb83f35;
-    if(['acl-recon'].includes(id)){
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.075,.15,.01)),c.clone().add(new THREE.Vector3(.04,-.15,.01)),.018,gold));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.095,.14,.015)),c.clone().add(new THREE.Vector3(.04,-.15,.015)),.014,0x73b99f));
-      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(-.075,.15,.01)),.027,steel));surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.04,-.15,.01)),.027,steel));
-    }else if(['knee-total','knee-uni'].includes(id)){
-      const width=id==='knee-uni'?.11:.21;
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-width/2,.055,0)),c.clone().add(new THREE.Vector3(width/2,.055,0)),.028,silver,.75));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-width/2,-.045,0)),c.clone().add(new THREE.Vector3(width/2,-.045,0)),.025,steel,.75));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(0,.045,0)),c.clone().add(new THREE.Vector3(0,.14,0)),.014,gold,.5));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(0,-.04,0)),c.clone().add(new THREE.Vector3(0,-.14,0)),.014,gold,.5));
-    }else if(id==='hip-tha'){
-      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.06,.01,.015)),.085,silver));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.04,-.02,.015)),c.clone().add(new THREE.Vector3(-.02,-.23,.015)),.035,steel,.7));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.03,.01,.02)),c.clone().add(new THREE.Vector3(.13,.01,.02)),.045,gold,.65));
-    }else if(['stenosis-fusion','spond-fusion'].includes(id)){
-      [-.08,.08].forEach(x=>{
-        surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,.16,.025)),c.clone().add(new THREE.Vector3(x,-.16,.025)),.012,gold,.7));
-        [.10,0,-.10].forEach(y=>surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,y,.0)),c.clone().add(new THREE.Vector3(x*1.25,y,.10)),.012,steel,.7)));
-      });
-    }else if(['cuff-repair'].includes(id)){
-      [-.07,.07].forEach(x=>{
-        surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,.015,.02)),c.clone().add(new THREE.Vector3(x,.10,.02)),.014,gold,.6));
-        surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(x,.015,.02)),.022,steel));
-      });
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.08,.11,.02)),c.clone().add(new THREE.Vector3(.08,.11,.02)),.018,0x6cb49b));
-    }else if(['men-repair','men-trim'].includes(id)){
-      surgeryGroup.add(new THREE.Mesh(new THREE.TorusGeometry(.12,.016,8,36, id==='men-repair'?Math.PI*1.7:Math.PI),makeMaterial(gold,.28,.55)));
-    }else if(id==='carp-release'){
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.13,.05,.02)),c.clone().add(new THREE.Vector3(-.03,0,.02)),.025,gold,.6));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.03,0,.02)),c.clone().add(new THREE.Vector3(.13,.05,.02)),.025,gold,.6));
-    }else if(id==='hallux-surgery'){
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,-.11,.01)),c.clone().add(new THREE.Vector3(.10,.10,.01)),.012,gold,.65));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.08,-.07,.04)),c.clone().add(new THREE.Vector3(.08,.07,.04)),.018,steel,.7));
-      [-.04,.04].forEach(t=>surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(t,t,.06)),.018,gold)));
-    }else if(id==='achilles-surgery'){
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(0,-.18,.02)),c.clone().add(new THREE.Vector3(0,.16,.02)),.018,gold));
-      [-.03,.03].forEach(x=>surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(x,-.13,.03)),c.clone().add(new THREE.Vector3(-x,.10,.03)),.008,steel)));
-    }else if(id==='ankle-surgery'){
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,.12,.02)),c.clone().add(new THREE.Vector3(.12,-.08,.02)),.012,gold,.55));
-      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(-.12,.12,.02)),.025,steel));
-      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.12,-.08,.02)),.025,steel));
-    }else if(['stenosis-decomp','disc-surgery'].includes(id)){
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.13,-.12,.02)),c.clone().add(new THREE.Vector3(-.13,.12,.02)),.014,gold,.5));
-      surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.13,-.12,.02)),c.clone().add(new THREE.Vector3(.13,.12,.02)),.014,gold,.5));
-      surgeryGroup.add(ball(c.clone().add(new THREE.Vector3(.08,.02,.04)),.04,0xd6a85b,true));
-    }else{
-      const surgicalFocus=new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35));surgicalFocus.position.copy(c);surgeryGroup.add(surgicalFocus);
-      surgeryGroup.add(ball(c,.045,0xd6a85b,true));
-    }
-    surgeryGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive){m.emissive=(m.color||new THREE.Color(0xd6a85b)).clone();m.emissiveIntensity=.10;}});}});
-    scene.add(surgeryGroup);
-  }
-  function setSurgeryMode(d,id){
-    selectedDisease=d;selectedSurgery=id;const cfg=getSettings(d);
-    normalGroup.visible=false;pathologyGroup.visible=false;figure.visible=true;kineticGroup.visible=false;lesionGroup.visible=false;
-    for(const m of sourceMeshes){
-      const match=cfg.pattern.test(baseName(m));
-      m.visible=match&&layerAllowed(m.userData.layer||'skeleton');
-      if(m.visible)setMeshEmphasis(m,0x7d8d8b);
-    }
-    buildOperation(d,id);
-    surgeryGroup.visible=true;
-    controls.enabled=true;controls.target.set(cfg.x,cfg.y,cfg.z);camera.position.set(cfg.x+.25,cfg.y+.05,cfg.dist);camera.lookAt(controls.target);controls.update();
-    const label=$('rightViewLabel');if(label)label.textContent='CHIRURGIE';
-    const split=$('splitLabels');if(split)split.style.display='none';
-    const line=$('viewerCenterLine');if(line)line.style.display='none';
-    setStatus('Principe opératoire · '+(d.options.find(o=>o.id===id)?.name||'option sélectionnée'));
-    setLabel('Modèle anatomique régional et repère 3D du geste. Le matériel coloré illustre le principe, pas une planification opératoire.');
-  }
-  function makeChainBone(a,b,r,color){
-    const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();
-    const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r*.72,r,len,18),makeMaterial(color,.33,.08));
-    mesh.position.copy(a).add(b).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return mesh;
-  }
-  function makeJoint(p,r,color){
-    const m=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),makeMaterial(color,.32,.12));m.position.copy(p);return m;
-  }
-  function chainPoints(type,degree,offset,normal){
-    const sign=normal?0:(type==='valgus'?-1:1),v=normal?0:degree/30;
-    const hip=new THREE.Vector3(offset, .62, 0);
-    const pelvis=new THREE.Vector3(offset, .84, 0);
-    let hx=0,kx=0,ax=0,fx=0,fy=-.86,az=0,footZ=.19;
-    if(!normal){
-      if(type==='varus'){kx=.19*v;ax=.08*v;fx=.11*v;}
-      if(type==='valgus'){kx=-.19*v;ax=-.08*v;fx=-.11*v;}
-      if(type==='pronation'){ax=.08*v;fx=.17*v;footZ=.30;az=.18*v;}
-      if(type==='ankle'){ax=.015*v;fx=.06*v;fy=-.81+.04*v;footZ=.18-.04*v;}
-      if(type==='hip'){hx=-.10*v;kx=-.06*v;ax=.07*v;fy=-.86+.035*v;}
-      if(type==='pelvis'){hx=.06*v;kx=.035*v;ax=-.035*v;}
-    }
-    const hipJ=new THREE.Vector3(offset+hx,.40,0);
-    const knee=new THREE.Vector3(offset+kx,-.03,0);
-    const ankle=new THREE.Vector3(offset+ax,-.47,az);
-    const forefoot=new THREE.Vector3(offset+fx,fy,footZ);
-    return {pelvis,hip:hipJ,knee,ankle,foot:forefoot};
-  }
-  function drawChain(points,normal,type,degree){
-    const group=new THREE.Group();const color=normal?0x7baea0:0xc8d2d0;
-    const adjacent=normal?color:0xd8a04f,primary=normal?color:0xd9534b;
-    const pelvisLeft=points.pelvis.clone().add(new THREE.Vector3(-.13,0,0)),pelvisRight=points.pelvis.clone().add(new THREE.Vector3(.13,0,0));
-    group.add(makeChainBone(pelvisLeft,pelvisRight,.035,normal?0x7baea0:0x9caaa8));
-    group.add(makeChainBone(points.hip,points.knee,.045,color));
-    group.add(makeChainBone(points.knee,points.ankle,.035,normal?color:primary));
-    group.add(makeChainBone(points.ankle,points.foot,.026,normal?color:adjacent));
-    group.add(makeJoint(points.pelvis,.065,normal?0x7baea0:0xa8b7b4));
-    group.add(makeJoint(points.hip,.06,normal?0x7baea0:adjacent));
-    group.add(makeJoint(points.knee,.063,normal?0x7baea0:primary));
-    group.add(makeJoint(points.ankle,.055,normal?0x7baea0:adjacent));
-    group.add(makeJoint(points.foot,.045,normal?0x7baea0:0x93b9ad));
-    // Small luminous rings identify the primary and adjacent joints.
-    if(!normal){
-      const main=new THREE.Mesh(new THREE.TorusGeometry(.085,.008,7,30),makeMaterial(0xdf635a,.4,.04,true,.7));main.position.copy(points.knee);main.rotation.x=.35;group.add(main);
-      const upper=new THREE.Mesh(new THREE.TorusGeometry(.078,.006,7,30),makeMaterial(0xd8a04f,.4,.04,true,.62));upper.position.copy(points.hip);group.add(upper);
-      const lower=new THREE.Mesh(new THREE.TorusGeometry(.07,.006,7,30),makeMaterial(0xd8a04f,.4,.04,true,.62));lower.position.copy(points.ankle);group.add(lower);
-    }
-    group.position.z=.0;group.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});return group;
-  }
-  function buildChain(){
-    removeGroup(kineticGroup);kineticGroup=new THREE.Group();
-    const baseOffset=-.31,sideOffset=.31;
-    kineticGroup.add(drawChain(chainPoints(chainType,chainDegrees,baseOffset,true),true,chainType,chainDegrees));
-    kineticGroup.add(drawChain(chainPoints(chainType,chainDegrees,sideOffset,false),false,chainType,chainDegrees));
-    // A faint alignment guide runs through each limb.
-    [-.31,.31].forEach(x=>{
-      const guide=new THREE.Mesh(new THREE.CylinderGeometry(.002,.002,1.7,5),makeMaterial(0xa9c4be,.7,0,true,.42));guide.position.set(x,.0,-.045);kineticGroup.add(guide);
-    });
-    kineticGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
-    scene.add(kineticGroup);kineticGroup.visible=mode==='kinetic';
-    if(mode==='kinetic'){
-      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,3.25);camera.lookAt(controls.target);controls.update();
-    }
-  }
-  function setLayer(m){layerMode=m;if(ready)setMode(mode,selectedDisease,selectedSurgery);}
-  function modeVisibility(){
-    const diseaseView=mode==='compare', surgery=mode==='surgery', kinetic=mode==='kinetic';
-    const split=$('splitLabels');if(split)split.style.display='none';
-    const line=$('viewerCenterLine');if(line)line.style.display='none';
-    const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display='flex';
-    if(!ready)return;
-    normalGroup.visible=diseaseView&&referenceState==='normal';
-    pathologyGroup.visible=diseaseView&&referenceState!=='normal';
-    figure.visible=surgery;
-    lesionGroup.visible=diseaseView&&referenceState!=='normal';
-    surgeryGroup.visible=surgery;
-    kineticGroup.visible=kinetic;
-    controls.enabled=true;
-    if(diseaseView)setStatus(referenceState==='normal'?'MAQUETTE · NORMALE':'MAQUETTE · MALADIE');
-    if(kinetic){if(ctr)ctr.style.display='none';setStatus('CHAÎNE CINÉTIQUE');}
-  }
-  function setMode(next,d,surgery){
-    mode=next||'compare';selectedDisease=d||selectedDisease;selectedSurgery=surgery||selectedSurgery;
-    if(!ready)return;
-    if(mode==='compare'){
-      restoreMeshes(sourceMeshes);resetMeshes(sourceMeshes);
-      restoreMeshes(normalMeshes);restoreMeshes(pathologyMeshes);
-      removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
-      removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
-      const opts=getSettings(selectedDisease);
-      normalGroup.position.x=0;pathologyGroup.position.x=0;
-      regionOnly(normalMeshes,selectedDisease,false);
-      regionOnly(pathologyMeshes,selectedDisease,referenceState!=='normal');
-      if(referenceState!=='normal')buildLesion(selectedDisease,0);
-      controls.enabled=true;controls.target.set(opts.x,opts.y,opts.z);
-      camera.position.set(opts.x+.10,opts.y+.04,opts.dist);
-      camera.lookAt(controls.target);controls.update();
-      modeVisibility();
-    }else if(mode==='surgery'){
-      resetMeshes(sourceMeshes);restoreMeshes(sourceMeshes);
-      resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);
-      removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
-      setSurgeryMode(selectedDisease,selectedSurgery);
-      modeVisibility();
-    }else{
-      resetMeshes(sourceMeshes);restoreMeshes(sourceMeshes);
-      resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);
-      removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
-      removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
-      figure.visible=false;normalGroup.visible=false;pathologyGroup.visible=false;kineticGroup.visible=true;
-      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,3.25);camera.lookAt(controls.target);controls.update();
-      const lbl=$('splitLabels');if(lbl)lbl.style.display='none';
-      const line=$('viewerCenterLine');if(line)line.style.display='none';
-      const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display='flex';
-      setStatus('CHAÎNE CINÉTIQUE');setLabel('');buildChain();
-    }
-    renderNow();
-  }
-  function setReference(view){
-    referenceState=view==='normal'?'normal':'disease';
-    if(ready&&mode==='compare')setMode('compare',selectedDisease,selectedSurgery);
-  }
-  function resetMeshes(meshes){restoreMeshes(meshes);for(const m of meshes)m.visible=false;}
-  function pickStructure(x,y){
-    if(!ready)return;
-    const el=renderer.domElement,rect=el.getBoundingClientRect();
-    const meshes=referenceState==='normal'?normalMeshes:pathologyMeshes;
-    const mouse=new THREE.Vector2(((x-rect.left)/rect.width)*2-1,-((y-rect.top)/rect.height*2-1));
-    const ray=new THREE.Raycaster();ray.setFromCamera(mouse,camera);
-    const hit=ray.intersectObjects(meshes.filter(m=>m.visible),false)[0];
-    if(hit)setStatus((referenceState==='normal'?'NORMALE · ':'MALADIE · ')+baseName(hit.object));
-  }
-function renderNow(){
-    if(!renderer||!scene||!camera)return;
-    const host=$('anatomy3d');if(!host)return;
-    if(mode==='compare'&&ready){renderCompare();return;}
-    renderer.setScissorTest(false);renderer.setViewport(0,0,renderer.domElement.clientWidth,renderer.domElement.clientHeight);
-    if(controls)controls.update();renderer.render(scene,camera);
-  }
-  function animate(){
-    raf=requestAnimationFrame(animate);
-    const now=performance.now();const dt=Math.min(.06,(now-lastFrame)/1000);lastFrame=now;if(motionOn)clock+=dt;
-    if(mode==='compare'&&ready){
-      if(lesionGroup)lesionGroup.traverse(o=>{if(o.isMesh){const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive)m.emissiveIntensity=motionOn?.12+.20*(.5+.5*Math.sin(clock*2.8)):.12;});}});
-      renderCompare();
-    }else{
-      if(surgeryGroup)surgeryGroup.traverse(o=>{if(o.isMesh){const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive)m.emissiveIntensity=motionOn?.06+.22*(.5+.5*Math.sin(clock*2.6)):.06;});}});
-      if(motionOn&&kineticGroup)kineticGroup.rotation.y=Math.sin(clock*.45)*.025;
-      if(controls)controls.update();
-      if(renderer&&scene&&camera)renderer.render(scene,camera);
-    }
-  }
-  function reset(){
-    compareAngle=0;compareDistance=1.25;
-    if(mode==='kinetic'){buildChain();return;}
-    if(mode==='compare'){setMode('compare',selectedDisease,selectedSurgery);return;}
-    if(!ready||!selectedDisease)return;
-    const cfg=getSettings(selectedDisease);controls.target.set(cfg.x,cfg.y,cfg.z);
-    camera.position.set(cfg.x+.10,cfg.y+.04,cfg.dist);camera.lookAt(controls.target);controls.update();renderNow();
-  }
-  function setKinetics(type,degree){
-    chainType=type||'varus';chainDegrees=THREE.MathUtils.clamp(Number(degree)||0,0,30);
-    if(ready&&mode==='kinetic')buildChain();
-  }
-  function setMotion(value){motionOn=Boolean(value);}
-  function attach(){
-    if(failed)return;const el=$('anatomy3d');if(!el)return;
-    if(!renderer)init();
-    if(renderer&&renderer.domElement.parentElement!==el){el.prepend(renderer.domElement);}
-    if(ready){modeVisibility();renderNow();}
-    if(!ready&&renderer&&!figure)load();
-  }
-  let loading=false;
-  function load(){
-    if(loading)return;loading=true;
-    const loader=new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-    loader.load(modelUrl,gltf=>{
-      figure=gltf.scene;
-      const bbox=new THREE.Box3().setFromObject(figure),center=bbox.getCenter(new THREE.Vector3());
-      figure.position.sub(center);
-      scene.add(figure);sourceMeshes=[];
-      figure.traverse(m=>{
-        if(!m.isMesh)return;
-        m.userData.__baseMaterial=m.material;sourceMeshes.push(m);m.visible=false;
-      });
-      cloneForMode();figure.visible=false;
-      kineticGroup=new THREE.Group();scene.add(kineticGroup);kineticGroup.visible=false;
-      lesionGroup=new THREE.Group();scene.add(lesionGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
-      ready=true;
-      const label=$('viewerStatus');if(label)label.textContent='Modèle 3D chargé';
-      setMode(mode,window.__orthoClairDisease||{id:'arthrose-genou',title:'Arthrose du genou',region:'Genou'},selectedSurgery||'knee-rehab');
-      setKinetics(chainType,chainDegrees);
-    },progress=>{
-      if(progress.total)setStatus('Chargement de l’anatomie 3D · '+Math.round(progress.loaded/progress.total*100)+' %');
-    },err=>{
-      console.error('OrthoClair 3D load failed',err);failed=true;fallback();
-    });
-  }
-  window.OrthoClair3D={attach,setMode,setLayer,setMotion,setReference,reset,setKinetics,focus:d=>setMode(mode,d,selectedSurgery)};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach,{once:true});else attach();
-})();
-
-
+function group(parent,name){const g=new THREE.Group();g.name=name||'';parent.add(g);return g;}
+function mesh(g,geo,mat,pos=[0,0,0],rot=[0,0,0],scale=null){const o=new THREE.Mesh(geo,mat);o.position.set(pos[0],pos[1],pos[2]);o.rotation.set(rot[0],rot[1],rot[2]);if(scale)o.scale.set(scale[0],scale[1],scale[2]);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;}
+function ellipsoid(g,p,s,mat){return mesh(g,new THREE.SphereGeometry(1,30,22),mat,p,[0,0,0],s);}
+function bar(g,a,b,r,mat,rTop){const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),dir=v2.clone().sub(v1),len=dir.length();const geo=new THREE.CylinderGeometry(rTop===undefined?r:rTop,r,len,18,1,false);const o=mesh(g,geo,mat,v1.clone().add(v2).multiplyScalar(.5).toArray());o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return o;}
+function tube(g,pts,r,mat,segments=28){if(pts.length<2)return null;const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],p[1],p[2])));return mesh(g,new THREE.TubeGeometry(curve,segments,r,9,false),mat);}
+function ring(g,p,r,t,mat,rot=[0,0,0],scale=[1,1,1]){return mesh(g,new THREE.TorusGeometry(r,t,10,36),mat,p,rot,scale);}
+function screw(g,p,axis=[0,1,0],length=.22,r=.025){const o=mesh(g,new THREE.CylinderGeometry(r,r,length,12),M.metal,p);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(...axis).normalize());return o;}
+function disposeObject(obj){if(!obj)return;obj.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else if(!Object.values(M).includes(o.material))o.material.dispose();}});}
+function freshModel(){if(root){scene.remove(root);disposeObject(root);}root=group(scene,'selected anatomical model');layers={bone:group(root,'bone'),cartilage:group(root,'cartilage'),soft:group(root,'ligaments tendons nerves'),lesion:group(root,'pathology highlight'),surgery:group(root,'operative construct')};}
+function basicLights(){scene=new THREE.Scene();scene.background=null;scene.add(new THREE.HemisphereLight(0xf5fbf7,0xb8c8c0,2.25));const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(3.5,4.8,4.5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-3;key.shadow.camera.right=3;key.shadow.camera.top=3;key.shadow.camera.bottom=-3;scene.add(key);const fill=new THREE.DirectionalLight(0xa7e2d4,1.05);fill.position.set(-3,1,2);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.2);rim.position.set(0,2,-4);scene.add(rim);}
+function init3D(){const mount=$('threeMount');renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(mount.clientWidth||800,mount.clientHeight||600);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;mount.appendChild(renderer.domElement);basicLights();camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(1.25,.55,3.3);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minDistance=1.35;controls.maxDistance=6.5;controls.target.set(0,0,0);controls.screenSpacePanning=true;controls.update();resizeObserver=new ResizeObserver(()=>resize());resizeObserver.observe(mount);window.addEventListener('resize',resize);animate();}
+function resize(){if(!renderer||!camera)return;const m=$('threeMount');const w=Math.max(1,m.clientWidth),h=Math.max(1,m.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+function resetCamera(){if(!camera||!controls)return;const kind=selected.kind;const cfg={knee:[0,0,3.15],hip:[-.05,0,3.25],shoulder:[0,.05,3.15],wrist:[0,0,2.75],spine:[0,0,3.65],ankle:[0,-.05,3.05],foot:[0,-.03,3.15]}[kind]||[0,0,3.2];controls.target.set(cfg[0],cfg[1],0);camera.position.set(cfg[0]+.45,cfg[1]+.15,cfg[2]);controls.update();}
+function makeLongBone(g,a,b,r1,r2,mat,bulge=.06){bar(g,a,b,r1,mat,r2);const aa=new THREE.Vector3(...a),bb=new THREE.Vector3(...b);ellipsoid(g,aa.toArray(),[r1*1.07,r1*1.07,r1*1.07],mat);ellipsoid(g,bb.toArray(),[r2+bulge,r2+bulge,r2+bulge],mat);}
+function buildKnee(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
+ makeLongBone(B,[0,.08,0],[0,.82,0],.14,.19,M.bone,.04);
+ ellipsoid(B,[-.13,-.025,0],[.205,.205,.185],M.bone);ellipsoid(B,[.13,-.025,0],[.205,.205,.185],M.bone);
+ ellipsoid(B,[0,-.24,0],[.34,.075,.22],M.bone2);makeLongBone(B,[0,-.26,0],[0,-.91,0],.145,.105,M.bone,.025);
+ ellipsoid(B,[0,-.09,.285],[.12,.18,.075],M.bone2);
+ ellipsoid(C,[-.13,-.148,.012],[.17,.043,.155],M.cart);ellipsoid(C,[.13,-.148,.012],[.17,.043,.155],M.cart);
+ ellipsoid(C,[-.13,-.105,.03],[.155,.025,.135],M.cart);ellipsoid(C,[.13,-.105,.03],[.155,.025,.135],M.cart);
+ tube(S,[[-.27,-.06,.09],[-.22,-.14,.19],[-.11,-.15,.21],[0,-.13,.19],[.11,-.15,.21],[.22,-.14,.19],[.27,-.06,.09]],.047,M.softLight);
+ tube(S,[[-.25,.09,.05],[-.29,-.05,.10],[-.26,-.16,.10]],.027,M.soft);tube(S,[[.25,.09,.05],[.29,-.05,.10],[.26,-.16,.10]],.027,M.soft);
+ tube(S,[[-.12,.06,.10],[-.04,-.045,.15],[.09,-.17,.13]],.027,id==='acl'?M.lesion:M.soft);
+ tube(S,[[.12,.06,.10],[.06,-.03,.18],[-.09,-.17,.13]],.026,M.soft);
+ tube(S,[[0,.16,.30],[0,.03,.32],[0,-.085,.30]],.034,M.softLight);
+ tube(S,[[0,-.26,.22],[0,-.38,.19],[0,-.48,.15]],.032,M.softLight);
+ if(id==='knee-oa'){ellipsoid(L,[-.14,-.137,.17],[.18,.055,.11],M.lesionGlass);tube(L,[[-.27,-.13,.15],[-.19,-.10,.18],[-.11,-.13,.17]],.014,M.lesion);}
+ if(id==='meniscus'){tube(L,[[-.25,-.12,.205],[-.18,-.10,.225],[-.135,-.13,.22]],.018,M.lesion);ellipsoid(L,[-.15,-.11,.22],[.032,.018,.025],M.lesion);}
+ if(id==='acl'){tube(L,[[-.12,.035,.12],[-.07,-.01,.155]],.022,M.lesion);tube(L,[[.045,-.09,.14],[.09,-.16,.13]],.022,M.lesion);ellipsoid(L,[.005,-.045,.16],[.04,.022,.025],M.lesion);}
+}
+function buildShoulder(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
+ ellipsoid(B,[-.23,.02,-.03],[.30,.43,.10],M.bone);tube(B,[[-.39,.10,.02],[-.20,.20,.07],[.05,.20,.07],[.30,.13,.02]],.055,M.bone2);
+ ellipsoid(B,[-.20,-.07,.09],[.22,.18,.045],M.bone2);
+ makeLongBone(B,[.22,-.02,0],[.22,-.73,0],.12,.085,M.bone,.035);ellipsoid(B,[.10,.06,0],[.24,.24,.21],M.bone);
+ tube(B,[[-.20,.12,.06],[-.02,.24,.05],[.19,.24,.02],[.35,.18,.02]],.055,M.bone2);
+ ring(C,[.10,.06,.018],.20,.028,M.cart,[Math.PI/2,0,0],[1,1,.40]);
+ tube(S,[[-.25,.15,.09],[-.08,.24,.13],[.10,.28,.13],[.25,.17,.15]],.043,id==='cuff'?M.lesion:M.softLight);
+ tube(S,[[-.26,-.03,.12],[-.10,-.08,.19],[.07,-.06,.19],[.20,.04,.17]],.032,M.soft);
+ tube(S,[[-.14,-.18,.08],[.03,-.19,.17],[.17,-.12,.18]],.031,M.soft);
+ tube(S,[[.18,.14,.12],[.27,.10,.17],[.29,-.02,.15]],.027,M.soft);
+ if(id==='cuff'){tube(L,[[-.09,.255,.16],[-.015,.245,.18],[.045,.275,.16]],.035,M.lesion);tube(L,[[-.09,.23,.15],[-.045,.20,.16]],.016,M.lesion);}
+}
+function buildHip(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
+ ellipsoid(B,[-.32,.30,0],[.29,.54,.12],M.bone);ellipsoid(B,[-.47,-.05,.02],[.19,.25,.13],M.bone);tube(B,[[-.48,.49,.04],[-.25,.40,.07],[-.12,.20,.06],[-.14,.02,.06]],.075,M.bone2);
+ ring(B,[-.17,.01,.09],.245,.055,M.bone2,[Math.PI/2,0,0],[1,1,.55]);
+ ellipsoid(B,[.04,.015,.04],[.285,.285,.25],M.bone);makeLongBone(B,[.17,-.12,.01],[.45,-.78,0],.135,.09,M.bone,.035);
+ ring(C,[.04,.015,.055],.225,.03,M.cart,[Math.PI/2,0,0],[1,1,.70]);
+ ellipsoid(C,[-.12,.015,.085],[.10,.17,.06],M.cart);
+ tube(S,[[-.13,.23,.06],[-.03,.25,.15],[.10,.22,.16],[.18,.12,.12]],.03,M.softLight);
+ tube(S,[[-.06,-.16,.12],[.08,-.20,.14],[.19,-.10,.13]],.028,M.soft);
+ if(id==='hip-oa'){ring(L,[.04,.015,.08],.25,.047,M.lesion,[Math.PI/2,0,0],[1,1,.73]);ellipsoid(L,[-.12,.025,.13],[.065,.07,.025],M.lesionGlass);}
+}
+function buildWrist(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
+ makeLongBone(B,[-.20,.75,-.01],[-.16,.12,0],.085,.07,M.bone,.025);makeLongBone(B,[.13,.74,-.03],[.17,.12,-.01],.078,.06,M.bone2,.02);
+ for(let i=0;i<4;i++){const x=-.19+i*.125;ellipsoid(B,[x,.02,.02],[.058,.065,.065],M.bone);ellipsoid(B,[x+.025,-.105,.03],[.05,.06,.06],M.bone2);}
+ for(let i=0;i<5;i++){const x=-.24+i*.12;makeLongBone(B,[x,-.14,.02],[x+(i-2)*.03,-.53,.0],.032,.024,M.bone,.012);}
+ tube(S,[[-.18,.16,.11],[-.10,.04,.14],[0,-.04,.15],[.1,-.02,.13],[.18,.1,.10]],.026,M.soft);
+ tube(S,[[-.16,.68,.04],[-.08,.35,.08],[.0,.02,.12],[.06,-.28,.07]],.024,M.nerve);
+ tube(S,[[-.26,.12,.14],[-.12,.10,.16],[.03,.10,.16],[.19,.12,.14]],.025,id==='carpal'?M.lesion:M.softLight);
+ if(id==='carpal'){ellipsoid(L,[0,.07,.155],[.09,.055,.025],M.lesionGlass);tube(L,[[-.055,.115,.18],[-.02,.09,.18]],.02,M.lesion);tube(L,[[.04,.09,.18],[.075,.115,.18]],.02,M.lesion);}
+}
+function vertebra(g,y,slip=0){const x=slip;ellipsoid(g,[x,y,0],[.27,.18,.20],M.bone);ellipsoid(g,[x-.20,y-.02,0],[.075,.105,.105],M.bone2);ellipsoid(g,[x+.20,y-.02,0],[.075,.105,.105],M.bone2);bar(g,[x-.20,y-.015,0],[x-.22,y-.01,-.20],.045,M.bone2);bar(g,[x+.20,y-.015,0],[x+.22,y-.01,-.20],.045,M.bone2);tube(g,[[x-.22,y,-.18],[x,y-.025,-.29],[x+.22,y,-.18]],.052,M.bone2);tube(g,[[x-.20,y,.02],[x-.12,y+.10,.05],[x+.12,y+.10,.05],[x+.20,y,.02]],.045,M.bone);}
+function buildSpine(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;const slips=id==='spondy'?[0,0,.11,0]:[0,0,0,0];
+ for(let i=0;i<4;i++){const y=.55-i*.36;vertebra(B,y,slips[i]||0);if(i<3)ellipsoid(C,[slips[i]||0,y-.19,.015],[.215,.055,.17],M.cart);}
+ tube(S,[[-.29,.64,-.06],[-.31,.28,-.08],[-.30,-.08,-.08],[-.26,-.44,-.08]],.035,M.softLight);
+ if(id==='disc'){ellipsoid(L,[.02,-.04,.19],[.16,.07,.045],M.lesion);tube(L,[[-.02,-.05,.17],[.06,-.04,.22],[.12,-.015,.18]],.032,M.lesion);}
+ if(id==='stenosis'){ellipsoid(L,[0,-.10,-.25],[.10,.30,.035],M.lesionGlass);tube(L,[[-.12,-.06,-.29],[0,-.09,-.31],[.12,-.06,-.29]],.022,M.lesion);}
+ if(id==='spondy'){tube(L,[[-.05,-.05,-.12],[.10,-.05,-.15],[.19,-.01,-.13]],.025,M.lesion);}
+}
+function buildAnkle(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
+ makeLongBone(B,[-.11,.72,-.01],[-.11,.03,0],.11,.10,M.bone,.03);makeLongBone(B,[.17,.66,-.02],[.17,.06,0],.07,.065,M.bone2,.02);
+ ellipsoid(B,[.015,-.05,.015],[.20,.16,.18],M.bone);ellipsoid(B,[.04,-.27,-.02],[.23,.10,.16],M.bone2);ellipsoid(B,[-.10,-.22,-.01],[.13,.22,.13],M.bone);
+ tube(B,[[.04,-.30,0],[.10,-.39,0],[.23,-.41,.01],[.36,-.38,0]],.055,M.bone);
+ ellipsoid(C,[.01,.065,.07],[.16,.05,.11],M.cart);
+ tube(S,[[.16,.08,.09],[.23,-.03,.12],[.12,-.13,.13]],.025,id==='ankle'?M.lesion:M.soft);
+ tube(S,[[.14,.08,.09],[.28,.04,.08],[.23,-.08,.09]],.024,M.soft);
+ tube(S,[[-.05,.12,-.08],[-.04,-.03,-.14],[.02,-.19,-.15]],.04,M.softLight);
+ if(id==='achilles'){tube(L,[[-.04,.16,-.13],[-.02,.07,-.15]],.03,M.lesion);tube(L,[[-.01,-.01,-.15],[.03,-.10,-.15]],.03,M.lesion);ellipsoid(L,[.005,.025,-.15],[.045,.06,.04],M.lesion);}
+ if(id==='ankle'){tube(L,[[.16,.08,.10],[.22,.015,.14]],.032,M.lesion);ellipsoid(L,[.19,.04,.13],[.045,.045,.03],M.lesion);}
+}
+function buildFoot(id){
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
+ ellipsoid(B,[0,-.08,-.02],[.19,.22,.15],M.bone2);ellipsoid(B,[.16,-.20,.01],[.19,.10,.12],M.bone);
+ for(let i=0;i<5;i++){const x=-.20+i*.105;const toeBend=(id==='hallux'&&i===0)?-.20:0;const a=[x,-.18,.035],b=[x+toeBend,-.52,.035];makeLongBone(B,a,b,i===0?.052:.035,i===0?.036:.025,M.bone,.012);ellipsoid(B,[b[0]+(id==='hallux'&&i===0?-.07:0),-.60,.04],[i===0?.055:.035,.10,.04],M.bone2);if(i===0)ellipsoid(B,[x+toeBend,-.52,.035],[.065,.07,.05],M.bone2);}
+ tube(S,[[-.19,-.16,.10],[-.05,-.12,.13],[.12,-.18,.11],[.28,-.28,.09]],.024,M.softLight);tube(S,[[-.20,-.17,.14],[-.23,-.29,.14],[-.21,-.41,.13]],.02,id==='hallux'?M.lesion:M.soft);
+ if(id==='hallux'){ellipsoid(L,[-.24,-.28,.15],[.075,.06,.04],M.lesionGlass);tube(L,[[-.20,-.20,.13],[-.27,-.29,.16],[-.35,-.37,.14]],.025,M.lesion);}
+}
+function buildSurgery(id,op){
+ const G=layers.surgery;
+ if(op==='knee-tka'){ellipsoid(G,[-.13,-.03,.015],[.185,.19,.17],M.metal);ellipsoid(G,[.13,-.03,.015],[.185,.19,.17],M.metal);bar(G,[-.28,-.13,.03],[.28,-.13,.03],.025,M.metalDark);ellipsoid(G,[0,-.205,.02],[.32,.025,.20],M.poly);ellipsoid(G,[0,-.235,.02],[.35,.018,.21],M.metal);bar(G,[0,-.25,0],[0,-.60,0],.052,M.metal);bar(G,[0,.14,0],[0,.47,0],.048,M.metal);}
+ if(op==='knee-hto'){tube(G,[[-.15,-.25,.17],[-.12,-.37,.17],[-.09,-.49,.15]],.022,M.lesion);ellipsoid(G,[-.11,-.36,.14],[.12,.045,.04],M.poly);bar(G,[-.23,-.29,.19],[-.02,-.47,.18],.025,M.metal);[[-.21,-.30,.21],[-.15,-.36,.21],[-.09,-.42,.19]].forEach(p=>screw(G,p,[.6,-.5,.7],.16,.018));}
+ if(op==='meniscus-repair'){for(let i=0;i<4;i++){const x=-.20+i*.045;tube(G,[[x,-.10,.235],[x-.015,-.055,.235],[x+.025,-.02,.22]],.009,M.metalDark);}ring(G,[-.15,-.11,.225],.027,.009,M.metal,[Math.PI/2,0,0]);ring(G,[-.03,-.12,.225],.027,.009,M.metal,[Math.PI/2,0,0]);}
+ if(op==='meniscus-trim'){tube(G,[[-.23,-.115,.20],[-.17,-.09,.225],[-.12,-.12,.21]],.045,M.lesionGlass);}
+ if(op==='acl-graft'){tube(G,[[-.13,.025,.13],[-.05,-.03,.205],[.01,-.09,.20],[.10,-.17,.13]],.035,M.poly);bar(G,[-.13,.12,.02],[-.08,-.02,.02],.036,M.metalDark);bar(G,[.11,-.08,.02],[.13,-.25,.02],.034,M.metalDark);ring(G,[-.13,.02,.12],.052,.015,M.metal);ring(G,[.09,-.15,.12],.05,.014,M.metal);}
+ if(op==='cuff-repair'){for(const p of [[.05,.12,.22],[.16,.11,.22]]){screw(G,p,[0,0,1],.11,.024);ring(G,p,.04,.012,M.metal,[Math.PI/2,0,0]);}tube(G,[[-.05,.25,.17],[.025,.19,.22],[.12,.20,.22],[.22,.16,.17]],.04,M.poly);tube(G,[[.05,.18,.23],[.10,.24,.21],[.15,.17,.23]],.009,M.metalDark);tube(G,[[.15,.18,.23],[.18,.23,.20],[.20,.15,.22]],.009,M.metalDark);}
+ if(op==='hip-tha'){ring(G,[-.15,.01,.12],.205,.035,M.metal,[Math.PI/2,0,0],[1,1,.75]);ellipsoid(G,[.025,.01,.18],[.16,.16,.15],M.metal);bar(G,[.10,-.08,.06],[.40,-.60,.01],.058,M.metal);ellipsoid(G,[.39,-.60,.01],[.075,.10,.08],M.metal);}
+ if(op==='hip-resurface'){ellipsoid(G,[.04,.015,.07],[.285,.285,.20],M.metal);ring(G,[.04,.015,.08],.24,.025,M.metal,[Math.PI/2,0,0],[1,1,.74]);}
+ if(op==='carpal-release'){tube(G,[[-.26,.12,.16],[-.16,.12,.17],[-.07,.13,.17]],.028,M.lesion);tube(G,[[.06,.13,.17],[.16,.12,.16],[.22,.12,.14]],.028,M.lesion);tube(G,[[-.075,.13,.18],[-.02,.15,.19],[.035,.13,.18]],.009,M.metal);ellipsoid(G,[0,.02,.18],[.06,.05,.025],M.poly);}
+ if(op==='ankle-repair'){screw(G,[.18,.07,.13],[.25,-.6,.8],.16,.018);screw(G,[.13,-.09,.15],[-.2,.5,.8],.15,.018);tube(G,[[.18,.07,.15],[.20,0,.17],[.15,-.07,.16],[.13,-.09,.16]],.018,M.poly);}
+ if(op==='achilles-repair'){tube(G,[[-.04,.18,-.16],[-.01,.08,-.18],[.01,-.02,-.17],[.02,-.13,-.15]],.035,M.poly);for(let i=0;i<3;i++){const y=.12-i*.08;tube(G,[[-.07,y,-.16],[0,y+.03,-.18],[.07,y-.02,-.16]],.008,M.metalDark);}}
+ if(op==='hallux-osteotomy'){tube(G,[[-.20,-.31,.09],[-.24,-.39,.12],[-.28,-.46,.10]],.025,M.lesion);bar(G,[-.26,-.38,.15],[-.13,-.29,.15],.024,M.metal);screw(G,[-.22,-.35,.18],[.5,.65,.5],.13,.016);screw(G,[-.16,-.32,.18],[.5,.65,.5],.13,.016);}
+ if(op==='disc-micro'){tube(G,[[-.04,-.04,-.23],[0,-.04,-.31],[.05,-.05,-.24]],.035,M.metal);ellipsoid(G,[.05,-.02,-.22],[.06,.05,.03],M.lesionGlass);}
+ if(op==='spine-decomp'){ring(G,[0,-.10,-.27],.15,.035,M.poly,[0,0,0],[1,.75,.45]);tube(G,[[-.15,-.11,-.28],[0,-.14,-.31],[.15,-.11,-.28]],.025,M.metalDark);}
+ if(op==='spine-fusion'){for(const y of [.50,.14,-.22]){bar(G,[-.19,y,.02],[-.19,y-.08,-.17],.026,M.metalDark);bar(G,[.19,y,.02],[.19,y-.08,-.17],.026,M.metalDark);}tube(G,[[-.19,.54,-.17],[-.19,.16,-.17],[-.19,-.22,-.17]],.029,M.metal);tube(G,[[.19,.54,-.17],[.19,.16,-.17],[.19,-.22,-.17]],.029,M.metal);}
+}
+function buildCurrent(){if(!scene)return;freshModel();if(selected.kind==='knee')buildKnee(selected.id);else if(selected.kind==='shoulder')buildShoulder(selected.id);else if(selected.kind==='hip')buildHip(selected.id);else if(selected.kind==='wrist')buildWrist(selected.id);else if(selected.kind==='spine')buildSpine(selected.id);else if(selected.kind==='ankle')buildAnkle(selected.id);else buildFoot(selected.id);buildSurgery(selected.id,selectedOp);applyStage();resetCamera();}
+function applyStage(){if(!root)return;root.visible=viewMode==='models';layers.lesion.visible=stage==='lesion';layers.surgery.visible=stage==='operation';document.querySelectorAll('[data-layer]').forEach(b=>b.classList.toggle('active',layers[b.dataset.layer]?.visible!==false));document.querySelectorAll('[data-stage]').forEach(b=>b.classList.toggle('active',b.dataset.stage===stage));const labels={normal:'ANATOMIE DE RÉFÉRENCE',lesion:'MAQUETTE PATHOLOGIQUE',operation:'MAQUETTE OPÉRATOIRE'};$('statusText').textContent=labels[stage];$('sceneLabel').textContent=stage==='normal'?'ANATOMIE DE RÉFÉRENCE':stage==='lesion'?'LÉSION / ANOMALIE MISE EN ÉVIDENCE':'GESTE CHIRURGICAL';document.querySelectorAll('.stage-card').forEach(b=>b.classList.toggle('active',b.dataset.stage===stage));}
+function listCases(filter=''){const host=$('caseList');host.innerHTML='';const term=filter.trim().toLocaleLowerCase('fr');const groups=['Membre inférieur','Membre supérieur','Rachis'];groups.forEach(gr=>{const items=CASES.filter(c=>c.group===gr&&(!term||(c.name+' '+c.region+' '+c.code).toLocaleLowerCase('fr').includes(term)));if(!items.length)return;const label=document.createElement('div');label.className='region-label';label.textContent=gr;host.appendChild(label);items.forEach(c=>{const b=document.createElement('button');b.className='case-btn'+(c.id===selected.id?' active':'');b.dataset.case=c.id;b.innerHTML='<span class="case-dot"></span><span class="case-name"></span><span class="case-code"></span>';b.querySelector('.case-name').textContent=c.name;b.querySelector('.case-code').textContent=c.code;b.addEventListener('click',()=>chooseCase(c.id));host.appendChild(b);});});}
+function renderOps(){const host=$('opsList');host.innerHTML='';selected.ops.forEach(op=>{const b=document.createElement('button');b.className='op-btn'+(op.id===selectedOp?' active':'');b.innerHTML='<span class="op-name"></span><span class="op-tag"></span>';b.querySelector('.op-name').textContent=op.name;b.querySelector('.op-tag').textContent=op.tag;b.addEventListener('click',()=>{selectedOp=op.id;renderOps();if(viewMode==='models'){stage='operation';buildCurrent();}});host.appendChild(b);});}
+function updateHeading(){$('selectedRegion').textContent=selected.region;$('selectedName').textContent=selected.name;listCases($('caseSearch').value);renderOps();}
+function chooseCase(id){selected=CASES.find(c=>c.id===id)||CASES[0];selectedOp=selected.ops[0].id;stage='lesion';updateHeading();if(viewMode==='models')buildCurrent();}
+function changeStage(next){stage=next;applyStage();renderOps();}
+function switchView(next){viewMode=next;$('appShell').classList.toggle('kinetic-mode',next==='kinetic');$('viewerPanel').classList.toggle('chain-view',next==='kinetic');$('modelsTab').classList.toggle('active',next==='models');$('chainTab').classList.toggle('active',next==='kinetic');$('modelsTab').setAttribute('aria-selected',String(next==='models'));$('chainTab').setAttribute('aria-selected',String(next==='kinetic'));$('chainPanel').style.display=next==='kinetic'?'flex':'none';$('chainPanel').style.flexDirection='column';root&&(root.visible=next==='models');if(next==='kinetic'){buildKinetic();$('statusText').textContent='CHAÎNE CINÉTIQUE';$('sceneLabel').textContent='AXES ET COMPENSATIONS';}else{if(kineticRoot){scene.remove(kineticRoot);disposeObject(kineticRoot);kineticRoot=null;}buildCurrent();}resize();}
+function chooseLayer(key,btn){if(!layers[key])return;layers[key].visible=!layers[key].visible;btn.classList.toggle('active',layers[key].visible);}
+function buildKinetic(){
+ if(!scene)return;if(kineticRoot){scene.remove(kineticRoot);disposeObject(kineticRoot);}kineticRoot=group(scene,'kinetic chain model');
+ const G=kineticRoot;const d=chainAngle*Math.PI/180;const intensity=d/Math.max(25*Math.PI/180,.001);
+ const bx=chainType==='pelvis'?Math.sin(d)*.12:0;
+ let hip=[.04+bx,.42,0],knee=[.04,.02,0],ankle=[.04,-.53,0],pelvisRot=0,footRot=0,trunkLean=0;
+ if(chainType==='varus')knee[0]+=.20*intensity;if(chainType==='valgus')knee[0]-=.20*intensity;if(chainType==='pronation'){ankle[0]-=.10*intensity;knee[0]-=.12*intensity;}if(chainType==='equinus'){footRot=-.35*intensity;knee[0]+=.07*intensity;}if(chainType==='hipflex'){knee[0]+=.15*intensity;pelvisRot=-.19*intensity;trunkLean=.10*intensity;}if(chainType==='pelvis'){pelvisRot=.22*intensity;hip[0]+=.06*intensity;trunkLean=-.11*intensity;}
+ const spine=group(G,'lumbar spine');for(let i=0;i<4;i++){const y=.63+i*.11;ellipsoid(spine,[bx+trunkLean*(i/3),y,0],[.12,.065,.095],i===1?M.cart:M.bone);if(i<3)bar(spine,[bx+trunkLean*(i/3),y-.04,0],[bx+trunkLean*((i+1)/3),y+.07,0],.025,M.bone2);}
+ const pelvis=group(G,'pelvis');ellipsoid(pelvis,[hip[0],.40,0],[.31,.15,.13],M.bone);ellipsoid(pelvis,[hip[0]-.23,.42,0],[.13,.17,.10],M.bone2);ellipsoid(pelvis,[hip[0]+.02,.30,0],[.15,.11,.09],M.bone2);pelvis.rotation.z=pelvisRot;pelvis.position.x=bx;
+ const topHip=[hip[0]+bx,.36,.01],kneeP=[knee[0]+bx,knee[1],.01],ankleP=[ankle[0]+bx,ankle[1],.01];makeLongBone(G,topHip,kneeP,.09,.07,M.bone,.02);ellipsoid(G,kneeP,[.10,.105,.09],M.bone2);makeLongBone(G,kneeP,ankleP,.075,.055,M.bone,.018);ellipsoid(G,ankleP,[.075,.08,.075],M.bone2);
+ const foot=group(G,'foot');ellipsoid(foot,[ankleP[0]+.02,ankleP[1]-.08,0],[.10,.12,.09],M.bone2);bar(foot,[ankleP[0]+.02,ankleP[1]-.12,0],[ankleP[0]+.30*Math.cos(footRot),ankleP[1]-.16-.22*Math.sin(Math.abs(footRot)),0],.05,M.bone);for(let i=0;i<3;i++)bar(foot,[ankleP[0]+.12,ankleP[1]-.15+i*.025,.02],[ankleP[0]+.31,ankleP[1]-.16+i*.04,.02],.015,M.bone2);
+ const mark=(p,r,color)=>ring(G,p,r,.016,material(color,.3),[Math.PI/2,0,0]);const primary=chainType==='varus'||chainType==='valgus'?[kneeP[0],kneeP[1],.09]:chainType==='pronation'||chainType==='equinus'?[ankleP[0],ankleP[1],.09]:[hip[0]+bx,.36,.09];const prox=chainType==='hipflex'||chainType==='pelvis'?[hip[0]+bx,.38,.1]:[hip[0]+bx,.36,.1];const distal=[ankleP[0]+.05,ankleP[1]-.08,.1];mark(primary,.145,D.lesion);mark(prox,.12,D.gold);mark(distal,.105,D.cart);tube(G,[[topHip[0],topHip[1],.10],[kneeP[0],kneeP[1],.10],[ankleP[0],ankleP[1],.10]],.012,M.lesion);tube(G,[[ankleP[0],ankleP[1],.12],[ankleP[0]+.22,ankleP[1]-.12,.12],[ankleP[0]+.32,ankleP[1]-.15,.12]],.018,M.cart);
+ G.position.set(-.02,-.02,0);root&&(root.visible=viewMode==='models');kineticRoot.visible=viewMode==='kinetic';controls.target.set(.05,.05,0);camera.position.set(.68,.22,3.35);controls.update();
+ const impacts={varus:[['PRIMAIRE','Genou : axe varum et surcharge médiale'],['PROXIMAL','Hanche / bassin : compensation de l’axe du membre'],['DISTAL','Cheville / pied : adaptation de l’appui et du varus de l’arrière-pied']],valgus:[['PRIMAIRE','Genou : axe valgum et surcharge latérale'],['PROXIMAL','Hanche : rotation interne compensatrice possible'],['DISTAL','Cheville / pied : adaptation de l’arrière-pied et de l’appui']],pronation:[['PRIMAIRE','Pied : abaissement de l’arche et éversion du calcanéum'],['PROXIMAL','Tibia / genou : rotation interne et valgus dynamique possibles'],['DISTAL','Avant-pied : abduction et modification des appuis']],equinus:[['PRIMAIRE','Cheville : limitation de la dorsiflexion'],['PROXIMAL','Genou : flexion compensatrice lors de l’appui'],['DISTAL','Pied : appui de l’avant-pied et décollement précoce du talon']],hipflex:[['PRIMAIRE','Hanche : flexion résiduelle'],['PROXIMAL','Bassin / rachis : antéversion et hyperlordose compensatrice'],['DISTAL','Genou : flexion possible pour garder le centre de gravité']],pelvis:[['PRIMAIRE','Bassin : obliquité et asymétrie d’appui'],['PROXIMAL','Rachis lombaire : courbure compensatrice'],['DISTAL','Hanche / genou : différence de hauteur et adaptation du membre']]};
+ $('impactList').innerHTML='';(impacts[chainType]||[]).forEach(a=>{const row=document.createElement('div');row.className='impact-row';row.innerHTML='<div class="impact-key"></div><div class="impact-text"></div>';row.querySelector('.impact-key').textContent=a[0];row.querySelector('.impact-text').textContent=a[1];$('impactList').appendChild(row);});$('degreeValue').textContent=chainAngle+'°';
+}
+function animate(){requestAnimationFrame(animate);if(!renderer||!scene||!camera)return;if(motion){clock+=.016;if(viewMode==='models'&&root)root.rotation.y=Math.sin(clock*.55)*.035;else if(viewMode==='kinetic'&&kineticRoot)kineticRoot.rotation.y=Math.sin(clock*.4)*.025;}else if(root)root.rotation.y=0;controls&&controls.update();renderer.render(scene,camera);}
+function start(){try{init3D();listCases();updateHeading();buildCurrent();buildKinetic();if(kineticRoot)kineticRoot.visible=false;root&&(root.visible=true);}catch(e){console.error(e);$('statusText').textContent='3D INDISPONIBLE';$('sceneLabel').textContent='ACTIVER UN NAVIGATEUR COMPATIBLE WEBGL';}}
+$('modelsTab').addEventListener('click',()=>switchView('models'));$('chainTab').addEventListener('click',()=>switchView('kinetic'));$('caseSearch').addEventListener('input',e=>listCases(e.target.value));
+document.querySelectorAll('[data-stage]').forEach(b=>b.addEventListener('click',()=>{if(viewMode!=='models')switchView('models');changeStage(b.dataset.stage);}));
+document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>chooseLayer(b.dataset.layer,b)));
+$('resetView').addEventListener('click',()=>{if(viewMode==='kinetic'){buildKinetic();return;}resetCamera();});$('motionBtn').addEventListener('click',()=>{motion=!motion;$('motionBtn').textContent='Mouvement : '+(motion?'on':'off');});
+document.querySelectorAll('[data-deformity]').forEach(b=>b.addEventListener('click',()=>{chainType=b.dataset.deformity;document.querySelectorAll('[data-deformity]').forEach(x=>x.classList.toggle('active',x===b));buildKinetic();}));
+$('angleRange').addEventListener('input',e=>{chainAngle=Number(e.target.value);$('degreeValue').textContent=chainAngle+'°';buildKinetic();});
+start();
+</script>
 </body>
 </html>
