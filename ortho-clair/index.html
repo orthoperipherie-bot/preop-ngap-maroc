@@ -592,10 +592,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
         drag={x:e.clientX,y:e.clientY,angle:compareAngle,moved:false};
       });
       renderer.domElement.addEventListener('pointermove',e=>{
-        if(!drag||mode!=='compare')return;
-        const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
-        if(Math.abs(dx)+Math.abs(dy)>4)drag.moved=true;
-        if(drag.moved){compareAngle=drag.angle+dx*.008;updateCompareCameras();renderNow();}
+        if(drag&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>5)drag.moved=true;
       });
       renderer.domElement.addEventListener('pointerup',e=>{
         if(drag&&!drag.moved&&mode==='compare')pickStructure(e.clientX,e.clientY);
@@ -876,7 +873,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
       removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
       const opts=getSettings(selectedDisease);
-      normalGroup.position.set(0,0,0);pathologyGroup.position.set(0,0,0);
+      normalGroup.position.x=0;pathologyGroup.position.x=0;
       regionOnly(normalMeshes,selectedDisease,false);
       regionOnly(pathologyMeshes,selectedDisease,referenceState!=='normal');
       if(referenceState!=='normal')buildLesion(selectedDisease,0);
