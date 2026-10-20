@@ -105,7 +105,7 @@
 
 /* Visual-first patient consultation interface */
 .compare-stage{position:relative}
-.viewer-split-labels{position:absolute;left:10px;right:10px;top:10px;z-index:3;display:grid;grid-template-columns:1fr 1fr;pointer-events:none;gap:10px}
+.viewer-split-labels{position:absolute;left:10px;right:10px;top:43px;z-index:3;display:grid;grid-template-columns:1fr 1fr;pointer-events:none;gap:10px}
 .viewer-split-labels span{justify-self:start;border-radius:8px;background:#fffffff0;border:1px solid #d3e3de;padding:6px 9px;color:#254e50;font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase}
 .viewer-split-labels span:last-child{justify-self:end;color:#913e37}
 .viewer-center-line{position:absolute;top:0;bottom:0;left:50%;border-left:1px solid #ffffffa8;pointer-events:none;z-index:2}
@@ -278,7 +278,7 @@ function renderOption(o){
  return '<section class="option-card '+(picked?"selected":"")+'"><div class="option-top"><h3>'+escapeHtml(o.name)+'</h3><span class="option-type">'+escapeHtml(o.type)+'</span></div><p>'+escapeHtml(simpleMode?o.summary:o.summary+' '+o.limits)+'</p><h4>Quand la discuter ?</h4><p>'+escapeHtml(o.when)+'</p><h4>À garder en tête</h4><p>'+escapeHtml(o.limits)+'</p><button class="compare-check" data-compare="'+o.id+'" aria-pressed="'+picked+'">'+(picked?"✓ Ajoutée à la comparaison":"+ Comparer cette option")+'</button></section>';
 }
 function renderContent(d){
- const viewer='<div class="viewer3d-wrap compare-stage"><div id="anatomy3d" class="anatomy3d" aria-label="Visualisation anatomique 3D interactive"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Préparation de la 3D…</span><span class="viewer-help">Glisser pour tourner · Pincer pour zoomer</span></div></div><div class="viewer-split-labels" id="splitLabels"><span>NORMALE</span><span id="rightViewLabel">PATHOLOGIE</span></div><div class="viewer-center-line" id="viewerCenterLine"></div></div>';
+ const viewer='<div class="viewer3d-wrap compare-stage"><div id="anatomy3d" class="anatomy3d" aria-label="Visualisation anatomique 3D interactive"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Préparation de la 3D…</span><span class="viewer-help">Glisser pour tourner · Pincer pour zoomer</span></div></div><div class="viewer-split-labels" id="splitLabels"><span>NORMALE</span><span id="rightViewLabel">PATHOLOGIE</span></div><div class="viewer-center-line" id="viewerCenterLine"></div><div class="viewer-fallback" id="viewerFallback" hidden><div class="anatomy-label">La visualisation 3D n’a pas pu se charger.</div></div></div><div class="viewer-label" id="viewerLabel">Glisser pour tourner · Pincer pour zoomer.</div>';
  const credit='<div class="viewer-credit">Modèle 3D : <a href="https://github.com/Charleeh/ecorche" target="_blank" rel="noreferrer">Écorché</a> — CC BY-SA 4.0. Repères anatomiques et simulations à visée pédagogique.</div>';
  const controls='<div class="viewer-controls" role="group" aria-label="Couches anatomiques"><button type="button" data-layer-view="both" class="active">Os + muscles</button><button type="button" data-layer-view="bones">Squelette</button><button type="button" data-layer-view="muscles">Muscles</button><button type="button" id="viewerMotion" aria-pressed="true">Animation : oui</button><button type="button" id="viewerReset">Recentrer</button></div>';
  if(activeTab==="comprendre"){
@@ -496,7 +496,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       lesionGroup.add(rod(c.clone().add(new THREE.Vector3(-.12,.12,0)),c.clone().add(new THREE.Vector3(.12,.09,0)),.025,red));
       lesionGroup.add(ball(c.clone().add(new THREE.Vector3(.13,.08,.01)),.035,red,true));
     }else{
-      lesionGroup.add(new THREE.Mesh(new THREE.TorusGeometry(.105,.022,8,32),shade)).position.copy(c);
+      const genericRing=new THREE.Mesh(new THREE.TorusGeometry(.105,.022,8,32),shade);genericRing.position.copy(c);lesionGroup.add(genericRing);
       lesionGroup.add(ball(c,.04,red,true));
     }
     lesionGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
@@ -557,7 +557,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(-.13,.05,.02)),c.clone().add(new THREE.Vector3(-.03,0,.02)),.025,gold,.6));
       surgeryGroup.add(rod(c.clone().add(new THREE.Vector3(.03,0,.02)),c.clone().add(new THREE.Vector3(.13,.05,.02)),.025,gold,.6));
     }else{
-      surgeryGroup.add(new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35)));
+      const implantRing=new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35));implantRing.position.copy(c);surgeryGroup.add(implantRing);
       surgeryGroup.add(ball(c,.045,0xd6a85b,true));
     }
     surgeryGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
@@ -642,7 +642,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,2.85);camera.lookAt(controls.target);controls.update();
     }
   }
-  function setLayer(m){layerMode=m;if(ready&&mode==='surgery')setSurgeryMode(selectedDisease,selectedSurgery);}
+  function setLayer(m){layerMode=m;if(ready)setMode(mode,selectedDisease,selectedSurgery);}
   function modeVisibility(){
     const compare=mode==='compare',surgery=mode==='surgery',kinetic=mode==='kinetic';
     const split=$('splitLabels');if(split)split.style.display=compare?'grid':'none';
@@ -669,7 +669,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       camera.position.set(.5,opts.y+0.05,2.5);controls.target.set(0,opts.y,0);
       updateCompareCameras();modeVisibility();
     }else if(mode==='surgery'){
-      resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
+      resetMeshes(sourceMeshes);resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
       setSurgeryMode(selectedDisease,selectedSurgery);
     }else{
       resetMeshes(sourceMeshes);resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
