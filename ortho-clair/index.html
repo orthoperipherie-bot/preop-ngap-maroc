@@ -153,6 +153,97 @@
 }
 @media(prefers-reduced-motion:reduce){.pulse-lesion,.flow-line,.float-part{animation:none!important}}
 
+
+/* consultation mode: minimal copy, large visual canvas */
+.hero h1{font-size:clamp(26px,3.2vw,36px);letter-spacing:-1px;margin:8px 0 0;max-width:none}
+.hero p,.summary,.pills,.patient-toggle,.disease-region,.mode-heading span,.viewer-label,.kinetic-disclaimer,.feedback{display:none!important}
+.hero{padding-top:20px;padding-bottom:20px}
+.brand-sub{font-size:10px}
+.top-note{font-size:11px}
+.layout{grid-template-columns:230px minmax(0,1fr);gap:15px}
+.catalog{padding:10px}
+.catalog-head{padding:2px 3px 5px}
+.disease-title{font-size:12px}
+.disease-btn{padding:8px 6px;gap:7px}
+.disease-icon{width:28px;height:28px;flex-basis:28px;font-size:15px}
+.detail-header{padding:14px 20px}
+.detail-top{align-items:center}
+.region-art{width:40px;height:40px;flex-basis:40px;font-size:20px}
+.detail-meta h2{font-size:22px;margin:0}
+.content{padding:14px}
+.mode-heading{margin-bottom:8px}
+.mode-heading h3{font-size:14px}
+.compare-legend{margin:7px 0 0}
+.compare-legend>div{padding:8px 10px}
+.compare-legend strong{font-size:11px;margin:0}
+.compare-legend span{display:none}
+.viewer-credit{font-size:9px;margin-top:5px}
+.viewer-controls{padding:5px 0 0;gap:5px}
+.viewer-controls button{padding:8px 10px}
+.surgery-list{margin-top:8px}
+.surgery-choice{min-height:60px;padding:9px}
+.actions{margin-top:10px}
+.kinetic-controls{margin-bottom:8px}
+.kinetic-box{padding:9px 10px}
+.kinetic-box label{margin-bottom:5px}
+.kinetic-box .skeleton-note{display:none}
+.impact-row{margin-top:8px}
+.impact-card small{display:none}
+.impact-card{padding:8px}
+.impact-card span{font-size:8px}
+.impact-card strong{font-size:11px;margin-top:3px}
+.footer{font-size:9px;padding-bottom:12px}
+@media(max-width:900px){
+ .layout{grid-template-columns:1fr;gap:10px}
+ .catalog{max-height:142px;overflow:hidden}
+ .catalog-head{margin-bottom:4px}
+ .disease-list{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 0 5px;scroll-snap-type:x mandatory}
+ .disease-btn{flex:0 0 150px;width:150px;scroll-snap-align:start;border-color:#e6eeeb}
+ .disease-icon{display:none}
+ .disease-title{font-size:11px}
+ .disease-region{display:none!important}
+ .mainpanel{order:2}
+ .catalog{order:1}
+ .detail-header{padding:12px 14px}
+ .content{padding:10px}
+}
+@media(max-width:580px){
+ .topbar{padding:10px 13px}
+ .hero{padding:14px 15px}
+ .hero h1{font-size:25px;line-height:1.1;margin-top:4px}
+ .search-wrap{max-width:none;min-width:0}
+ .search-wrap label{font-size:11px}
+ .layout{padding:7px 9px 20px;gap:9px}
+ .catalog{padding:8px 9px;border-radius:14px;max-height:117px}
+ .catalog-head h2{font-size:12px}
+ .disease-btn{flex-basis:135px;width:135px;border-radius:10px;padding:8px}
+ .disease-title{font-size:11px}
+ .panel-card{border-radius:15px}
+ .detail-meta h2{font-size:19px}
+ .region-art{width:34px;height:34px;flex-basis:34px;font-size:18px}
+ .tabs{padding:6px;gap:3px}
+ .tab{font-size:11px;padding:9px 10px}
+ .anatomy3d{height:clamp(340px,56vh,470px);min-height:330px}
+ .viewer-split-labels{top:42px}
+ .viewer-split-labels span{font-size:9px;padding:5px 7px}
+ .viewer-help{display:none}
+ .surgery-list{grid-template-columns:1fr 1fr;gap:6px}
+ .surgery-choice{padding:8px;gap:6px;min-height:60px}
+ .surgery-choice strong{font-size:10px}
+ .surgery-choice small{font-size:8px}
+ .surgery-symbol{width:26px;height:26px;flex-basis:26px}
+ .viewer-controls button{font-size:10px;padding:7px 8px}
+ .compare-legend>div{padding:8px}
+ .compare-legend strong{font-size:10px}
+ .kinetic-controls{grid-template-columns:1fr 1fr;gap:7px}
+ .kinetic-box{padding:8px}
+ .kinetic-box label{font-size:10px}
+ .kinetic-box select{font-size:11px;padding:7px}
+ .impact-row{grid-template-columns:1fr 1fr;gap:5px}
+ .impact-card:last-child{grid-column:span 2}
+ .footer{display:none}
+}
+
 </style>
 <script type="importmap">
 {
@@ -166,12 +257,12 @@
 <body>
 <div class="shell">
 <header class="topbar">
-  <div class="brand"><div class="brand-mark" aria-hidden="true">O+</div><div><div class="brand-name">OrthoClair</div><div class="brand-sub">Expliquer · Visualiser · Décider</div></div></div>
-  <div class="top-note">Support de consultation · v1</div>
+  <div class="brand"><div class="brand-mark" aria-hidden="true">O+</div><div><div class="brand-name">OrthoClair</div><div class="brand-sub">Visualisation anatomique 3D</div></div></div>
+  <div class="top-note">Consultation · 3D</div>
 </header>
 <section class="hero">
   <div class="hero-row">
-    <div><div class="eyebrow">Décision partagée</div><h1>Comprendre le problème.<br>Choisir avec confiance.</h1><p>Des schémas animés et des explications simples pour parler des maladies des articulations, du sport et du rachis avec vos patients.</p></div>
+    <div><div class="eyebrow">Décision partagée</div><h1>Visualiser. Comparer. Décider.</h1></div>
     <div class="search-wrap"><label for="search">Rechercher une pathologie</label><span class="search-icon" aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Ex. : ménisque, sciatique, épaule…" autocomplete="off"></div>
   </div>
 </section>
@@ -231,14 +322,14 @@ function visibleDiseases(){
 }
 function renderList(){
   const items = visibleDiseases();
-  $("count").textContent = items.length + (items.length > 1 ? " fiches" : " fiche");
+  $("count").textContent = items.length + " fiches";
   $("diseaseList").innerHTML = items.length ? items.map(d =>
-    '<button class="disease-btn '+(d.id === currentId ? "active" : "")+'" data-id="'+d.id+'" aria-pressed="'+(d.id === currentId)+'"><span class="disease-icon" aria-hidden="true">'+d.emoji+'</span><span><span class="disease-title">'+escapeHtml(d.title)+'</span><span class="disease-region">'+escapeHtml(d.region)+' · '+escapeHtml(d.tag)+'</span></span></button>'
-  ).join("") : '<div class="empty">Aucune fiche ne correspond à cette recherche.</div>';
+    '<button class="disease-btn '+(d.id === currentId ? "active" : "")+'" data-id="'+d.id+'" aria-pressed="'+(d.id === currentId)+'"><span class="disease-icon" aria-hidden="true">'+d.emoji+'</span><span><span class="disease-title">'+escapeHtml(d.title)+'</span><span class="disease-region">'+escapeHtml(d.region)+'</span></span></button>'
+  ).join("") : '<div class="empty">Aucun résultat</div>';
   document.querySelectorAll(".disease-btn").forEach(btn => btn.addEventListener("click",() => {
     currentId = btn.dataset.id; activeTab = "comprendre"; compared = [];
+    selectedSurgery = null;
     renderAll();
-    if (window.matchMedia("(max-width:900px)").matches) $("detail").scrollIntoView({behavior:"smooth",block:"start"});
   }));
 }
 function anatomySvg(d){
@@ -279,7 +370,7 @@ function renderOption(o){
 }
 function renderContent(d){
  const viewer='<div class="viewer3d-wrap compare-stage"><div id="anatomy3d" class="anatomy3d" aria-label="Visualisation anatomique 3D interactive"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Préparation de la 3D…</span><span class="viewer-help">Glisser pour tourner · Pincer pour zoomer</span></div></div><div class="viewer-split-labels" id="splitLabels"><span>NORMALE</span><span id="rightViewLabel">PATHOLOGIE</span></div><div class="viewer-center-line" id="viewerCenterLine"></div><div class="viewer-fallback" id="viewerFallback" hidden><div class="anatomy-label">La visualisation 3D n’a pas pu se charger.</div></div></div><div class="viewer-label" id="viewerLabel">Glisser pour tourner · Pincer pour zoomer.</div>';
- const credit='<div class="viewer-credit">Modèle 3D : <a href="https://github.com/Charleeh/ecorche" target="_blank" rel="noreferrer">Écorché</a> — CC BY-SA 4.0. Repères anatomiques et simulations à visée pédagogique.</div>';
+ const credit='<div class="viewer-credit"><a href="https://github.com/Charleeh/ecorche" target="_blank" rel="noreferrer">Modèle anatomique Écorché · CC BY-SA 4.0</a></div>';
  const controls='<div class="viewer-controls" role="group" aria-label="Couches anatomiques"><button type="button" data-layer-view="both" class="active">Os + muscles</button><button type="button" data-layer-view="bones">Squelette</button><button type="button" data-layer-view="muscles">Muscles</button><button type="button" id="viewerMotion" aria-pressed="true">Animation : oui</button><button type="button" id="viewerReset">Recentrer</button></div>';
  if(activeTab==="comprendre"){
   return '<div class="mode-heading"><h3>Comparer avec l’anatomie normale</h3><span>Vue 3D côte à côte</span></div>'+viewer+'<div class="compare-legend"><div><strong>● Anatomie normale</strong><span>Référence anatomique</span></div><div class="lesion"><strong>● '+escapeHtml(d.title)+'</strong><span>Structures concernées mises en évidence</span></div></div>'+controls+credit+'<div class="actions"><button class="primary-btn" data-goto="options">Explorer les options chirurgicales →</button><button class="secondary-btn" data-goto="kinetique">Simuler une chaîne cinétique</button></div>';
@@ -289,31 +380,54 @@ function renderContent(d){
   if(!selectedSurgery||!opts.some(o=>o.id===selectedSurgery))selectedSurgery=opts[0]?.id||null;
   return '<div class="mode-heading"><h3>Simuler le geste chirurgical</h3><span>Choisir une option ci-dessous</span></div>'+viewer+'<div class="surgery-list">'+opts.map(o=>'<button type="button" class="surgery-choice '+(selectedSurgery===o.id?'active':'')+'" data-surgery="'+o.id+'" aria-pressed="'+(selectedSurgery===o.id)+'"><span class="surgery-symbol">'+(o.type.toLowerCase().includes("sans")?"↗":o.type.toLowerCase().includes("médical")?"✚":"⚒")+'</span><span><strong>'+escapeHtml(o.name)+'</strong><small>'+escapeHtml(o.type)+'</small></span></button>').join("")+'</div><div class="actions"><button class="secondary-btn" data-goto="comprendre">← Retour à la comparaison</button><span class="feedback">La simulation illustre le principe, pas le geste exact.</span></div>'+controls+credit;
  }
- return '<div class="mode-heading"><h3>Simulateur de chaîne cinétique</h3><span>Modifier l’anomalie</span></div><div class="kinetic-controls"><div class="kinetic-box"><label for="chainType">Anomalie à simuler</label><select id="chainType"><option value="varus">Genou en varus (jambes arquées)</option><option value="valgus">Genou en valgus (genoux rapprochés)</option><option value="pronation">Pronation excessive du pied</option><option value="ankle">Cheville raide</option><option value="hip">Flexum de hanche</option><option value="pelvis">Bascule du bassin</option></select></div><div class="kinetic-box"><label for="chainDeviation">Intensité de la déformation <output id="chainDeviationOut">15 / 30</output></label><input id="chainDeviation" type="range" min="0" max="30" step="1" value="15"><div class="skeleton-note">Faites varier le curseur pour voir les compensations.</div></div></div>'+viewer+'<div class="impact-row" id="impactRow"><div class="impact-card"><span>Articulation proximale</span><strong id="impactTop">Hanche</strong><small id="impactTopText">Adaptation de l’axe</small></div><div class="impact-card primary"><span>Anomalie principale</span><strong id="impactMain">Genou</strong><small id="impactMainText">Déviation de l’axe</small></div><div class="impact-card"><span>Articulation distale</span><strong id="impactBottom">Cheville / pied</strong><small id="impactBottomText">Compensation possible</small></div></div><p class="kinetic-disclaimer">Simulation géométrique illustrative : elle montre les relations possibles entre segments, sans calcul biomécanique clinique ni prédiction individuelle.</p>'+controls+credit+'<div class="actions"><button class="secondary-btn" data-goto="comprendre">Retour à l’anatomie normale</button></div>';
+ return '<div class="mode-heading"><h3>Simulateur de chaîne cinétique</h3><span>Modifier l’anomalie</span></div><div class="kinetic-controls"><div class="kinetic-box"><label for="chainType">Anomalie à simuler</label><select id="chainType"><option value="varus">Genou en varus (jambes arquées)</option><option value="valgus">Genou en valgus (genoux rapprochés)</option><option value="pronation">Pronation excessive du pied</option><option value="ankle">Cheville raide</option><option value="hip">Flexum de hanche</option><option value="pelvis">Bascule du bassin</option></select></div><div class="kinetic-box"><label for="chainDeviation">Intensité de la déformation <output id="chainDeviationOut">15 / 30</output></label><input id="chainDeviation" type="range" min="0" max="30" step="1" value="15"><div class="skeleton-note">Faites varier le curseur pour voir les compensations.</div></div></div>'+viewer+'<div class="impact-row" id="impactRow"><div class="impact-card"><span>Articulation proximale</span><strong id="impactTop">Hanche</strong><small id="impactTopText">Adaptation de l’axe</small></div><div class="impact-card primary"><span>Anomalie principale</span><strong id="impactMain">Genou</strong><small id="impactMainText">Déviation de l’axe</small></div><div class="impact-card"><span>Articulation distale</span><strong id="impactBottom">Cheville / pied</strong><small id="impactBottomText">Compensation possible</small></div></div>'+controls+credit+'<div class="actions"><button class="secondary-btn" data-goto="comprendre">Retour à l’anatomie normale</button></div>';
 }
 function renderDetail(){
- const d = findDisease();
- $("detail").innerHTML = '<div class="detail-header"><div class="detail-top"><div class="region-art" aria-hidden="true">'+d.emoji+'</div><div class="detail-meta"><div class="eyebrow">'+escapeHtml(d.region)+' · '+escapeHtml(d.group==="Sport"?"Chirurgie du sport":d.group==="Rachis"?"Chirurgie du rachis":d.group==="Main"?"Chirurgie de la main":d.group==="Pied"?"Pied & cheville":"Orthopédie")+'</div><h2>'+escapeHtml(d.title)+'</h2><div class="pills"><span class="pill green">'+escapeHtml(d.tag)+'</span><span class="pill">Explication au patient</span></div></div><button class="patient-toggle '+(simpleMode?"on":"")+'" id="simpleToggle" aria-pressed="'+simpleMode+'">'+(simpleMode?"Langage simple ✓":"Version détaillée")+'</button></div><p class="summary">'+escapeHtml(d.summary)+'</p></div>'+renderTabs(d)+'<div class="content">'+renderContent(d)+'</div>';
- window.__orthoClairDisease = {id:d.id, title:d.title, region:d.region};
- if(!d.options.some(o=>o.id===selectedSurgery)) selectedSurgery=d.options[0]?.id||null;
- if (window.OrthoClair3D) {
+ const d=findDisease();
+ $("detail").innerHTML='<div class="detail-header"><div class="detail-top"><div class="region-art" aria-hidden="true">'+d.emoji+'</div><div class="detail-meta"><h2>'+escapeHtml(d.title)+'</h2></div></div></div>'+renderTabs(d)+'<div class="content">'+renderContent(d)+'</div>';
+ window.__orthoClairDisease={id:d.id,title:d.title,region:d.region};
+ if(!d.options.some(o=>o.id===selectedSurgery))selectedSurgery=d.options[0]?.id||null;
+ if(window.OrthoClair3D){
   window.OrthoClair3D.attach();
   window.OrthoClair3D.setLayer(viewerLayer);
   window.OrthoClair3D.setMotion(viewerMotion);
   window.OrthoClair3D.setMode(activeTab==="comprendre"?"compare":activeTab==="options"?"surgery":"kinetic",window.__orthoClairDisease,selectedSurgery);
  }
- document.querySelectorAll("[data-surgery]").forEach(btn=>btn.addEventListener("click",()=>{selectedSurgery=btn.dataset.surgery;if(window.OrthoClair3D)window.OrthoClair3D.setMode("surgery",window.__orthoClairDisease,selectedSurgery);document.querySelectorAll("[data-surgery]").forEach(b=>{b.classList.toggle("active",b===btn);b.setAttribute("aria-pressed",String(b===btn));});const label=$("rightViewLabel");if(label)label.textContent="CHIRURGIE";}));
- const chainType=$("chainType"), chainDeviation=$("chainDeviation");
- const updateKinetic=()=>{const type=chainType?.value||"varus",degree=Number(chainDeviation?.value||15);const output=$("chainDeviationOut");if(output)output.textContent=degree+" / 30";const labels={varus:["Hanche","Adaptation possible de l’axe","Genou en varus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],valgus:["Hanche","Adaptation possible de l’axe","Genou en valgus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],pronation:["Genou","Rotation compensatrice possible","Pied en pronation","Affaissement de l’arche","Hanche","Rotation secondaire possible"],ankle:["Genou","Adaptation de la marche","Cheville raide","Mobilité limitée","Pied","Déroulé du pas modifié"],hip:["Bassin","Bascule compensatrice possible","Hanche en flexum","Extension limitée","Genou","Flexion compensatrice possible"],pelvis:["Rachis lombaire","Adaptation posturale","Bascule du bassin","Inclinaison du bassin","Hanche","Répartition asymétrique possible"]};const a=labels[type]||labels.varus;const severity=degree<=7?"Faible":degree<=18?"Modérée":"Marquée";["impactTop","impactTopText","impactMain","impactMainText","impactBottom","impactBottomText"].forEach((id,i)=>{const e=$(id);if(e)e.textContent=a[i];});const topText=$("impactTopText"),mainText=$("impactMainText"),bottomText=$("impactBottomText"),rightLabel=$("rightViewLabel");if(topText)topText.textContent=a[1]+" · "+severity.toLowerCase();if(mainText)mainText.textContent=a[3]+" · "+degree+"°";if(bottomText)bottomText.textContent=a[5]+" · "+severity.toLowerCase();if(rightLabel)rightLabel.textContent="MODIFIÉE · "+severity.toUpperCase();if(window.OrthoClair3D)window.OrthoClair3D.setKinetics(type,degree);};
- if(chainType)chainType.addEventListener("change",updateKinetic);if(chainDeviation)chainDeviation.addEventListener("input",updateKinetic);
- document.querySelectorAll("[data-layer-view]").forEach(btn=>{btn.classList.toggle("active",btn.dataset.layerView===viewerLayer);btn.setAttribute("aria-pressed",String(btn.dataset.layerView===viewerLayer));btn.addEventListener("click",()=>{viewerLayer=btn.dataset.layerView;if(window.OrthoClair3D)window.OrthoClair3D.setLayer(viewerLayer);document.querySelectorAll("[data-layer-view]").forEach(b=>{b.classList.toggle("active",b.dataset.layerView===viewerLayer);b.setAttribute("aria-pressed",String(b.dataset.layerView===viewerLayer));});});});
- const motionButton = $("viewerMotion"); if(motionButton){motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent="Animation : "+(viewerMotion?"oui":"non");motionButton.addEventListener("click",()=>{viewerMotion=!viewerMotion;if(window.OrthoClair3D)window.OrthoClair3D.setMotion(viewerMotion);motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent="Animation : "+(viewerMotion?"oui":"non");});}
- const resetButton = $("viewerReset"); if(resetButton)resetButton.addEventListener("click",()=>{if(window.OrthoClair3D)window.OrthoClair3D.reset();});
+ document.querySelectorAll("[data-surgery]").forEach(btn=>btn.addEventListener("click",()=>{
+  selectedSurgery=btn.dataset.surgery;
+  if(window.OrthoClair3D)window.OrthoClair3D.setMode("surgery",window.__orthoClairDisease,selectedSurgery);
+  document.querySelectorAll("[data-surgery]").forEach(b=>{b.classList.toggle("active",b===btn);b.setAttribute("aria-pressed",String(b===btn));});
+  const label=$("rightViewLabel");if(label)label.textContent="CHIRURGIE";
+ }));
+ const chainType=$("chainType"),chainDeviation=$("chainDeviation");
+ const updateKinetic=()=>{
+  const type=chainType?.value||"varus",degree=Number(chainDeviation?.value||15);
+  const output=$("chainDeviationOut");if(output)output.textContent=degree+" / 30";
+  const labels={varus:["Hanche","Adaptation de l’axe","Genou en varus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],valgus:["Hanche","Adaptation de l’axe","Genou en valgus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],pronation:["Genou","Rotation possible","Pied en pronation","Arche abaissée","Hanche","Rotation possible"],ankle:["Genou","Adaptation du pas","Cheville raide","Mobilité réduite","Pied","Déroulé modifié"],hip:["Bassin","Bascule possible","Hanche en flexum","Extension limitée","Genou","Flexion compensatrice"],pelvis:["Rachis lombaire","Adaptation posturale","Bascule du bassin","Inclinaison","Hanche","Asymétrie possible"]};
+  const a=labels[type]||labels.varus,severity=degree<=7?"faible":degree<=18?"modérée":"marquée";
+  ["impactTop","impactTopText","impactMain","impactMainText","impactBottom","impactBottomText"].forEach((id,i)=>{const e=$(id);if(e)e.textContent=a[i];});
+  if($("impactTopText"))$("impactTopText").textContent=severity;
+  if($("impactMainText"))$("impactMainText").textContent=degree+"°";
+  if($("impactBottomText"))$("impactBottomText").textContent=severity;
+  const rightLabel=$("rightViewLabel");if(rightLabel)rightLabel.textContent="MODIFIÉE";
+  if(window.OrthoClair3D)window.OrthoClair3D.setKinetics(type,degree);
+ };
+ if(chainType)chainType.addEventListener("change",updateKinetic);
+ if(chainDeviation)chainDeviation.addEventListener("input",updateKinetic);
+ document.querySelectorAll("[data-layer-view]").forEach(btn=>{
+  btn.classList.toggle("active",btn.dataset.layerView===viewerLayer);
+  btn.setAttribute("aria-pressed",String(btn.dataset.layerView===viewerLayer));
+  btn.addEventListener("click",()=>{
+   viewerLayer=btn.dataset.layerView;
+   if(window.OrthoClair3D)window.OrthoClair3D.setLayer(viewerLayer);
+   document.querySelectorAll("[data-layer-view]").forEach(b=>{b.classList.toggle("active",b.dataset.layerView===viewerLayer);b.setAttribute("aria-pressed",String(b.dataset.layerView===viewerLayer));});
+  });
+ });
+ const motionButton=$("viewerMotion");
+ if(motionButton){motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent=viewerMotion?"Ⅱ Pause":"▶ Animer";motionButton.addEventListener("click",()=>{viewerMotion=!viewerMotion;if(window.OrthoClair3D)window.OrthoClair3D.setMotion(viewerMotion);motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent=viewerMotion?"Ⅱ Pause":"▶ Animer";});}
+ const resetButton=$("viewerReset");if(resetButton)resetButton.addEventListener("click",()=>{if(window.OrthoClair3D)window.OrthoClair3D.reset();});
  document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{activeTab=btn.dataset.tab;renderAll();}));
  document.querySelectorAll("[data-goto]").forEach(btn=>btn.addEventListener("click",()=>{activeTab=btn.dataset.goto;renderAll();}));
- document.querySelectorAll("[data-compare]").forEach(btn=>btn.addEventListener("click",()=>{const id=btn.dataset.compare;if(compared.includes(id)){compared=compared.filter(x=>x!==id)}else{if(compared.length>=3)compared.shift();compared.push(id)}renderAll();}));
- const clear = document.querySelector("[data-clear-compare]"); if(clear) clear.addEventListener("click",()=>{compared=[];renderAll()});
- const toggle = $("simpleToggle"); if(toggle) toggle.addEventListener("click",()=>{simpleMode=!simpleMode;renderAll()});
 }
 function renderAll(){renderList();renderDetail();document.querySelectorAll(".filter").forEach(btn=>{btn.classList.toggle("active",btn.dataset.filter===currentFilter)});}
 document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
