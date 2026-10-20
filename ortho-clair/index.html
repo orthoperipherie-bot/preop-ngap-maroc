@@ -499,7 +499,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       const genericRing=new THREE.Mesh(new THREE.TorusGeometry(.105,.022,8,32),shade);genericRing.position.copy(c);lesionGroup.add(genericRing);
       lesionGroup.add(ball(c,.04,red,true));
     }
-    lesionGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
+    lesionGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive){m.emissive=new THREE.Color(0xb9433a);m.emissiveIntensity=.18;}});}});
     scene.add(lesionGroup);
   }
   function updateCompareCameras(){
@@ -575,7 +575,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       const surgicalFocus=new THREE.Mesh(new THREE.TorusGeometry(.13,.017,8,32),makeMaterial(gold,.3,.35));surgicalFocus.position.copy(c);surgeryGroup.add(surgicalFocus);
       surgeryGroup.add(ball(c,.045,0xd6a85b,true));
     }
-    surgeryGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
+    surgeryGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive){m.emissive=(m.color||new THREE.Color(0xd6a85b)).clone();m.emissiveIntensity=.10;}});}});
     scene.add(surgeryGroup);
   }
   function setSurgeryMode(d,id){
@@ -652,6 +652,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     [-.31,.31].forEach(x=>{
       const guide=new THREE.Mesh(new THREE.CylinderGeometry(.002,.002,1.7,5),makeMaterial(0xa9c4be,.7,0,true,.42));guide.position.set(x,.0,-.045);kineticGroup.add(guide);
     });
+    kineticGroup.traverse(o=>{if(o.isMesh){o.userData.__ownedGeometry=true;o.userData.__ownedMaterial=true;}});
     scene.add(kineticGroup);kineticGroup.visible=mode==='kinetic';
     if(mode==='kinetic'){
       controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,3.25);camera.lookAt(controls.target);controls.update();
@@ -722,11 +723,11 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     raf=requestAnimationFrame(animate);
     const now=performance.now();const dt=Math.min(.06,(now-lastFrame)/1000);lastFrame=now;if(motionOn)clock+=dt;
     if(mode==='compare'&&ready){
-      if(motionOn&&lesionGroup)lesionGroup.scale.setScalar(1+.025*Math.sin(clock*2.4));
+      if(lesionGroup)lesionGroup.traverse(o=>{if(o.isMesh){const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive)m.emissiveIntensity=motionOn?.12+.20*(.5+.5*Math.sin(clock*2.8)):.12;});}});
       updateCompareCameras();
       renderCompare();
     }else{
-      if(motionOn&&surgeryGroup)surgeryGroup.rotation.z=Math.sin(clock*1.4)*.018;
+      if(surgeryGroup)surgeryGroup.traverse(o=>{if(o.isMesh){const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive)m.emissiveIntensity=motionOn?.06+.22*(.5+.5*Math.sin(clock*2.6)):.06;});}});
       if(motionOn&&kineticGroup)kineticGroup.rotation.y=Math.sin(clock*.45)*.025;
       if(controls)controls.update();
       if(renderer&&scene&&camera)renderer.render(scene,camera);
