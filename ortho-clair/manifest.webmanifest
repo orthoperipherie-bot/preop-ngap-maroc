@@ -1,0 +1,19 @@
+{
+  "name": "OrthoClair — Éducation du patient",
+  "short_name": "OrthoClair",
+  "description": "Schémas et explications pour la consultation orthopédique, sportive et rachidienne.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7f5",
+  "theme_color": "#102c36",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
