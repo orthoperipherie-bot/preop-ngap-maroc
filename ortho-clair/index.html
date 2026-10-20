@@ -143,7 +143,7 @@ function freshModel(){if(root){scene.remove(root);disposeObject(root);}root=grou
 function basicLights(){scene=new THREE.Scene();scene.background=null;scene.add(new THREE.HemisphereLight(0xf5fbf7,0xb8c8c0,2.25));const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(3.5,4.8,4.5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-3;key.shadow.camera.right=3;key.shadow.camera.top=3;key.shadow.camera.bottom=-3;scene.add(key);const fill=new THREE.DirectionalLight(0xa7e2d4,1.05);fill.position.set(-3,1,2);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.2);rim.position.set(0,2,-4);scene.add(rim);}
 function init3D(){const mount=$('threeMount');renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(mount.clientWidth||800,mount.clientHeight||600);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;mount.appendChild(renderer.domElement);basicLights();camera=new THREE.PerspectiveCamera(34,1,.1,100);camera.position.set(1.25,.55,3.3);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minDistance=1.35;controls.maxDistance=6.5;controls.target.set(0,0,0);controls.screenSpacePanning=true;controls.update();resizeObserver=new ResizeObserver(()=>resize());resizeObserver.observe(mount);window.addEventListener('resize',resize);animate();}
 function resize(){if(!renderer||!camera)return;const m=$('threeMount');const w=Math.max(1,m.clientWidth),h=Math.max(1,m.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-function resetCamera(){if(!camera||!controls)return;const kind=selected.kind;const cfg={knee:[0,0,3.15],hip:[-.05,0,3.25],shoulder:[0,.05,3.15],wrist:[0,0,2.75],spine:[0,0,3.65],ankle:[0,-.05,3.05],foot:[0,-.03,3.15]}[kind]||[0,0,3.2];controls.target.set(cfg[0],cfg[1],0);camera.position.set(cfg[0]+.45,cfg[1]+.15,cfg[2]);controls.update();}
+function resetCamera(){if(!camera||!controls)return;const kind=selected.kind;const cfg={knee:[0,0,3.15],hip:[-.05,0,3.25],shoulder:[0,.05,3.15],wrist:[0,0,2.75],spine:[0,0,3.65],ankle:[0,-.05,3.05],foot:[0,-.36,2.45]}[kind]||[0,0,3.2];controls.target.set(cfg[0],cfg[1],0);camera.position.set(cfg[0]+.45,cfg[1]+.15,cfg[2]);controls.update();}
 function makeLongBone(g,a,b,r1,r2,mat,bulge=.06){bar(g,a,b,r1,mat,r2);const aa=new THREE.Vector3(...a),bb=new THREE.Vector3(...b);ellipsoid(g,aa.toArray(),[r1*1.07,r1*1.07,r1*1.07],mat);ellipsoid(g,bb.toArray(),[r2+bulge,r2+bulge,r2+bulge],mat);}
 function buildKnee(id){
  const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
@@ -155,7 +155,7 @@ function buildKnee(id){
  ellipsoid(C,[-.13,-.105,.03],[.155,.025,.135],M.cart);ellipsoid(C,[.13,-.105,.03],[.155,.025,.135],M.cart);
  tube(S,[[-.27,-.06,.09],[-.22,-.14,.19],[-.11,-.15,.21],[0,-.13,.19],[.11,-.15,.21],[.22,-.14,.19],[.27,-.06,.09]],.047,M.softLight);
  tube(S,[[-.25,.09,.05],[-.29,-.05,.10],[-.26,-.16,.10]],.027,M.soft);tube(S,[[.25,.09,.05],[.29,-.05,.10],[.26,-.16,.10]],.027,M.soft);
- tube(S,[[-.12,.06,.10],[-.04,-.045,.15],[.09,-.17,.13]],.027,id==='acl'?M.lesion:M.soft);
+ if(id==='acl'&&stage!=='normal'){tube(S,[[-.12,.06,.10],[-.04,-.02,.15]],.027,M.soft);tube(S,[[.035,-.075,.145],[.09,-.17,.13]],.027,M.soft);}else{tube(S,[[-.12,.06,.10],[-.04,-.045,.15],[.09,-.17,.13]],.027,M.soft);}
  tube(S,[[.12,.06,.10],[.06,-.03,.18],[-.09,-.17,.13]],.026,M.soft);
  tube(S,[[0,.16,.30],[0,.03,.32],[0,-.085,.30]],.034,M.softLight);
  tube(S,[[0,-.26,.22],[0,-.38,.19],[0,-.48,.15]],.032,M.softLight);
@@ -170,7 +170,7 @@ function buildShoulder(id){
  makeLongBone(B,[.22,-.02,0],[.22,-.73,0],.12,.085,M.bone,.035);ellipsoid(B,[.10,.06,0],[.24,.24,.21],M.bone);
  tube(B,[[-.20,.12,.06],[-.02,.24,.05],[.19,.24,.02],[.35,.18,.02]],.055,M.bone2);
  ring(C,[.10,.06,.018],.20,.028,M.cart,[Math.PI/2,0,0],[1,1,.40]);
- tube(S,[[-.25,.15,.09],[-.08,.24,.13],[.10,.28,.13],[.25,.17,.15]],.043,id==='cuff'?M.lesion:M.softLight);
+ if(id==='cuff'&&stage!=='normal'){tube(S,[[-.25,.15,.09],[-.08,.24,.13]],.043,M.softLight);tube(S,[[.055,.27,.13],[.10,.28,.13],[.25,.17,.15]],.043,M.softLight);}else{tube(S,[[-.25,.15,.09],[-.08,.24,.13],[.10,.28,.13],[.25,.17,.15]],.043,M.softLight);}
  tube(S,[[-.26,-.03,.12],[-.10,-.08,.19],[.07,-.06,.19],[.20,.04,.17]],.032,M.soft);
  tube(S,[[-.14,-.18,.08],[.03,-.19,.17],[.17,-.12,.18]],.031,M.soft);
  tube(S,[[.18,.14,.12],[.27,.10,.17],[.29,-.02,.15]],.027,M.soft);
@@ -199,7 +199,7 @@ function buildWrist(id){
 }
 function vertebra(g,y,slip=0){const x=slip;ellipsoid(g,[x,y,0],[.27,.18,.20],M.bone);ellipsoid(g,[x-.20,y-.02,0],[.075,.105,.105],M.bone2);ellipsoid(g,[x+.20,y-.02,0],[.075,.105,.105],M.bone2);bar(g,[x-.20,y-.015,0],[x-.22,y-.01,-.20],.045,M.bone2);bar(g,[x+.20,y-.015,0],[x+.22,y-.01,-.20],.045,M.bone2);tube(g,[[x-.22,y,-.18],[x,y-.025,-.29],[x+.22,y,-.18]],.052,M.bone2);tube(g,[[x-.20,y,.02],[x-.12,y+.10,.05],[x+.12,y+.10,.05],[x+.20,y,.02]],.045,M.bone);}
 function buildSpine(id){
- const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;const slips=id==='spondy'?[0,0,.11,0]:[0,0,0,0];
+ const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;const slips=id==='spondy'&&stage==='lesion'?[0,0,.11,0]:[0,0,0,0];
  for(let i=0;i<4;i++){const y=.55-i*.36;vertebra(B,y,slips[i]||0);if(i<3)ellipsoid(C,[slips[i]||0,y-.19,.015],[.215,.055,.17],M.cart);}
  tube(S,[[-.29,.64,-.06],[-.31,.28,-.08],[-.30,-.08,-.08],[-.26,-.44,-.08]],.035,M.softLight);
  if(id==='disc'){ellipsoid(L,[.02,-.04,.19],[.16,.07,.045],M.lesion);tube(L,[[-.02,-.05,.17],[.06,-.04,.22],[.12,-.015,.18]],.032,M.lesion);}
@@ -212,16 +212,16 @@ function buildAnkle(id){
  ellipsoid(B,[.015,-.05,.015],[.20,.16,.18],M.bone);ellipsoid(B,[.04,-.27,-.02],[.23,.10,.16],M.bone2);ellipsoid(B,[-.10,-.22,-.01],[.13,.22,.13],M.bone);
  tube(B,[[.04,-.30,0],[.10,-.39,0],[.23,-.41,.01],[.36,-.38,0]],.055,M.bone);
  ellipsoid(C,[.01,.065,.07],[.16,.05,.11],M.cart);
- tube(S,[[.16,.08,.09],[.23,-.03,.12],[.12,-.13,.13]],.025,id==='ankle'?M.lesion:M.soft);
+ if(id==='ankle'&&stage!=='normal'){tube(S,[[.16,.08,.09],[.23,-.005,.12]],.025,M.soft);tube(S,[[.16,-.06,.13],[.12,-.13,.13]],.025,M.soft);}else{tube(S,[[.16,.08,.09],[.23,-.03,.12],[.12,-.13,.13]],.025,M.soft);}
  tube(S,[[.14,.08,.09],[.28,.04,.08],[.23,-.08,.09]],.024,M.soft);
- tube(S,[[-.05,.12,-.08],[-.04,-.03,-.14],[.02,-.19,-.15]],.04,M.softLight);
+ if(id==='achilles'&&stage!=='normal'){tube(S,[[-.05,.12,-.08],[-.04,.035,-.13]],.04,M.softLight);tube(S,[[.0,-.07,-.15],[.02,-.19,-.15]],.04,M.softLight);}else{tube(S,[[-.05,.12,-.08],[-.04,-.03,-.14],[.02,-.19,-.15]],.04,M.softLight);}
  if(id==='achilles'){tube(L,[[-.04,.16,-.13],[-.02,.07,-.15]],.03,M.lesion);tube(L,[[-.01,-.01,-.15],[.03,-.10,-.15]],.03,M.lesion);ellipsoid(L,[.005,.025,-.15],[.045,.06,.04],M.lesion);}
  if(id==='ankle'){tube(L,[[.16,.08,.10],[.22,.015,.14]],.032,M.lesion);ellipsoid(L,[.19,.04,.13],[.045,.045,.03],M.lesion);}
 }
 function buildFoot(id){
  const B=layers.bone,C=layers.cartilage,S=layers.soft,L=layers.lesion;
  ellipsoid(B,[0,-.08,-.02],[.19,.22,.15],M.bone2);ellipsoid(B,[.16,-.20,.01],[.19,.10,.12],M.bone);
- for(let i=0;i<5;i++){const x=-.20+i*.105;const toeBend=(id==='hallux'&&i===0)?-.20:0;const a=[x,-.18,.035],b=[x+toeBend,-.52,.035];makeLongBone(B,a,b,i===0?.052:.035,i===0?.036:.025,M.bone,.012);ellipsoid(B,[b[0]+(id==='hallux'&&i===0?-.07:0),-.60,.04],[i===0?.055:.035,.10,.04],M.bone2);if(i===0)ellipsoid(B,[x+toeBend,-.52,.035],[.065,.07,.05],M.bone2);}
+ for(let i=0;i<5;i++){const x=-.20+i*.105;const toeBend=(id==='hallux'&&stage==='lesion'&&i===0)?-.20:0;const a=[x,-.18,.035],b=[x+toeBend,-.52,.035];makeLongBone(B,a,b,i===0?.052:.035,i===0?.036:.025,M.bone,.012);ellipsoid(B,[b[0]+(id==='hallux'&&i===0?-.07:0),-.60,.04],[i===0?.055:.035,.10,.04],M.bone2);if(i===0)ellipsoid(B,[x+toeBend,-.52,.035],[.065,.07,.05],M.bone2);}
  tube(S,[[-.19,-.16,.10],[-.05,-.12,.13],[.12,-.18,.11],[.28,-.28,.09]],.024,M.softLight);tube(S,[[-.20,-.17,.14],[-.23,-.29,.14],[-.21,-.41,.13]],.02,id==='hallux'?M.lesion:M.soft);
  if(id==='hallux'){ellipsoid(L,[-.24,-.28,.15],[.075,.06,.04],M.lesionGlass);tube(L,[[-.20,-.20,.13],[-.27,-.29,.16],[-.35,-.37,.14]],.025,M.lesion);}
 }
@@ -243,13 +243,13 @@ function buildSurgery(id,op){
  if(op==='spine-decomp'){ring(G,[0,-.10,-.27],.15,.035,M.poly,[0,0,0],[1,.75,.45]);tube(G,[[-.15,-.11,-.28],[0,-.14,-.31],[.15,-.11,-.28]],.025,M.metalDark);}
  if(op==='spine-fusion'){for(const y of [.50,.14,-.22]){bar(G,[-.19,y,.02],[-.19,y-.08,-.17],.026,M.metalDark);bar(G,[.19,y,.02],[.19,y-.08,-.17],.026,M.metalDark);}tube(G,[[-.19,.54,-.17],[-.19,.16,-.17],[-.19,-.22,-.17]],.029,M.metal);tube(G,[[.19,.54,-.17],[.19,.16,-.17],[.19,-.22,-.17]],.029,M.metal);}
 }
-function buildCurrent(){if(!scene)return;freshModel();if(selected.kind==='knee')buildKnee(selected.id);else if(selected.kind==='shoulder')buildShoulder(selected.id);else if(selected.kind==='hip')buildHip(selected.id);else if(selected.kind==='wrist')buildWrist(selected.id);else if(selected.kind==='spine')buildSpine(selected.id);else if(selected.kind==='ankle')buildAnkle(selected.id);else buildFoot(selected.id);buildSurgery(selected.id,selectedOp);applyStage();resetCamera();}
+function buildCurrent(preserveView=false){if(!scene)return;const saved=preserveView?{bone:layers.bone?.visible!==false,cartilage:layers.cartilage?.visible!==false,soft:layers.soft?.visible!==false}:null;freshModel();if(selected.kind==='knee')buildKnee(selected.id);else if(selected.kind==='shoulder')buildShoulder(selected.id);else if(selected.kind==='hip')buildHip(selected.id);else if(selected.kind==='wrist')buildWrist(selected.id);else if(selected.kind==='spine')buildSpine(selected.id);else if(selected.kind==='ankle')buildAnkle(selected.id);else buildFoot(selected.id);buildSurgery(selected.id,selectedOp);if(saved){layers.bone.visible=saved.bone;layers.cartilage.visible=saved.cartilage;layers.soft.visible=saved.soft;}applyStage();if(!preserveView)resetCamera();}
 function applyStage(){if(!root)return;root.visible=viewMode==='models';layers.lesion.visible=stage==='lesion';layers.surgery.visible=stage==='operation';document.querySelectorAll('[data-layer]').forEach(b=>b.classList.toggle('active',layers[b.dataset.layer]?.visible!==false));document.querySelectorAll('[data-stage]').forEach(b=>b.classList.toggle('active',b.dataset.stage===stage));const labels={normal:'ANATOMIE DE RÉFÉRENCE',lesion:'MAQUETTE PATHOLOGIQUE',operation:'MAQUETTE OPÉRATOIRE'};$('statusText').textContent=labels[stage];$('sceneLabel').textContent=stage==='normal'?'ANATOMIE DE RÉFÉRENCE':stage==='lesion'?'LÉSION / ANOMALIE MISE EN ÉVIDENCE':'GESTE CHIRURGICAL';document.querySelectorAll('.stage-card').forEach(b=>b.classList.toggle('active',b.dataset.stage===stage));}
 function listCases(filter=''){const host=$('caseList');host.innerHTML='';const term=filter.trim().toLocaleLowerCase('fr');const groups=['Membre inférieur','Membre supérieur','Rachis'];groups.forEach(gr=>{const items=CASES.filter(c=>c.group===gr&&(!term||(c.name+' '+c.region+' '+c.code).toLocaleLowerCase('fr').includes(term)));if(!items.length)return;const label=document.createElement('div');label.className='region-label';label.textContent=gr;host.appendChild(label);items.forEach(c=>{const b=document.createElement('button');b.className='case-btn'+(c.id===selected.id?' active':'');b.dataset.case=c.id;b.innerHTML='<span class="case-dot"></span><span class="case-name"></span><span class="case-code"></span>';b.querySelector('.case-name').textContent=c.name;b.querySelector('.case-code').textContent=c.code;b.addEventListener('click',()=>chooseCase(c.id));host.appendChild(b);});});}
-function renderOps(){const host=$('opsList');host.innerHTML='';selected.ops.forEach(op=>{const b=document.createElement('button');b.className='op-btn'+(op.id===selectedOp?' active':'');b.innerHTML='<span class="op-name"></span><span class="op-tag"></span>';b.querySelector('.op-name').textContent=op.name;b.querySelector('.op-tag').textContent=op.tag;b.addEventListener('click',()=>{selectedOp=op.id;renderOps();if(viewMode==='models'){stage='operation';buildCurrent();}});host.appendChild(b);});}
+function renderOps(){const host=$('opsList');host.innerHTML='';selected.ops.forEach(op=>{const b=document.createElement('button');b.className='op-btn'+(op.id===selectedOp?' active':'');b.innerHTML='<span class="op-name"></span><span class="op-tag"></span>';b.querySelector('.op-name').textContent=op.name;b.querySelector('.op-tag').textContent=op.tag;b.addEventListener('click',()=>{selectedOp=op.id;renderOps();if(viewMode==='models'){stage='operation';buildCurrent(true);}});host.appendChild(b);});}
 function updateHeading(){$('selectedRegion').textContent=selected.region;$('selectedName').textContent=selected.name;listCases($('caseSearch').value);renderOps();}
 function chooseCase(id){selected=CASES.find(c=>c.id===id)||CASES[0];selectedOp=selected.ops[0].id;stage='lesion';updateHeading();if(viewMode==='models')buildCurrent();}
-function changeStage(next){stage=next;applyStage();renderOps();}
+function changeStage(next){stage=next;if(viewMode==='models')buildCurrent(true);else applyStage();renderOps();}
 function switchView(next){viewMode=next;$('appShell').classList.toggle('kinetic-mode',next==='kinetic');$('viewerPanel').classList.toggle('chain-view',next==='kinetic');$('modelsTab').classList.toggle('active',next==='models');$('chainTab').classList.toggle('active',next==='kinetic');$('modelsTab').setAttribute('aria-selected',String(next==='models'));$('chainTab').setAttribute('aria-selected',String(next==='kinetic'));$('chainPanel').style.display=next==='kinetic'?'flex':'none';$('chainPanel').style.flexDirection='column';root&&(root.visible=next==='models');if(next==='kinetic'){buildKinetic();$('statusText').textContent='CHAÎNE CINÉTIQUE';$('sceneLabel').textContent='AXES ET COMPENSATIONS';}else{if(kineticRoot){scene.remove(kineticRoot);disposeObject(kineticRoot);kineticRoot=null;}buildCurrent();}resize();}
 function chooseLayer(key,btn){if(!layers[key])return;layers[key].visible=!layers[key].visible;btn.classList.toggle('active',layers[key].visible);}
 function buildKinetic(){
@@ -275,6 +275,7 @@ document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',
 $('resetView').addEventListener('click',()=>{if(viewMode==='kinetic'){buildKinetic();return;}resetCamera();});$('motionBtn').addEventListener('click',()=>{motion=!motion;$('motionBtn').textContent='Mouvement : '+(motion?'on':'off');});
 document.querySelectorAll('[data-deformity]').forEach(b=>b.addEventListener('click',()=>{chainType=b.dataset.deformity;document.querySelectorAll('[data-deformity]').forEach(x=>x.classList.toggle('active',x===b));buildKinetic();}));
 $('angleRange').addEventListener('input',e=>{chainAngle=Number(e.target.value);$('degreeValue').textContent=chainAngle+'°';buildKinetic();});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('Service worker non disponible',e));
 start();
 </script>
 </body>
