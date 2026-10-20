@@ -537,7 +537,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
   const $ = id => document.getElementById(id);
   let renderer, scene, camera, controls, figure, raf, ready=false, failed=false, mode='compare';
   let normalGroup, pathologyGroup, kineticGroup, lesionGroup, surgeryGroup, normalMeshes=[], pathologyMeshes=[], sourceMeshes=[], allMeshes=[];
-  let layerMode='both', motionOn=true, selectedDisease=null, selectedSurgery=null, chainType='varus', chainDegrees=15;
+  let layerMode='both', motionOn=true, selectedDisease=null, selectedSurgery=null, referenceState='disease', chainType='varus', chainDegrees=15;
   let compareAngle=0, compareDistance=1.25, drag=null, lastFrame=performance.now(), clock=0;
   const modelUrl='https://raw.githubusercontent.com/Charleeh/ecorche/320805e06aee51e2e6f6b22533eb2a59d43f2d4d/model/ecorche.meshopt.glb';
   const focusSettings={
@@ -630,7 +630,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
     if(normalGroup)scene.remove(normalGroup);
     if(pathologyGroup)scene.remove(pathologyGroup);
     normalGroup=figure.clone(true);pathologyGroup=figure.clone(true);
-    normalGroup.position.x=-.62;pathologyGroup.position.x=.62;
+    normalGroup.position.x=0;pathologyGroup.position.x=0;
     normalMeshes=[];pathologyMeshes=[];
     normalGroup.traverse(m=>{if(!m.isMesh)return;m.userData.__baseMaterial=m.material;normalMeshes.push(m);});
     pathologyGroup.traverse(m=>{if(!m.isMesh)return;m.userData.__baseMaterial=m.material;pathologyMeshes.push(m);});
@@ -676,7 +676,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
   function buildLesion(d,offsetX){
     removeGroup(lesionGroup);
     lesionGroup=new THREE.Group();
-    const cfg=getSettings(d),c=new THREE.Vector3(cfg.x+offsetX,cfg.y,cfg.z+.07);
+    const cfg=getSettings(d),c=new THREE.Vector3(cfg.x,cfg.y,cfg.z+.07);
     const red=0xdd6359,shade=makeMaterial(red,.26,.08,true,.72),dark=makeMaterial(0xb83f35,.25,.08);
     if(['arthrose-genou','menisque','lca'].includes(d.id)){
       const ring=new THREE.Mesh(new THREE.TorusGeometry(d.id==='lca'?.09:.14,.022,10,40),d.id==='menisque'?dark:shade);
@@ -707,14 +707,17 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
   }
   const compareCameras={left:new THREE.PerspectiveCamera(31,1,.01,30),right:new THREE.PerspectiveCamera(31,1,.01,30)};
   function renderCompare(){
-    // WebGLRenderer viewport/scissor coordinates are CSS pixels; Three.js applies the pixel ratio.
-    const w=renderer.domElement.clientWidth,h=renderer.domElement.clientHeight,half=Math.floor(w/2);
-    normalGroup.visible=true;pathologyGroup.visible=false;lesionGroup.visible=false;surgeryGroup.visible=false;figure.visible=false;kineticGroup.visible=false;
-    renderer.setScissorTest(true);
-    renderer.setViewport(0,0,Math.max(1,half),h);renderer.setScissor(0,0,Math.max(1,half),h);renderer.render(scene,compareCameras.left);
-    normalGroup.visible=false;pathologyGroup.visible=true;lesionGroup.visible=true;
-    renderer.setViewport(half,0,Math.max(1,w-half),h);renderer.setScissor(half,0,Math.max(1,w-half),h);renderer.render(scene,compareCameras.right);
-    renderer.setScissorTest(false);renderer.setViewport(0,0,w,h);
+    if(!renderer||!camera||!normalGroup||!pathologyGroup)return;
+    const isNormal=referenceState==='normal';
+    normalGroup.visible=isNormal;
+    pathologyGroup.visible=!isNormal;
+    lesionGroup.visible=!isNormal;
+    surgeryGroup.visible=false;
+    figure.visible=false;
+    kineticGroup.visible=false;
+    renderer.setScissorTest(false);
+    renderer.setViewport(0,0,renderer.domElement.clientWidth,renderer.domElement.clientHeight);
+    renderer.render(scene,camera);
   }
   function buildOperation(d,id){
     removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();
@@ -854,59 +857,73 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
   }
   function setLayer(m){layerMode=m;if(ready)setMode(mode,selectedDisease,selectedSurgery);}
   function modeVisibility(){
-    const compare=mode==='compare',surgery=mode==='surgery',kinetic=mode==='kinetic';
-    const split=$('splitLabels');if(split)split.style.display=compare?'grid':'none';
-    const line=$('viewerCenterLine');if(line)line.style.display=compare?'block':'none';
-    const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display=kinetic?'none':'flex';
+    const diseaseView=mode==='compare', surgery=mode==='surgery', kinetic=mode==='kinetic';
+    const split=$('splitLabels');if(split)split.style.display='none';
+    const line=$('viewerCenterLine');if(line)line.style.display='none';
+    const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display='flex';
     if(!ready)return;
-    normalGroup.visible=compare;pathologyGroup.visible=compare;figure.visible=surgery;kineticGroup.visible=kinetic;
-    lesionGroup.visible=compare;
+    normalGroup.visible=diseaseView&&referenceState==='normal';
+    pathologyGroup.visible=diseaseView&&referenceState!=='normal';
+    figure.visible=surgery;
+    lesionGroup.visible=diseaseView&&referenceState!=='normal';
     surgeryGroup.visible=surgery;
-    controls.enabled=!compare;
-    if(compare){updateCompareCameras();setStatus('Anatomie normale / pathologie');setLabel('Touchez et faites glisser pour tourner les deux vues. Repères rouges : zone étudiée, schéma illustratif.');}
+    kineticGroup.visible=kinetic;
+    controls.enabled=true;
+    if(diseaseView)setStatus(referenceState==='normal'?'MAQUETTE · NORMALE':'MAQUETTE · MALADIE');
+    if(kinetic){if(ctr)ctr.style.display='none';setStatus('CHAÎNE CINÉTIQUE');}
   }
   function setMode(next,d,surgery){
     mode=next||'compare';selectedDisease=d||selectedDisease;selectedSurgery=surgery||selectedSurgery;
     if(!ready)return;
     if(mode==='compare'){
-      resetMeshes(sourceMeshes);restoreMeshes(normalMeshes);restoreMeshes(pathologyMeshes);
-      const opts=getSettings(selectedDisease);
-      regionOnly(normalMeshes,selectedDisease,false);regionOnly(pathologyMeshes,selectedDisease,true);
-      // Show the local region at the same scale on both sides.
-      normalGroup.position.x=-.62;pathologyGroup.position.x=.62;
-      buildLesion(selectedDisease,.62);
+      restoreMeshes(sourceMeshes);resetMeshes(sourceMeshes);
+      restoreMeshes(normalMeshes);restoreMeshes(pathologyMeshes);
+      removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
       removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
-      camera.position.set(.5,opts.y+0.05,2.5);controls.target.set(0,opts.y,0);
-      updateCompareCameras();modeVisibility();
+      const opts=getSettings(selectedDisease);
+      normalGroup.position.set(0,0,0);pathologyGroup.position.set(0,0,0);
+      regionOnly(normalMeshes,selectedDisease,false);
+      regionOnly(pathologyMeshes,selectedDisease,referenceState!=='normal');
+      if(referenceState!=='normal')buildLesion(selectedDisease,0);
+      controls.enabled=true;controls.target.set(opts.x,opts.y,opts.z);
+      camera.position.set(opts.x+.10,opts.y+.04,opts.dist);
+      camera.lookAt(controls.target);controls.update();
+      modeVisibility();
     }else if(mode==='surgery'){
-      resetMeshes(sourceMeshes);resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
+      resetMeshes(sourceMeshes);restoreMeshes(sourceMeshes);
+      resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);
+      removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
       setSurgeryMode(selectedDisease,selectedSurgery);
+      modeVisibility();
     }else{
-      resetMeshes(sourceMeshes);resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
-      if(figure)figure.visible=false;normalGroup.visible=false;pathologyGroup.visible=false;kineticGroup.visible=true;
-      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,2.85);camera.lookAt(controls.target);controls.update();
-      const status=$('viewerStatus');if(status)status.textContent='Chaîne cinétique · comparaison 3D';
-      setLabel('À gauche : chaîne de référence. À droite : segments modifiés selon le curseur. Les répercussions sont illustratives, non diagnostiques.');
-      const lbl=$('splitLabels');if(lbl){lbl.style.display='grid';lbl.children[0].textContent='NORMALE';lbl.children[1].textContent='CHAÎNE MODIFIÉE';}
+      resetMeshes(sourceMeshes);restoreMeshes(sourceMeshes);
+      resetMeshes(normalMeshes);resetMeshes(pathologyMeshes);
+      removeGroup(lesionGroup);lesionGroup=new THREE.Group();scene.add(lesionGroup);
+      removeGroup(surgeryGroup);surgeryGroup=new THREE.Group();scene.add(surgeryGroup);
+      figure.visible=false;normalGroup.visible=false;pathologyGroup.visible=false;kineticGroup.visible=true;
+      controls.enabled=true;controls.target.set(0,-.02,0);camera.position.set(0,.12,3.25);camera.lookAt(controls.target);controls.update();
+      const lbl=$('splitLabels');if(lbl)lbl.style.display='none';
       const line=$('viewerCenterLine');if(line)line.style.display='none';
-      const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display='none';
-      buildChain();
+      const ctr=document.querySelector('.viewer-controls');if(ctr)ctr.style.display='flex';
+      setStatus('CHAÎNE CINÉTIQUE');setLabel('');buildChain();
     }
-    const rl=$('rightViewLabel');if(rl)rl.textContent=mode==='surgery'?'CHIRURGIE':mode==='kinetic'?'CHAÎNE MODIFIÉE':'PATHOLOGIE';
     renderNow();
+  }
+  function setReference(view){
+    referenceState=view==='normal'?'normal':'disease';
+    if(ready&&mode==='compare')setMode('compare',selectedDisease,selectedSurgery);
   }
   function resetMeshes(meshes){restoreMeshes(meshes);for(const m of meshes)m.visible=false;}
   function pickStructure(x,y){
     if(!ready)return;
-    const el=renderer.domElement,rect=el.getBoundingClientRect(),isRight=(x-rect.left)>=rect.width/2;
-    const meshes=isRight?pathologyMeshes:normalMeshes;const cam=isRight?compareCameras.right:compareCameras.left;
-    const localX=x-rect.left-(isRight?rect.width/2:0),localW=rect.width/2;
-    const mouse=new THREE.Vector2(localX/localW*2-1,-((y-rect.top)/rect.height*2-1));
-    const ray=new THREE.Raycaster();ray.setFromCamera(mouse,cam);
+    const el=renderer.domElement,rect=el.getBoundingClientRect();
+    const meshes=referenceState==='normal'?normalMeshes:pathologyMeshes;
+    const mouse=new THREE.Vector2(((x-rect.left)/rect.width)*2-1,-((y-rect.top)/rect.height*2-1));
+    const ray=new THREE.Raycaster();ray.setFromCamera(mouse,camera);
     const hit=ray.intersectObjects(meshes.filter(m=>m.visible),false)[0];
-    if(hit){const title=baseName(hit.object);setLabel(title+' · '+(isRight?'Pathologie':'Anatomie normale')+'. Déplacez le doigt pour explorer la vue.');}
+    if(hit)setStatus((referenceState==='normal'?'NORMALE · ':'MALADIE · ')+baseName(hit.object));
   }
-  function renderNow(){
+function renderNow(){
     if(!renderer||!scene||!camera)return;
     const host=$('anatomy3d');if(!host)return;
     if(mode==='compare'&&ready){renderCompare();return;}
@@ -971,7 +988,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
       console.error('OrthoClair 3D load failed',err);failed=true;fallback();
     });
   }
-  window.OrthoClair3D={attach,setMode,setLayer,setMotion,reset,setKinetics,focus:d=>setMode(mode,d,selectedSurgery)};
+  window.OrthoClair3D={attach,setMode,setLayer,setMotion,setReference,reset,setKinetics,focus:d=>setMode(mode,d,selectedSurgery)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach,{once:true});else attach();
 })();
 </script>
