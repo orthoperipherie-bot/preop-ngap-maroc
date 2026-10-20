@@ -102,6 +102,57 @@
   .viewer-help { max-width: 155px; }
   .viewer-controls button { font-size: 10px; padding: 7px 8px; }
 }
+
+/* Visual-first patient consultation interface */
+.compare-stage{position:relative}
+.viewer-split-labels{position:absolute;left:10px;right:10px;top:10px;z-index:3;display:grid;grid-template-columns:1fr 1fr;pointer-events:none;gap:10px}
+.viewer-split-labels span{justify-self:start;border-radius:8px;background:#fffffff0;border:1px solid #d3e3de;padding:6px 9px;color:#254e50;font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase}
+.viewer-split-labels span:last-child{justify-self:end;color:#913e37}
+.viewer-center-line{position:absolute;top:0;bottom:0;left:50%;border-left:1px solid #ffffffa8;pointer-events:none;z-index:2}
+.anatomy3d{height:clamp(350px,48vw,510px);min-height:340px}
+.compare-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 2px}
+.compare-legend>div{border:1px solid var(--line);border-radius:11px;padding:10px 11px;background:#fff}
+.compare-legend strong{display:block;font-size:11px;margin-bottom:2px}
+.compare-legend span{display:block;font-size:10px;color:var(--muted)}
+.compare-legend .lesion strong{color:#a13e35}
+.surgery-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
+.surgery-choice{border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;display:flex;align-items:center;gap:10px;padding:12px;min-height:68px;color:var(--ink)}
+.surgery-choice.active{background:#e6f4ef;border-color:#67b7a0;box-shadow:0 0 0 1px #8bcbb6}
+.surgery-symbol{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#edf3f1;display:grid;place-items:center;color:#335e61;font-size:17px}
+.surgery-choice.active .surgery-symbol{background:#c8eadf}
+.surgery-choice strong{font-size:12px;display:block;line-height:1.3}
+.surgery-choice small{font-size:10px;color:var(--muted);display:block;margin-top:3px}
+.kinetic-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,.7fr);gap:10px;margin:0 0 10px}
+.kinetic-box{background:white;border:1px solid var(--line);border-radius:13px;padding:11px 12px}
+.kinetic-box label{font-size:11px;color:#4f666a;font-weight:800;display:block;margin-bottom:7px}
+.kinetic-box select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff;color:var(--ink);font:inherit;font-size:12px}
+.kinetic-box input[type=range]{width:100%;accent-color:var(--teal);display:block}
+.kinetic-box output{font-size:11px;color:#8f4038;font-weight:850}
+.impact-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
+.impact-card{background:white;border:1px solid var(--line);border-radius:12px;padding:10px}
+.impact-card span{display:block;text-transform:uppercase;font-size:9px;letter-spacing:.65px;font-weight:850;color:#738583}
+.impact-card strong{display:block;font-size:11px;margin-top:4px}
+.impact-card small{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.3}
+.impact-card.primary{background:#fff4f1;border-color:#efc9c0}
+.impact-card.primary strong{color:#9d3c33}
+.kinetic-disclaimer{font-size:10px;color:#687a7b;margin:9px 2px 0}
+.mode-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.mode-heading h3{margin:0;font-size:16px;letter-spacing:-.25px}
+.mode-heading span{font-size:10px;font-weight:800;color:#27766d;background:#e4f4ed;padding:6px 9px;border-radius:99px}
+.viewer-credit{line-height:1.4}
+@media(max-width:580px){
+ .anatomy3d{height:370px;min-height:340px}
+ .surgery-list{grid-template-columns:1fr 1fr;gap:7px}
+ .surgery-choice{padding:9px;gap:7px;min-height:65px}
+ .surgery-choice strong{font-size:11px}
+ .surgery-choice small{font-size:9px}
+ .surgery-symbol{width:29px;height:29px;flex-basis:29px}
+ .kinetic-controls{grid-template-columns:1fr}
+ .impact-row{grid-template-columns:1fr 1fr}
+ .impact-card:last-child{grid-column:span 2}
+}
+@media(prefers-reduced-motion:reduce){.pulse-lesion,.flow-line,.float-part{animation:none!important}}
+
 </style>
 <script type="importmap">
 {
@@ -164,6 +215,7 @@ let activeTab = "comprendre";
 let simpleMode = true;
 let viewerLayer = "both";
 let viewerMotion = true;
+let selectedSurgery = null;
 let query = "";
 let compared = [];
 const $ = id => document.getElementById(id);
@@ -218,38 +270,42 @@ function anatomySvg(d){
   return '<svg class="diagram" viewBox="0 0 280 190" role="img" aria-label="Schéma simplifié de '+escapeHtml(d.region)+' avec zone concernée mise en évidence"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#edf8f2"/><stop offset="1" stop-color="#e8f2f4"/></linearGradient></defs><rect x="4" y="4" width="272" height="182" rx="18" fill="url(#bg)"/><circle cx="140" cy="95" r="72" fill="#ffffff" opacity=".55"/>'+art+'<path d="M35 153 Q57 141 73 153" stroke="'+teal+'" stroke-width="2" fill="none" stroke-linecap="round" class="flow-line"/><circle cx="35" cy="153" r="4" fill="'+teal+'"/><path d="M206 38 L236 38 L236 59" stroke="'+red+'" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="206" cy="38" r="4" fill="'+red+'" class="pulse-lesion"/><text x="220" y="74" font-size="9" fill="'+ink+'" text-anchor="middle">Zone étudiée</text><text x="20" y="25" font-size="9" font-weight="700" fill="'+ink+'">SCHÉMA SIMPLIFIÉ</text></svg>';
 }
 function renderTabs(d){
-  const tabs = [{id:"comprendre",label:"Comprendre"},{id:"evolution",label:"Évolution"},{id:"options",label:"Options de traitement"},{id:"consultation",label:"Préparer la décision"}];
-  return '<div class="tabs" role="tablist" aria-label="Sections de la fiche">'+tabs.map(t=>'<button class="tab '+(activeTab===t.id?"active":"")+'" role="tab" aria-selected="'+(activeTab===t.id)+'" data-tab="'+t.id+'">'+t.label+'</button>').join("")+'</div>';
+ const tabs=[{id:"comprendre",label:"Norme / maladie"},{id:"options",label:"Options chirurgicales"},{id:"kinetique",label:"Chaînes cinétiques"}];
+ return '<div class="tabs" role="tablist" aria-label="Modes de visualisation">'+tabs.map(t=>'<button class="tab '+(activeTab===t.id?"active":"")+'" role="tab" aria-selected="'+(activeTab===t.id)+'" data-tab="'+t.id+'">'+t.label+'</button>').join("")+'</div>';
 }
 function renderOption(o){
  const picked = compared.includes(o.id);
  return '<section class="option-card '+(picked?"selected":"")+'"><div class="option-top"><h3>'+escapeHtml(o.name)+'</h3><span class="option-type">'+escapeHtml(o.type)+'</span></div><p>'+escapeHtml(simpleMode?o.summary:o.summary+' '+o.limits)+'</p><h4>Quand la discuter ?</h4><p>'+escapeHtml(o.when)+'</p><h4>À garder en tête</h4><p>'+escapeHtml(o.limits)+'</p><button class="compare-check" data-compare="'+o.id+'" aria-pressed="'+picked+'">'+(picked?"✓ Ajoutée à la comparaison":"+ Comparer cette option")+'</button></section>';
 }
 function renderContent(d){
+ const viewer='<div class="viewer3d-wrap compare-stage"><div id="anatomy3d" class="anatomy3d" aria-label="Visualisation anatomique 3D interactive"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Préparation de la 3D…</span><span class="viewer-help">Glisser pour tourner · Pincer pour zoomer</span></div></div><div class="viewer-split-labels" id="splitLabels"><span>NORMALE</span><span id="rightViewLabel">PATHOLOGIE</span></div><div class="viewer-center-line" id="viewerCenterLine"></div></div>';
+ const credit='<div class="viewer-credit">Modèle 3D : <a href="https://github.com/Charleeh/ecorche" target="_blank" rel="noreferrer">Écorché</a> — CC BY-SA 4.0. Repères anatomiques et simulations à visée pédagogique.</div>';
+ const controls='<div class="viewer-controls" role="group" aria-label="Couches anatomiques"><button type="button" data-layer-view="both" class="active">Os + muscles</button><button type="button" data-layer-view="bones">Squelette</button><button type="button" data-layer-view="muscles">Muscles</button><button type="button" id="viewerMotion" aria-pressed="true">Animation : oui</button><button type="button" id="viewerReset">Recentrer</button></div>';
  if(activeTab==="comprendre"){
-  return '<div class="intro-grid"><section class="viz-card"><div class="viz-heading"><strong>Visualisation anatomique en 3D</strong><span class="live-label">● Modèle interactif</span></div><div class="viewer3d-wrap"><div id="anatomy3d" class="anatomy3d" aria-label="Modèle anatomique 3D interactif"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Préparation de la 3D…</span><span class="viewer-help">Glisser pour tourner · Pincer pour zoomer</span></div></div></div><div class="viewer-label" id="viewerLabel">Le modèle s’adapte à la région de la pathologie. Touchez une structure pour l’identifier.</div><div class="viewer-controls" role="group" aria-label="Contrôles de visualisation"><button type="button" data-layer-view="both" class="active">Os + muscles</button><button type="button" data-layer-view="bones">Squelette</button><button type="button" data-layer-view="muscles">Muscles</button><button type="button" id="viewerMotion" aria-pressed="true">Animation : oui</button><button type="button" id="viewerReset">Recentrer la pathologie</button></div><div class="viewer-credit">Modèle 3D : <a href="https://github.com/Charleeh/ecorche" target="_blank" rel="noreferrer">Écorché</a> — CC BY-SA 4.0, basé sur BodyParts3D et Z-Anatomy. Les zones pathologiques sont des repères pédagogiques, pas une simulation anatomique au millimètre.</div><div class="viewer-fallback" id="viewerFallback" hidden><div class="anatomy-label">La 3D n’a pas pu se charger. Voici le schéma pédagogique de secours.</div>'+anatomySvg(d)+'<div class="key-row"><span class="key"><span class="dot"></span> Zone étudiée</span><span class="key"><span class="dot normal"></span> Structures schématisées</span></div></div></section><div class="info-stack"><section class="info-box mint"><h3><span>◉</span> En quelques mots</h3><p>'+escapeHtml(simpleMode?d.summary:d.summary+" "+d.mechanism)+'</p></section><section class="info-box"><h3><span>◎</span> Ce qui se passe dans le corps</h3><p>'+escapeHtml(d.mechanism)+'</p></section><section class="info-box blue"><h3><span>✦</span> Ce que vous pouvez ressentir</h3><p>'+escapeHtml(d.symptoms)+'</p></section></div></div><div class="actions"><button class="primary-btn" data-goto="options">Voir les options de traitement →</button><button class="secondary-btn" data-goto="evolution">Comment cela peut évoluer</button><span class="feedback">Chaque situation est différente.</span></div>';
- }
- if(activeTab==="evolution"){
-  return '<h3 class="section-title">Comment cela peut-il évoluer ?</h3><p class="section-sub">Il n’existe pas un scénario unique. L’évolution dépend des symptômes, de l’examen, des images et du contexte personnel.</p><div class="evolution"><section class="stage"><div class="stage-num">1</div><h3>Comprendre le tableau</h3><p>'+escapeHtml(d.evolution[0])+'</p></section><section class="stage"><div class="stage-num">2</div><h3>Suivre la réponse</h3><p>'+escapeHtml(d.evolution[1])+'</p></section><section class="stage"><div class="stage-num">3</div><h3>Réévaluer si besoin</h3><p>'+escapeHtml(d.evolution[2])+'</p></section></div><div class="note"><strong>À retenir :</strong> une anomalie à l’imagerie n’impose pas à elle seule une opération. La décision prend en compte la gêne réelle, les objectifs et les options raisonnables.</div><div class="actions"><button class="primary-btn" data-goto="options">Comparer les traitements →</button></div>';
+  return '<div class="mode-heading"><h3>Comparer avec l’anatomie normale</h3><span>Vue 3D côte à côte</span></div>'+viewer+'<div class="compare-legend"><div><strong>● Anatomie normale</strong><span>Référence anatomique</span></div><div class="lesion"><strong>● '+escapeHtml(d.title)+'</strong><span>Structures concernées mises en évidence</span></div></div>'+controls+credit+'<div class="actions"><button class="primary-btn" data-goto="options">Explorer les options chirurgicales →</button><button class="secondary-btn" data-goto="kinetique">Simuler une chaîne cinétique</button></div>';
  }
  if(activeTab==="options"){
-  return '<h3 class="section-title">Les options possibles</h3><p class="section-sub">Le but est de choisir une stratégie adaptée à la gêne, aux objectifs et aux risques acceptables — pas de suivre automatiquement une seule voie.</p><div class="options-grid">'+d.options.map(renderOption).join("")+'</div>'+(compared.length?'<div class="compare-area"><h3>Comparaison personnalisée des options cochées</h3><div class="compare-cards">'+d.options.filter(o=>compared.includes(o.id)).map(o=>'<div class="compare-item"><strong>'+escapeHtml(o.name)+'</strong><span><b>À discuter si :</b> '+escapeHtml(o.when)+'<br><br><b>Limites :</b> '+escapeHtml(o.limits)+'</span></div>').join("")+'</div><p class="skeleton-note" style="margin:10px 0 0">La comparaison soutient la discussion et ne remplace pas une recommandation après examen.</p></div>':'<p class="skeleton-note" style="margin-top:15px">Sélectionnez deux options ou plus pour les comparer côte à côte.</p>')+'<div class="actions"><button class="secondary-btn" data-clear-compare>Effacer la comparaison</button><span class="feedback">La décision se prend au cas par cas.</span></div>';
+  const opts=d.options||[];
+  if(!selectedSurgery||!opts.some(o=>o.id===selectedSurgery))selectedSurgery=opts[0]?.id||null;
+  return '<div class="mode-heading"><h3>Simuler le geste chirurgical</h3><span>Choisir une option ci-dessous</span></div>'+viewer+'<div class="surgery-list">'+opts.map(o=>'<button type="button" class="surgery-choice '+(selectedSurgery===o.id?'active':'')+'" data-surgery="'+o.id+'" aria-pressed="'+(selectedSurgery===o.id)+'"><span class="surgery-symbol">'+(o.type.toLowerCase().includes("sans")?"↗":o.type.toLowerCase().includes("médical")?"✚":"⚒")+'</span><span><strong>'+escapeHtml(o.name)+'</strong><small>'+escapeHtml(o.type)+'</small></span></button>').join("")+'</div><div class="actions"><button class="secondary-btn" data-goto="comprendre">← Retour à la comparaison</button><span class="feedback">La simulation illustre le principe, pas le geste exact.</span></div>'+controls+credit;
  }
- return '<h3 class="section-title">Préparer la discussion avec le chirurgien</h3><p class="section-sub">Cochez les questions abordées pendant la consultation. Cette liste sert de pense-bête ; elle n’est pas enregistrée.</p><div class="questions">'+[
- "Quel est le problème principal qui explique mes symptômes ?",
- "Quels éléments de l’examen ou de l’imagerie sont les plus importants dans mon cas ?",
- "Que peut-on attendre d’un traitement sans chirurgie ?",
- "Quels bénéfices réalistes et quelles limites pour chaque option ?",
- "Quels sont les risques importants dans ma situation personnelle ?",
- "Quelles restrictions et quelle rééducation après le traitement choisi ?",
- "Quels signes doivent me faire recontacter le service ou consulter en urgence ?"
- ].map((q,i)=>'<div class="question"><input type="checkbox" id="q'+i+'"><label for="q'+i+'">'+q+'</label></div>').join("")+'</div><section class="redflag"><h3>⚠ Signes qui nécessitent une évaluation rapide</h3><p>'+escapeHtml(d.redflag)+'</p></section><div class="actions"><button class="primary-btn" onclick="window.print()">Imprimer la fiche explicative</button><button class="secondary-btn" data-goto="comprendre">Revoir le schéma</button></div>';
+ return '<div class="mode-heading"><h3>Simulateur de chaîne cinétique</h3><span>Modifier l’anomalie</span></div><div class="kinetic-controls"><div class="kinetic-box"><label for="chainType">Anomalie à simuler</label><select id="chainType"><option value="varus">Genou en varus (jambes arquées)</option><option value="valgus">Genou en valgus (genoux rapprochés)</option><option value="pronation">Pronation excessive du pied</option><option value="ankle">Cheville raide</option><option value="hip">Flexum de hanche</option><option value="pelvis">Bascule du bassin</option></select></div><div class="kinetic-box"><label for="chainDeviation">Intensité de la déformation <output id="chainDeviationOut">15 / 30</output></label><input id="chainDeviation" type="range" min="0" max="30" step="1" value="15"><div class="skeleton-note">Faites varier le curseur pour voir les compensations.</div></div></div>'+viewer+'<div class="impact-row" id="impactRow"><div class="impact-card"><span>Articulation proximale</span><strong id="impactTop">Hanche</strong><small id="impactTopText">Adaptation de l’axe</small></div><div class="impact-card primary"><span>Anomalie principale</span><strong id="impactMain">Genou</strong><small id="impactMainText">Déviation de l’axe</small></div><div class="impact-card"><span>Articulation distale</span><strong id="impactBottom">Cheville / pied</strong><small id="impactBottomText">Compensation possible</small></div></div><p class="kinetic-disclaimer">Simulation géométrique illustrative : elle montre les relations possibles entre segments, sans calcul biomécanique clinique ni prédiction individuelle.</p>'+controls+credit+'<div class="actions"><button class="secondary-btn" data-goto="comprendre">Retour à l’anatomie normale</button></div>';
 }
 function renderDetail(){
  const d = findDisease();
  $("detail").innerHTML = '<div class="detail-header"><div class="detail-top"><div class="region-art" aria-hidden="true">'+d.emoji+'</div><div class="detail-meta"><div class="eyebrow">'+escapeHtml(d.region)+' · '+escapeHtml(d.group==="Sport"?"Chirurgie du sport":d.group==="Rachis"?"Chirurgie du rachis":d.group==="Main"?"Chirurgie de la main":d.group==="Pied"?"Pied & cheville":"Orthopédie")+'</div><h2>'+escapeHtml(d.title)+'</h2><div class="pills"><span class="pill green">'+escapeHtml(d.tag)+'</span><span class="pill">Explication au patient</span></div></div><button class="patient-toggle '+(simpleMode?"on":"")+'" id="simpleToggle" aria-pressed="'+simpleMode+'">'+(simpleMode?"Langage simple ✓":"Version détaillée")+'</button></div><p class="summary">'+escapeHtml(d.summary)+'</p></div>'+renderTabs(d)+'<div class="content">'+renderContent(d)+'</div>';
  window.__orthoClairDisease = {id:d.id, title:d.title, region:d.region};
- if (window.OrthoClair3D) { window.OrthoClair3D.attach(); window.OrthoClair3D.focus(window.__orthoClairDisease); window.OrthoClair3D.setLayer(viewerLayer); window.OrthoClair3D.setMotion(viewerMotion); }
+ if(!d.options.some(o=>o.id===selectedSurgery)) selectedSurgery=d.options[0]?.id||null;
+ if (window.OrthoClair3D) {
+  window.OrthoClair3D.attach();
+  window.OrthoClair3D.setLayer(viewerLayer);
+  window.OrthoClair3D.setMotion(viewerMotion);
+  window.OrthoClair3D.setMode(activeTab==="comprendre"?"compare":activeTab==="options"?"surgery":"kinetic",window.__orthoClairDisease,selectedSurgery);
+ }
+ document.querySelectorAll("[data-surgery]").forEach(btn=>btn.addEventListener("click",()=>{selectedSurgery=btn.dataset.surgery;if(window.OrthoClair3D)window.OrthoClair3D.setMode("surgery",window.__orthoClairDisease,selectedSurgery);document.querySelectorAll("[data-surgery]").forEach(b=>{b.classList.toggle("active",b===btn);b.setAttribute("aria-pressed",String(b===btn));});const label=$("rightViewLabel");if(label)label.textContent="CHIRURGIE";}));
+ const chainType=$("chainType"), chainDeviation=$("chainDeviation");
+ const updateKinetic=()=>{const type=chainType?.value||"varus",degree=Number(chainDeviation?.value||15);const output=$("chainDeviationOut");if(output)output.textContent=degree+" / 30";const labels={varus:["Hanche","Adaptation possible de l’axe","Genou en varus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],valgus:["Hanche","Adaptation possible de l’axe","Genou en valgus","Déviation de l’axe","Cheville / pied","Réorientation du pied"],pronation:["Genou","Rotation compensatrice possible","Pied en pronation","Affaissement de l’arche","Hanche","Rotation secondaire possible"],ankle:["Genou","Adaptation de la marche","Cheville raide","Mobilité limitée","Pied","Déroulé du pas modifié"],hip:["Bassin","Bascule compensatrice possible","Hanche en flexum","Extension limitée","Genou","Flexion compensatrice possible"],pelvis:["Rachis lombaire","Adaptation posturale","Bascule du bassin","Inclinaison du bassin","Hanche","Répartition asymétrique possible"]};const a=labels[type]||labels.varus;["impactTop","impactTopText","impactMain","impactMainText","impactBottom","impactBottomText"].forEach((id,i)=>{const e=$(id);if(e)e.textContent=a[i];});if(window.OrthoClair3D)window.OrthoClair3D.setKinetics(type,degree);};
+ if(chainType)chainType.addEventListener("change",updateKinetic);if(chainDeviation)chainDeviation.addEventListener("input",updateKinetic);
  document.querySelectorAll("[data-layer-view]").forEach(btn=>{btn.classList.toggle("active",btn.dataset.layerView===viewerLayer);btn.setAttribute("aria-pressed",String(btn.dataset.layerView===viewerLayer));btn.addEventListener("click",()=>{viewerLayer=btn.dataset.layerView;if(window.OrthoClair3D)window.OrthoClair3D.setLayer(viewerLayer);document.querySelectorAll("[data-layer-view]").forEach(b=>{b.classList.toggle("active",b.dataset.layerView===viewerLayer);b.setAttribute("aria-pressed",String(b.dataset.layerView===viewerLayer));});});});
  const motionButton = $("viewerMotion"); if(motionButton){motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent="Animation : "+(viewerMotion?"oui":"non");motionButton.addEventListener("click",()=>{viewerMotion=!viewerMotion;if(window.OrthoClair3D)window.OrthoClair3D.setMotion(viewerMotion);motionButton.setAttribute("aria-pressed",String(viewerMotion));motionButton.classList.toggle("active",viewerMotion);motionButton.textContent="Animation : "+(viewerMotion?"oui":"non");});}
  const resetButton = $("viewerReset"); if(resetButton)resetButton.addEventListener("click",()=>{if(window.OrthoClair3D)window.OrthoClair3D.reset();});
