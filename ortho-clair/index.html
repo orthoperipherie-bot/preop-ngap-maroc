@@ -406,6 +406,7 @@ function renderList(){
   ).join("") : '<div class="empty">Aucun résultat</div>';
   document.querySelectorAll(".disease-btn").forEach(btn => btn.addEventListener("click",() => {
     currentId = btn.dataset.id; activeTab = "comprendre"; compared = [];
+    referenceView = "disease";
     selectedSurgery = null;
     renderAll();
   }));
@@ -450,7 +451,7 @@ function renderContent(d){
  const viewer='<div class="viewer3d-wrap"><div id="anatomy3d" class="anatomy3d" aria-label="Maquette anatomique 3D interactive"><div class="viewer-overlay"><span class="viewer-status" id="viewerStatus">Chargement 3D…</span><span class="viewer-help">Tourner · Zoomer</span></div></div><div class="viewer-fallback" id="viewerFallback" hidden><div class="anatomy-label">Maquette indisponible</div></div></div>';
  const controls='<div class="viewer-controls" role="group" aria-label="Afficher la maquette"><button type="button" data-layer-view="both" class="active">Os + muscles</button><button type="button" data-layer-view="bones">Squelette</button><button type="button" data-layer-view="muscles">Muscles</button><button type="button" id="viewerMotion" aria-pressed="true">Ⅱ Pause</button><button type="button" id="viewerReset">↺ Recentrer</button></div>';
  if(activeTab==="comprendre"){
-  return '<div class="maquette-stage"><div class="stage-switch" role="group" aria-label="État anatomique"><button type="button" data-reference="normal">Normale</button><button type="button" data-reference="disease" class="active">Maladie</button></div><span class="stage-number">MAQUETTE 1 / 2</span></div>'+viewer+controls;
+  return '<div class="maquette-stage"><div class="stage-switch" role="group" aria-label="État anatomique"><button type="button" data-reference="normal" class="'+(referenceView==="normal"?"active":"")+'" aria-pressed="'+(referenceView==="normal")+'">Normale</button><button type="button" data-reference="disease" class="'+(referenceView!=="normal"?"active":"")+'" aria-pressed="'+(referenceView!=="normal")+'">Maladie</button></div><span class="stage-number">MAQUETTE 1 / 2</span></div>'+viewer+controls;
  }
  if(activeTab==="options"){
   const opts=(d.options||[]).filter(o=>/chirurgie|arthroscopie/i.test(o.type)||/prothèse|reconstruction|libération|suture méniscale|méniscectomie|discectomie|décompression|fusion|correction chirurgicale|réparation|stabilisation/i.test(o.name));
@@ -601,14 +602,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
         drag=null;
       });
       renderer.domElement.addEventListener('pointercancel',()=>drag=null);
-      renderer.domElement.addEventListener('wheel',e=>{
-        if(mode!=='compare')return;
-        e.preventDefault();compareDistance=THREE.MathUtils.clamp(compareDistance+e.deltaY*.002,.55,2.8);updateCompareCameras();renderNow();
-      },{passive:false});
-      let pinchDistance=null;
-      renderer.domElement.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);},{passive:true});
-      renderer.domElement.addEventListener('touchmove',e=>{if(mode!=='compare'||e.touches.length!==2||!pinchDistance)return;const next=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);compareDistance=THREE.MathUtils.clamp(compareDistance*pinchDistance/Math.max(1,next),.55,2.8);pinchDistance=next;updateCompareCameras();renderNow();},{passive:true});
-      renderer.domElement.addEventListener('touchend',()=>pinchDistance=null,{passive:true});
+
+
       const resize=new ResizeObserver(()=>{
         const el=$('anatomy3d');if(!renderer||!camera||!el)return;
         const w=Math.max(240,el.clientWidth),h=Math.max(260,el.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();updateCompareCameras();renderNow();
@@ -935,7 +930,6 @@ function renderNow(){
     const now=performance.now();const dt=Math.min(.06,(now-lastFrame)/1000);lastFrame=now;if(motionOn)clock+=dt;
     if(mode==='compare'&&ready){
       if(lesionGroup)lesionGroup.traverse(o=>{if(o.isMesh){const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive)m.emissiveIntensity=motionOn?.12+.20*(.5+.5*Math.sin(clock*2.8)):.12;});}});
-      updateCompareCameras();
       renderCompare();
     }else{
       if(surgeryGroup)surgeryGroup.traverse(o=>{if(o.isMesh){const list=Array.isArray(o.material)?o.material:[o.material];list.forEach(m=>{if(m&&m.emissive)m.emissiveIntensity=motionOn?.06+.22*(.5+.5*Math.sin(clock*2.6)):.06;});}});
@@ -947,8 +941,10 @@ function renderNow(){
   function reset(){
     compareAngle=0;compareDistance=1.25;
     if(mode==='kinetic'){buildChain();return;}
-    if(mode==='compare'){updateCompareCameras();renderNow();}
-    else{const cfg=getSettings(selectedDisease);controls.target.set(cfg.x,cfg.y,cfg.z);camera.position.set(cfg.x+.25,cfg.y+.05,cfg.dist);camera.lookAt(controls.target);controls.update();renderNow();}
+    if(mode==='compare'){setMode('compare',selectedDisease,selectedSurgery);return;}
+    if(!ready||!selectedDisease)return;
+    const cfg=getSettings(selectedDisease);controls.target.set(cfg.x,cfg.y,cfg.z);
+    camera.position.set(cfg.x+.10,cfg.y+.04,cfg.dist);camera.lookAt(controls.target);controls.update();renderNow();
   }
   function setKinetics(type,degree){
     chainType=type||'varus';chainDegrees=THREE.MathUtils.clamp(Number(degree)||0,0,30);
@@ -991,7 +987,7 @@ function renderNow(){
   window.OrthoClair3D={attach,setMode,setLayer,setMotion,setReference,reset,setKinetics,focus:d=>setMode(mode,d,selectedSurgery)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach,{once:true});else attach();
 })();
-</script>
+
 
 </body>
 </html>
