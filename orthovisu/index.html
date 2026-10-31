@@ -80,19 +80,27 @@ Object.assign(images,{
   grayHipFront:grayPlate("Gray342.png","342","Articulation coxo-fémorale, vue antérieure"),
   grayHipPosterior:grayPlate("Gray343.png","343","Capsule de l'articulation coxo-fémorale, vue postérieure"),
   grayHipOpened:grayPlate("Gray341.png","341","Articulation coxo-fémorale ouverte, vue depuis le bassin")
+
+  grayFootLateral:grayPlate("Gray355.png","355","Ligaments latéraux du pied"),
+  servierKnee:{name:"Knee - Frontal view -- Smart-Servier.png",author:"Laboratoires Servier — Servier Medical Art",license:"CC BY-SA 3.0 (licence du fichier Commons)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/Knee_-_Frontal_view_--_Smart-Servier.png",source:"https://commons.wikimedia.org/wiki/File:Knee_-_Frontal_view_--_Smart-Servier.png"},
+  servierKneeSagittal:{name:"Knee - Parasagittal section -- Smart-Servier.png",author:"Laboratoires Servier — Servier Medical Art",license:"CC BY-SA 3.0 (licence du fichier Commons)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/Knee_-_Parasagittal_section_--_Smart-Servier.png",source:"https://commons.wikimedia.org/wiki/File:Knee_-_Parasagittal_section_--_Smart-Servier.png"},
+  servierDisc:{name:"Disc herniation -- Smart-Servier.png",author:"Laboratoires Servier — Servier Medical Art",license:"CC BY-SA 3.0 (licence du fichier Commons)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/Disc_herniation_--_Smart-Servier.png",source:"https://commons.wikimedia.org/wiki/File:Disc_herniation_--_Smart-Servier.png"},
+  servierDiscStages:{name:"Disc herniation - Degeneration -- Smart-Servier.png",author:"Laboratoires Servier — Servier Medical Art",license:"CC BY-SA 3.0 (licence du fichier Commons)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/Disc_herniation_-_Degeneration_--_Smart-Servier.png",source:"https://commons.wikimedia.org/wiki/File:Disc_herniation_-_Degeneration_--_Smart-Servier.png"},
+  servierOsteoarthritis:{name:"Osteoarthritis -- Smart-Servier.jpg",author:"Laboratoires Servier — Servier Medical Art",license:"CC BY-SA 3.0 (licence du fichier Commons)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/Osteoarthritis_--_Smart-Servier.jpg",source:"https://commons.wikimedia.org/wiki/File:Osteoarthritis_--_Smart-Servier.jpg"}
+
 });
 const cases=[
-{id:"gonarthrose",name:"Gonarthrose",region:"Genou",images:["kneeNormal","kneeOA","grayKneeFront","grayKneeBack"]},
-{id:"lca",name:"Rupture du LCA",region:"Genou",images:["kneeAnatomy","acl","kneeInjuries","grayKneeFront","grayKneeBack"]},
-{id:"menisque",name:"Lésion méniscale",region:"Genou",images:["kneeNormal","kneeInjuries","grayKneeFront","grayKneeBack"]},
-{id:"coiffe",name:"Rupture de la coiffe",region:"Épaule",images:["cuff","grayShoulder","grayShoulderMuscles"]},
-{id:"coxarthrose",name:"Coxarthrose",region:"Hanche",images:["hipAnatomy","hipOA","grayHipFront","grayHipPosterior","grayHipOpened"]},
-{id:"hernie",name:"Hernie discale lombaire",region:"Rachis",images:["spineNormal","hernia","disk","graySpine"]},
+{id:"gonarthrose",name:"Gonarthrose",region:"Genou",images:["grayKneeFront","grayKneeBack","servierKnee","servierKneeSagittal","servierOsteoarthritis","kneeNormal","kneeOA"]},
+{id:"lca",name:"Rupture du LCA",region:"Genou",images:["grayKneeFront","grayKneeBack","servierKnee","servierKneeSagittal","acl","kneeInjuries"]},
+{id:"menisque",name:"Lésion méniscale",region:"Genou",images:["grayKneeFront","grayKneeBack","servierKnee","servierKneeSagittal","kneeInjuries"]},
+{id:"coiffe",name:"Rupture de la coiffe",region:"Épaule",images:["grayShoulder","cuff"]},
+{id:"coxarthrose",name:"Coxarthrose",region:"Hanche",images:["grayHipFront","grayHipPosterior","grayHipOpened","hipAnatomy","hipOA","servierOsteoarthritis"]},
+{id:"hernie",name:"Hernie discale lombaire",region:"Rachis",images:["servierDisc","servierDiscStages","spineNormal","hernia","disk","graySpine"]},
 {id:"radius",name:"Fracture du radius distal",region:"Poignet",images:["radius","radiusPins","grayWristFlexor","grayWristExtensor","grayHand"]},
-{id:"hallux",name:"Hallux valgus",region:"Pied",images:["hallux","grayFoot"]},
+{id:"hallux",name:"Hallux valgus",region:"Pied",images:["grayFoot","grayFootLateral","hallux"]},
 {id:"scoliose",name:"Scoliose",region:"Rachis",images:["scoliosis"]},
 {id:"canal",name:"Canal carpien",region:"Main",images:["carpal","grayWristFlexor","grayWristExtensor","grayHand"]},
-{id:"cheville",name:"Entorse latérale de cheville",region:"Cheville",images:["ankle","grayFoot"]},
+{id:"cheville",name:"Entorse latérale de cheville",region:"Cheville",images:["grayFoot","grayFootLateral","ankle"]},
 {id:"bimalleolaire",name:"Fracture bi-/trimalléolaire",region:"Cheville",images:["bimalleolar","trimalleolar"]}
 ];
 const regions=["Tous","Genou","Épaule","Hanche","Rachis","Poignet","Pied","Main","Cheville"];
