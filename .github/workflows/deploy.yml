@@ -70,6 +70,7 @@ jobs:
           cp pharmacie-garde-maroc/manifest.webmanifest site/pharmacie-garde-maroc/manifest.webmanifest
           cp pharmacie-garde-maroc/sw.js site/pharmacie-garde-maroc/sw.js
           cp pharmacie-garde-maroc/icon.svg site/pharmacie-garde-maroc/icon.svg
+          unzip -oq orthovisu-app.zip -d site/
           touch site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
