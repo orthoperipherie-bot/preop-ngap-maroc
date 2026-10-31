@@ -65,18 +65,31 @@ const images={
   bimalleolar:{name:"X-ray of bimalleolar fracture.jpg",author:"Nazzar Tellisi, I. S. Abdulkareem, P. G. Giannoudis",license:"CC BY 4.0",url:"https://upload.wikimedia.org/wikipedia/commons/c/c5/X-ray_of_bimalleolar_fracture.jpg",source:"https://commons.wikimedia.org/wiki/File:X-ray_of_bimalleolar_fracture.jpg"},
   trimalleolar:{name:"Trimalleolar Ankle Fracture.jpg",author:"Chaim Mintz",license:"CC BY-SA 4.0",url:"https://upload.wikimedia.org/wikipedia/commons/b/bf/Trimalleolar_Ankle_Fracture.jpg",source:"https://commons.wikimedia.org/wiki/File:Trimalleolar_Ankle_Fracture.jpg"}
 };
+const grayPlate=(name,plate,description)=>({name,author:"Henry Vandyke Carter — Gray's Anatomy, 20e édition (1918)",license:"Domaine public (édition de 1918 ; vérifier la notice de chaque scan)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/"+name,source:"https://commons.wikimedia.org/wiki/File:"+name,description});
+Object.assign(images,{
+  grayKneeFront:grayPlate("Gray347.png","347","Articulation du genou, vue antérieure, ligaments internes"),
+  grayKneeBack:grayPlate("Gray348.png","348","Articulation du genou, vue postérieure, ligaments internes"),
+  grayKneeBackAlt:grayPlate("Gray346.png","346","Articulation du genou, vue postérieure"),
+  grayShoulder:grayPlate("Gray327.png","327","Capsule de l'articulation gléno-humérale, vue antérieure"),
+  grayShoulderMuscles:{name:"Arm shoulder gray.png",author:"Henry Gray / H. V. Carter — Gray's Anatomy (1918), scan Commons",license:"Domaine public (édition de 1918 ; vérifier la notice du scan)",url:"https://commons.wikimedia.org/wiki/Special:FilePath/Arm_shoulder_gray.png",source:"https://commons.wikimedia.org/wiki/File:Arm_shoulder_gray.png"},
+  graySpine:grayPlate("Gray_111_-_Vertebral_column-coloured.png","111","Colonne vertébrale, vue latérale"),
+  grayWristFlexor:grayPlate("Gray1233.png","1233","Gaines synoviales des tendons fléchisseurs du poignet et des doigts"),
+  grayWristExtensor:grayPlate("Gray1234.png","1234","Gaines synoviales des tendons extenseurs du poignet"),
+  grayFoot:grayPlate("Gray354.png","354","Ligaments de la face médiale du pied"),
+  grayHand:grayPlate("Gray424.png","424","Tendons extenseurs de l'avant-bras et de la main")
+});
 const cases=[
-{id:"gonarthrose",name:"Gonarthrose",region:"Genou",images:["kneeNormal","kneeOA"]},
-{id:"lca",name:"Rupture du LCA",region:"Genou",images:["kneeAnatomy","acl","kneeInjuries"]},
-{id:"menisque",name:"Lésion méniscale",region:"Genou",images:["kneeNormal","kneeInjuries"]},
-{id:"coiffe",name:"Rupture de la coiffe",region:"Épaule",images:["cuff"]},
-{id:"coxarthrose",name:"Coxarthrose",region:"Hanche",images:["hipAnatomy","hipOA"]},
-{id:"hernie",name:"Hernie discale lombaire",region:"Rachis",images:["spineNormal","hernia","disk"]},
-{id:"radius",name:"Fracture du radius distal",region:"Poignet",images:["radius","radiusPins"]},
-{id:"hallux",name:"Hallux valgus",region:"Pied",images:["hallux"]},
+{id:"gonarthrose",name:"Gonarthrose",region:"Genou",images:["kneeNormal","kneeOA","grayKneeFront","grayKneeBack"]},
+{id:"lca",name:"Rupture du LCA",region:"Genou",images:["kneeAnatomy","acl","kneeInjuries","grayKneeFront","grayKneeBack"]},
+{id:"menisque",name:"Lésion méniscale",region:"Genou",images:["kneeNormal","kneeInjuries","grayKneeFront","grayKneeBack"]},
+{id:"coiffe",name:"Rupture de la coiffe",region:"Épaule",images:["cuff","grayShoulder","grayShoulderMuscles"]},
+{id:"coxarthrose",name:"Coxarthrose",region:"Hanche",images:["hipAnatomy","hipOA","grayShoulder"]},
+{id:"hernie",name:"Hernie discale lombaire",region:"Rachis",images:["spineNormal","hernia","disk","graySpine"]},
+{id:"radius",name:"Fracture du radius distal",region:"Poignet",images:["radius","radiusPins","grayWristFlexor","grayWristExtensor","grayHand"]},
+{id:"hallux",name:"Hallux valgus",region:"Pied",images:["hallux","grayFoot"]},
 {id:"scoliose",name:"Scoliose",region:"Rachis",images:["scoliosis"]},
-{id:"canal",name:"Canal carpien",region:"Main",images:["carpal"]},
-{id:"cheville",name:"Entorse latérale de cheville",region:"Cheville",images:["ankle"]},
+{id:"canal",name:"Canal carpien",region:"Main",images:["carpal","grayWristFlexor","grayWristExtensor","grayHand"]},
+{id:"cheville",name:"Entorse latérale de cheville",region:"Cheville",images:["ankle","grayFoot"]},
 {id:"bimalleolaire",name:"Fracture bi-/trimalléolaire",region:"Cheville",images:["bimalleolar","trimalleolar"]}
 ];
 const regions=["Tous","Genou","Épaule","Hanche","Rachis","Poignet","Pied","Main","Cheville"];
