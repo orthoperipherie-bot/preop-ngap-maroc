@@ -65,6 +65,11 @@ jobs:
           cp ortho-clair/sw.js site/ortho-clair/sw.js
           cp ortho-clair/icon.svg site/ortho-clair/icon.svg
           cp suivi-patients/icon.svg site/suivi-patients/icon.svg
+          mkdir -p site/pharmacie-garde-maroc
+          cp pharmacie-garde-maroc/index.html site/pharmacie-garde-maroc/index.html
+          cp pharmacie-garde-maroc/manifest.webmanifest site/pharmacie-garde-maroc/manifest.webmanifest
+          cp pharmacie-garde-maroc/sw.js site/pharmacie-garde-maroc/sw.js
+          cp pharmacie-garde-maroc/icon.svg site/pharmacie-garde-maroc/icon.svg
           touch site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
