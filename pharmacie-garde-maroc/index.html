@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123c34">
+<meta name="description" content="Trouvez les pharmacies proches et consultez les pharmacies de garde au Maroc.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Pharmacie de garde Maroc</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#18332d;background:#f2f6f2;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;background:#f2f6f2;color:#18332d}
+button,input,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}
+.shell{max-width:1050px;margin:auto;padding:0 15px 34px}
+header{display:flex;align-items:center;justify-content:space-between;padding:17px 2px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.5px}
+.logo{width:40px;height:40px;border-radius:13px;background:#0e6955;color:white;display:grid;place-items:center;font-size:27px;line-height:1}
+.tiny{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:#637970;font-weight:800}
+.hero{background:linear-gradient(120deg,#103d34,#0d7058 72%,#31916e);border-radius:25px;padding:26px;color:white;box-shadow:0 14px 38px #163e3018;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:270px;height:270px;border:1px solid #ffffff24;border-radius:50%;right:-100px;top:-155px;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff08;pointer-events:none}
+.kicker{font-size:11px;font-weight:850;letter-spacing:1.15px;text-transform:uppercase;color:#c8f2dc}
+h1{font-size:clamp(30px,6vw,47px);line-height:1.04;letter-spacing:-1.9px;margin:12px 0 9px}
+.hero p{margin:0;color:#ddf1e7;font-size:14px;line-height:1.5;max-width:600px}
+.search{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;margin-top:21px;position:relative;z-index:1}
+.field{height:51px;border-radius:13px;background:white;color:#18332d;display:flex;align-items:center;padding:0 13px;gap:8px}
+.field input{border:0;outline:0;min-width:0;width:100%;color:#18332d;background:transparent}
+.btn{border:0;min-height:48px;padding:0 15px;border-radius:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:disabled{opacity:.55;cursor:wait}
+.primary{background:#e8f7ed;color:#145744}.secondary{background:#ffffff18;color:white;border:1px solid #ffffff40}
+.green{background:#0e6955;color:white}.plain{background:white;color:#0e6955;border:1px solid #dbe7df}
+.place{font-size:11px;color:#d3ebdf;margin-top:10px;min-height:16px}
+.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(265px,.7fr);gap:15px;margin-top:16px;align-items:start}
+.card{background:white;border:1px solid #e0e9e2;border-radius:20px;overflow:hidden;box-shadow:0 8px 25px #143c2d0b}
+.pad{padding:18px}.heading{display:flex;justify-content:space-between;gap:12px;align-items:start}
+h2{font-size:17px;letter-spacing:-.3px;margin:0}.muted{font-size:12px;line-height:1.5;color:#6c7f76;margin-top:5px}
+.pill{font-size:10px;font-weight:850;background:#e8f4eb;color:#14624e;border-radius:30px;padding:7px 10px;white-space:nowrap}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+select{border:1px solid #dce7df;background:#fff;border-radius:10px;padding:8px;color:#26473b}
+.small{min-height:36px;padding:0 12px;font-size:12px;border-radius:10px}
+#map{height:310px;width:100%;background:#e9eee9}
+.mapfoot{border-top:1px solid #e8eee9;padding:9px 13px;color:#78877f;display:flex;justify-content:space-between;gap:8px;font-size:10px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 4px}
+.count{font-weight:850;font-size:13px}.status{font-size:11px;color:#738179;padding:9px 16px 12px;display:flex;align-items:center;gap:8px}
+.spin{width:13px;height:13px;border:2px solid #dbe7df;border-top-color:#0e6955;border-radius:50%;animation:rot .7s linear infinite}@keyframes rot{to{transform:rotate(360deg)}}
+.results{display:flex;flex-direction:column}
+.item{display:flex;gap:11px;padding:14px 15px;border-top:1px solid #edf1ed;align-items:center}
+.num{width:29px;height:29px;flex:none;border-radius:10px;background:#e9f3eb;color:#11614c;display:grid;place-items:center;font-size:11px;font-weight:900}
+.info{flex:1;min-width:0}.name{font-weight:850;font-size:13px}.address{font-size:11px;line-height:1.4;color:#6a7d73;margin-top:4px}.meta{font-size:10px;color:#74837c;margin-top:6px}
+.actions{display:flex;flex-direction:column;gap:6px}.link{font-size:10px;font-weight:850;text-decoration:none;color:#12644e;border:1px solid #dbe7df;border-radius:9px;padding:7px 9px;text-align:center;white-space:nowrap}
+.empty{padding:25px 18px;text-align:center;color:#77867e;font-size:12px;line-height:1.5}
+.aside{display:grid;gap:13px}
+.duty{padding:19px;background:white;border:1px solid #e0e9e2;border-radius:20px;box-shadow:0 8px 25px #143c2d0b}
+.dutyhead{display:flex;gap:11px;align-items:start;margin-bottom:14px}
+.dutyicon{width:42px;height:42px;display:grid;place-items:center;background:#e2f3e8;color:#0d6955;border-radius:13px;font-size:22px;flex:none}
+.duty .btn{width:100%;text-decoration:none;font-size:13px}
+.note{margin-top:12px;background:#fff5df;color:#785821;padding:11px;border-radius:11px;font-size:11px;line-height:1.45}
+.steps{padding:18px}.steps p{font-size:12px;color:#687b72;line-height:1.65;margin:8px 0 0}
+.disclaimer{margin-top:14px;background:#eaf1eb;border-radius:12px;padding:12px;font-size:10px;color:#64756d;line-height:1.5}
+.install{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px;background:#fff;border:1px solid #e0e9e2;border-radius:16px;padding:14px 16px}
+.install strong{font-size:12px}.install span{display:block;font-size:10px;color:#718178;margin-top:3px}
+footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:19px;font-size:10px;color:#738178}footer a{color:#0e6955}
+.toast{position:fixed;z-index:9999;bottom:18px;left:50%;transform:translate(-50%,120px);transition:.25s;background:#173d33;color:white;padding:11px 15px;border-radius:12px;font-size:12px;max-width:calc(100% - 30px);box-shadow:0 8px 28px #0002}.toast.show{transform:translate(-50%,0)}
+@media(max-width:760px){.shell{padding:0 12px 25px}.hero{padding:22px 17px;border-radius:22px}.search{grid-template-columns:1fr 1fr}.field{grid-column:1/-1}.search .btn{min-height:46px;padding:0 10px;font-size:12px}.layout{grid-template-columns:1fr;gap:12px}.aside{order:-1}.duty{padding:16px}.steps{display:none}#map{height:280px}.pad{padding:15px}.item{padding:13px 11px;gap:8px}.link{padding:7px 7px}.brand{font-size:14px}.tiny{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><span class="logo">+</span><span>Pharmacie de garde <span style="color:#0e6955">Maroc</span></span></div><span class="tiny">Localisateur</span></header>
+<section class="hero">
+<div class="kicker">● Service de recherche</div>
+<h1>Trouvez une pharmacie<br>près de vous.</h1>
+<p>Localisez les pharmacies autour de vous, consultez leurs coordonnées et ouvrez le planning de garde de votre ville.</p>
+<div class="search">
+<label class="field" aria-label="Ville ou quartier"><span>⌖</span><input id="place" value="Salé" type="search" placeholder="Ville ou quartier au Maroc"></label>
+<button class="btn primary" id="search">⌕ Rechercher</button>
+<button class="btn secondary" id="gps">◎ Autour de moi</button>
+</div>
+<div class="place" id="placeStatus">Point de départ proposé : centre de Salé. Votre position GPS n'est utilisée qu'après autorisation.</div>
+</section>
+<section class="layout">
+<div class="card">
+<div class="pad">
+<div class="heading"><div><h2>Pharmacies à proximité</h2><div class="muted">Adresses et coordonnées issues d'OpenStreetMap.</div></div><span class="pill" id="radiusLabel">5 km</span></div>
+<div class="controls"><label class="muted">Rayon <select id="radius"><option value="2">2 km</option><option value="5" selected>5 km</option><option value="10">10 km</option><option value="15">15 km</option></select></label><button class="btn plain small" id="refresh">Actualiser</button></div>
+</div>
+<div id="map" aria-label="Carte des pharmacies à proximité"></div>
+<div class="mapfoot"><span>© OpenStreetMap</span><span>La carte ne confirme pas une garde.</span></div>
+<div class="toolbar"><span class="count" id="count">Recherche en cours</span><span class="muted">Tri : distance</span></div>
+<div class="status" id="status" aria-live="polite"><span class="spin"></span> Chargement…</div>
+<div class="results" id="results"><div class="empty">Les pharmacies proches apparaîtront ici.</div></div>
+</div>
+<aside class="aside">
+<section class="duty">
+<div class="dutyhead"><div class="dutyicon">✚</div><div><h2>Pharmacies de garde</h2><div class="muted">Consultez le planning quotidien publié pour votre ville.</div></div></div>
+<a class="btn green" id="dutyLink" href="https://garde24.ma/fr/pharmacie-de-garde/sale" target="_blank" rel="noopener">Consulter les gardes ↗</a>
+<div class="note">Important : appelez la pharmacie avant de vous déplacer. La carte recense les pharmacies, mais ne prouve pas qu'elles sont de garde.</div>
+</section>
+<section class="card steps"><h2>Comment ça marche ?</h2><p>1. Saisissez une ville ou utilisez votre position GPS.<br>2. Consultez les pharmacies les plus proches sur la carte.<br>3. Ouvrez le planning de garde pour vérifier les pharmacies de garde.<br>4. Téléphonez avant de partir.</p><div class="disclaimer">Les numéros et adresses dépendent des informations publiées dans OpenStreetMap. Ils peuvent être incomplets ou anciens.</div></section>
+</aside>
+</section>
+<section class="install"><div><strong>Installer sur votre iPhone</strong><span>Safari → Partager → Sur l'écran d'accueil.</span></div><span class="pill">Application web</span></section>
+<footer><span>La localisation n'est pas enregistrée par cette application.</span><span>Sources : <a href="https://garde24.ma/fr" target="_blank" rel="noopener">Garde24</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></span></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const defaultPoint={lat:34.0333,lon:-6.8,label:"Centre de Salé"};
+const cityPages=[
+{terms:["sale","salé"],url:"https://garde24.ma/fr/pharmacie-de-garde/sale",label:"Salé"},
+{terms:["rabat"],url:"https://garde24.ma/fr/pharmacie-de-garde/rabat",label:"Rabat"},
+{terms:["temara","témara","harhoura"],url:"https://garde24.ma/fr/pharmacie-de-garde/temara",label:"Témara"}
+];
+const endpoints=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+let point=Object.assign({},defaultPoint),map=null,originMarker=null,markers=[],lastResults=[];
+const norm=s=>String(s||"").toLocaleLowerCase("fr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+function toast(s){$("toast").textContent=s;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),3000)}
+function status(s,loading){$("status").innerHTML="";if(loading){const n=document.createElement("span");n.className="spin";$("status").appendChild(n)}$("status").appendChild(document.createTextNode(s))}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function updateDuty(city){const n=norm(city);const match=cityPages.find(p=>p.terms.some(t=>n.includes(norm(t))));const a=$("dutyLink");a.href=match?match.url:"https://garde24.ma/fr";a.textContent=match?"Voir les gardes à "+match.label+" ↗":"Rechercher les gardes sur Garde24 ↗"}
+function initMap(){if(!window.L){$("map").innerHTML='<div class="empty">Carte momentanément indisponible. La liste reste accessible.</div>';return}map=L.map("map",{scrollWheelZoom:false}).setView([point.lat,point.lon],14);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);originMarker=L.circleMarker([point.lat,point.lon],{radius:7,color:"#fff",weight:3,fillColor:"#0e6955",fillOpacity:1}).addTo(map).bindPopup("Point de recherche")}
+function moveMap(){if(!map)return;map.setView([point.lat,point.lon],14);originMarker.setLatLng([point.lat,point.lon]);originMarker.bindPopup(point.label||"Point de recherche")}
+function distance(a,b,c,d){const rad=x=>x*Math.PI/180,dl=rad(c-a),dn=rad(d-b),q=Math.sin(dl/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(dn/2)**2;return 6371*2*Math.atan2(Math.sqrt(q),Math.sqrt(1-q))}
+function toPharmacy(e){const t=e.tags||{},lat=e.lat??(e.center&&e.center.lat),lon=e.lon??(e.center&&e.center.lon);if(typeof lat!=="number"||typeof lon!=="number")return null;let addr=[];const street=t["addr:street"]||t["addr:place"];if(street)addr.push([t["addr:housenumber"],street].filter(Boolean).join(" "));if(t["addr:suburb"])addr.push(t["addr:suburb"]);if(t["addr:city"])addr.push(t["addr:city"]);return{id:e.type+"-"+e.id,name:t.name||t["name:fr"]||"Pharmacie",address:addr.join(", ")||t["addr:full"]||"Adresse non renseignée",phone:t.phone||t["contact:phone"]||"",lat:lat,lon:lon,opening:t.opening_hours||""}}
+async function fetchPharmacies(lat,lon,km){const r=Math.round(km*1000),q='[out:json][timeout:25];(node["amenity"="pharmacy"](around:'+r+','+lat+','+lon+');way["amenity"="pharmacy"](around:'+r+','+lat+','+lon+');relation["amenity"="pharmacy"](around:'+r+','+lat+','+lon+'););out center tags;';let error;for(const url of endpoints){try{const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:"data="+encodeURIComponent(q)});if(!res.ok)throw Error("Overpass "+res.status);const data=await res.json();return(data.elements||[]).map(toPharmacy).filter(Boolean)}catch(e){error=e}}throw error||Error("Service indisponible")}
+function render(list){markers.forEach(m=>m.remove());markers=[];if(map&&list.length){const bounds=[[point.lat,point.lon]];list.forEach(p=>{const m=L.marker([p.lat,p.lon]).addTo(map).bindPopup("<strong>"+esc(p.name)+"</strong><br>"+esc(p.address)+"<br>"+p.distance.toFixed(1)+" km");markers.push(m);bounds.push([p.lat,p.lon])});map.fitBounds(bounds,{padding:[20,20],maxZoom:15})}
+$("count").textContent=list.length?list.length+" pharmacie"+(list.length>1?"s":"")+" trouvée"+(list.length>1?"s":""):"Aucun résultat";
+if(!list.length){$("results").innerHTML='<div class="empty">Aucune pharmacie répertoriée dans ce rayon. Augmentez le rayon ou essayez un autre quartier.</div>';return}
+$("results").innerHTML=list.map((p,i)=>{const tel=p.phone?p.phone.replace(/[^\d+]/g,""):"";const dest=encodeURIComponent(p.name+", "+p.address);const directions="https://www.google.com/maps/dir/?api=1&destination="+dest;return'<article class="item"><span class="num">'+(i+1)+'</span><div class="info"><div class="name">'+esc(p.name)+'</div><div class="address">'+esc(p.address)+'</div><div class="meta">'+p.distance.toFixed(1)+' km · '+(p.opening?"Horaires OSM disponibles · ":"")+"Garde non confirmée</div></div><div class="actions">'+(tel?'<a class="link" href="tel:'+esc(tel)+'">Appeler</a>':'<span class="link" style="opacity:.4">Téléphone N/D</span>')+'<a class="link" href="'+directions+'" target="_blank" rel="noopener">Itinéraire</a></div></article>'}).join("")}
+async function searchNearby(){const km=Number($("radius").value);$("radiusLabel").textContent=km+" km";$("search").disabled=true;$("gps").disabled=true;$("refresh").disabled=true;status("Recherche des pharmacies autour du point choisi…",true);try{const found=await fetchPharmacies(point.lat,point.lon,km);lastResults=found.map(p=>Object.assign(p,{distance:distance(point.lat,point.lon,p.lat,p.lon)})).filter(p=>p.distance<=km+.05).sort((a,b)=>a.distance-b.distance);render(lastResults);status("Données OpenStreetMap · mise à jour à "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),false);if(!lastResults.length)toast("Aucune pharmacie trouvée dans ce rayon.")}catch(e){render([]);status("Service cartographique indisponible. Vérifiez internet et réessayez.",false);toast("La recherche n'a pas abouti.")}finally{$("search").disabled=false;$("gps").disabled=false;$("refresh").disabled=false}}
+async function geocode(q){const url="https://nominatim.openstreetmap.org/search?"+new URLSearchParams({q:q+", Maroc",format:"jsonv2",limit:"1",countrycodes:"ma","accept-language":"fr"});const r=await fetch(url,{headers:{Accept:"application/json"}});if(!r.ok)throw Error("Recherche de ville indisponible.");const rows=await r.json();if(!rows.length)throw Error("Ville ou quartier introuvable.");return{lat:Number(rows[0].lat),lon:Number(rows[0].lon),label:rows[0].display_name.split(",").slice(0,2).join(", ")}}
+async function searchCity(){const q=$("place").value.trim();if(!q){toast("Saisissez une ville ou un quartier.");return}$("search").disabled=true;status("Localisation de "+q+"…",true);try{point=await geocode(q);$("placeStatus").textContent="Point de départ : "+point.label;updateDuty(q);moveMap();await searchNearby()}catch(e){status(e.message||"Ville introuvable.",false);toast(e.message||"Recherche impossible.")}finally{$("search").disabled=false}}
+function locate(){if(!navigator.geolocation){toast("La géolocalisation n'est pas disponible.");return}$("gps").disabled=true;status("Demande de votre position…",true);navigator.geolocation.getCurrentPosition(async pos=>{point={lat:pos.coords.latitude,lon:pos.coords.longitude,label:"Votre position actuelle"};$("placeStatus").textContent="Position GPS utilisée pour cette recherche seulement.";moveMap();await searchNearby()},err=>{const msg=err.code===1?"Autorisez la localisation dans les réglages du navigateur.":"Position indisponible. Saisissez votre ville.";status(msg,false);toast(msg);$("gps").disabled=false},{enableHighAccuracy:true,timeout:12000,maximumAge:60000})}
+$("search").addEventListener("click",searchCity);$("gps").addEventListener("click",locate);$("refresh").addEventListener("click",searchNearby);$("radius").addEventListener("change",searchNearby);$("place").addEventListener("keydown",e=>{if(e.key==="Enter")searchCity()});
+updateDuty("Salé");initMap();searchNearby();
+if("serviceWorker"in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+})();
+</script>
+</body>
+</html>
