@@ -52,3 +52,40 @@ Pour chaque fichier, la page Commons liée depuis l'application constitue la not
 ## Installation sur iPhone
 
 Ouvrir l'adresse de l'application dans Safari, toucher **Partager**, puis **Sur l'écran d'accueil**.
+
+
+## Extension anatomique — atlas illustré
+
+Cette version enrichit le visualiseur avec des planches anatomiques historiques de **Gray's Anatomy (édition 1918)** et des illustrations de **Servier Medical Art**. Les images sont affichées sans modification ; la fiche de chaque image donne son auteur, sa notice de provenance et sa licence exacte.
+
+### Nouvelles planches Gray's Anatomy
+
+| Fichier | Auteur / œuvre | Notice |
+|---|---|---|
+| [Gray347.png](https://commons.wikimedia.org/wiki/File:Gray347.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray348.png](https://commons.wikimedia.org/wiki/File:Gray348.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray327.png](https://commons.wikimedia.org/wiki/File:Gray327.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray342.png](https://commons.wikimedia.org/wiki/File:Gray342.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray343.png](https://commons.wikimedia.org/wiki/File:Gray343.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray341.png](https://commons.wikimedia.org/wiki/File:Gray341.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray354.png](https://commons.wikimedia.org/wiki/File:Gray354.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray355.png](https://commons.wikimedia.org/wiki/File:Gray355.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray1233.png](https://commons.wikimedia.org/wiki/File:Gray1233.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray1234.png](https://commons.wikimedia.org/wiki/File:Gray1234.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+| [Gray424.png](https://commons.wikimedia.org/wiki/File:Gray424.png) | Henry Vandyke Carter, Gray's Anatomy (1918) | Domaine public selon la notice Commons |
+
+### Nouvelles planches Servier Medical Art
+
+Les fichiers ci-dessous sont crédités à Laboratoires Servier / Servier Medical Art. **Leur notice Wikimedia Commons indique CC BY-SA 3.0** : l'application conserve cette licence fichier par fichier, qui prévaut pour ces fichiers précis sur une description générale de la bibliothèque. Toute adaptation diffusée doit respecter le partage à l'identique.
+
+- [Knee - Frontal view -- Smart-Servier.png](https://commons.wikimedia.org/wiki/File:Knee_-_Frontal_view_--_Smart-Servier.png) — CC BY-SA 3.0.
+- [Knee - Parasagittal section -- Smart-Servier.png](https://commons.wikimedia.org/wiki/File:Knee_-_Parasagittal_section_--_Smart-Servier.png) — CC BY-SA 3.0.
+- [Disc herniation -- Smart-Servier.png](https://commons.wikimedia.org/wiki/File:Disc_herniation_--_Smart-Servier.png) — CC BY-SA 3.0.
+- [Disc herniation - Degeneration -- Smart-Servier.png](https://commons.wikimedia.org/wiki/File:Disc_herniation_-_Degeneration_--_Smart-Servier.png) — CC BY-SA 3.0.
+- [Osteoarthritis -- Smart-Servier.jpg](https://commons.wikimedia.org/wiki/File:Osteoarthritis_--_Smart-Servier.jpg) — CC BY-SA 3.0.
+
+Licence : [Creative Commons Attribution-ShareAlike 3.0](https://creativecommons.org/licenses/by-sa/3.0/). Attribution : Laboratoires Servier / Servier Medical Art, avec lien vers la notice individuelle et la licence. Les images sont conservées sans modification dans l'application.
+
+### Portée et limites
+
+Ces planches historiques et illustrations ouvertes enrichissent surtout le genou, l'épaule, la hanche, le pied, le poignet et le rachis. Elles ne constituent pas une collection moderne exhaustive ni des photographies de dissection pour chaque pathologie. Certaines planches Gray sont anciennes et leur terminologie ou leur rendu peuvent différer des conventions actuelles. La bibliothèque doit être enrichie au cas par cas avec vérification des notices individuelles.
