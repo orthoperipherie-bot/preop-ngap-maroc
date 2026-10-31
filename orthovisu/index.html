@@ -76,14 +76,17 @@ Object.assign(images,{
   grayWristFlexor:grayPlate("Gray1233.png","1233","Gaines synoviales des tendons fléchisseurs du poignet et des doigts"),
   grayWristExtensor:grayPlate("Gray1234.png","1234","Gaines synoviales des tendons extenseurs du poignet"),
   grayFoot:grayPlate("Gray354.png","354","Ligaments de la face médiale du pied"),
-  grayHand:grayPlate("Gray424.png","424","Tendons extenseurs de l'avant-bras et de la main")
+  grayHand:grayPlate("Gray424.png","424","Tendons extenseurs de l'avant-bras et de la main"),
+  grayHipFront:grayPlate("Gray342.png","342","Articulation coxo-fémorale, vue antérieure"),
+  grayHipPosterior:grayPlate("Gray343.png","343","Capsule de l'articulation coxo-fémorale, vue postérieure"),
+  grayHipOpened:grayPlate("Gray341.png","341","Articulation coxo-fémorale ouverte, vue depuis le bassin")
 });
 const cases=[
 {id:"gonarthrose",name:"Gonarthrose",region:"Genou",images:["kneeNormal","kneeOA","grayKneeFront","grayKneeBack"]},
 {id:"lca",name:"Rupture du LCA",region:"Genou",images:["kneeAnatomy","acl","kneeInjuries","grayKneeFront","grayKneeBack"]},
 {id:"menisque",name:"Lésion méniscale",region:"Genou",images:["kneeNormal","kneeInjuries","grayKneeFront","grayKneeBack"]},
 {id:"coiffe",name:"Rupture de la coiffe",region:"Épaule",images:["cuff","grayShoulder","grayShoulderMuscles"]},
-{id:"coxarthrose",name:"Coxarthrose",region:"Hanche",images:["hipAnatomy","hipOA","grayShoulder"]},
+{id:"coxarthrose",name:"Coxarthrose",region:"Hanche",images:["hipAnatomy","hipOA","grayHipFront","grayHipPosterior","grayHipOpened"]},
 {id:"hernie",name:"Hernie discale lombaire",region:"Rachis",images:["spineNormal","hernia","disk","graySpine"]},
 {id:"radius",name:"Fracture du radius distal",region:"Poignet",images:["radius","radiusPins","grayWristFlexor","grayWristExtensor","grayHand"]},
 {id:"hallux",name:"Hallux valgus",region:"Pied",images:["hallux","grayFoot"]},
