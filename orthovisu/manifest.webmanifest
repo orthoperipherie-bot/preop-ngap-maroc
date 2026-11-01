@@ -6,6 +6,6 @@
   "scope":"./",
   "display":"standalone",
   "background_color":"#f3f5f2",
-  "theme_color":"#173b3d",
-  "description":"Support visuel pédagogique pour la consultation en orthopédie et traumatologie."
+  "theme_color":"#12201f",
+  "description":"Atlas visuel interactif : anatomie normale, lésions et principes thérapeutiques en orthopédie-traumatologie."
 }
