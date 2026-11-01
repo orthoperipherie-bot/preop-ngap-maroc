@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a20">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OrthoSuite">
+<meta name="description" content="Portail personnel des applications d'orthopédie et de pratique clinique.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>OrthoSuite — Portail clinique</title>
+<style>
+:root{color-scheme:dark;--bg:#101a20;--panel:#18262d;--panel2:#20313a;--line:#32464f;--ink:#f1f6f4;--muted:#aab9bc;--mint:#a9d5c4;--gold:#e4c58b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% -20%,#29424a 0,transparent 45%),var(--bg);color:var(--ink)}body{min-height:100svh}button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.shell{max-width:1100px;margin:0 auto;padding:0 20px 46px}.top{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff15}.brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border:1px solid #83b8a8;border-radius:12px;display:grid;place-items:center;color:var(--mint);font:italic 25px Georgia;background:#a9d5c410}.word{font-size:14px;font-weight:850;letter-spacing:2.2px}.subword{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1.2px}.topright{font-size:11px;color:var(--muted)}
+.hero{padding:42px 0 25px}.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--mint)}h1{font-size:clamp(29px,5vw,43px);line-height:1.07;letter-spacing:-1.5px;margin:12px 0 10px}.intro{max-width:610px;color:var(--muted);font-size:14px;line-height:1.65;margin:0}
+.security{display:flex;align-items:flex-start;gap:11px;margin:22px 0 24px;padding:14px 15px;border:1px solid #927a4d66;border-radius:12px;background:#5e4a241f;color:#e6d2a9;font-size:12px;line-height:1.55}.security strong{display:block;color:#f0d7a1;margin-bottom:2px}.security .symbol{font-size:17px;line-height:1.2}
+.controls{display:flex;gap:10px;align-items:center;margin:22px 0 17px}.search{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:0 13px;height:46px}.search span{font-size:18px;color:var(--mint)}.search input{border:0;outline:0;background:transparent;color:var(--ink);width:100%;font-size:13px}.search input::placeholder{color:#83969b}.filter{height:44px;padding:0 13px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:12px}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:27px 0 13px}.sectionhead h2{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;margin:0;color:#d8e5e1}.sectionhead span{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.app{position:relative;display:flex;flex-direction:column;min-height:177px;padding:16px;background:linear-gradient(145deg,#1c2c33,#162229);border:1px solid var(--line);border-radius:15px;transition:transform .16s,border-color .16s,background .16s}.app:hover{transform:translateY(-2px);border-color:#71998c;background:linear-gradient(145deg,#223a40,#19272e)}.apphead{display:flex;justify-content:space-between;align-items:flex-start}.appicon{width:42px;height:42px;border:1px solid #71998c66;border-radius:12px;background:#a9d5c410;display:grid;place-items:center;color:var(--mint);font-size:20px}.fav{border:0;background:transparent;color:#74888d;font-size:20px;padding:0 2px;cursor:pointer}.fav.active{color:var(--gold)}.apptitle{font-size:15px;font-weight:750;margin:15px 0 5px}.appdesc{font-size:11px;color:var(--muted);line-height:1.5;max-width:270px}.launch{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:14px;color:var(--mint);font-size:11px;font-weight:750}.launch span:last-child{font-size:18px}
+.empty{display:none;padding:28px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
+.footer{border-top:1px solid #ffffff17;margin-top:35px;padding-top:17px;display:flex;justify-content:space-between;gap:12px;color:#83969b;font-size:10px;line-height:1.5}.footer a{color:var(--mint);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:760px){.shell{padding:0 14px 32px}.top{height:63px}.hero{padding:31px 0 18px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.app{min-height:171px;padding:13px}.apptitle{font-size:13px;margin-top:13px}.appdesc{font-size:10px}.topright{font-size:10px}.footer{flex-direction:column}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}.filter{padding:0 9px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top"><div class="brand"><div class="mark">O</div><div><div class="word">ORTHOSUITE</div><div class="subword">PORTAIL CLINIQUE</div></div></div><div class="topright">Espace de travail · mobile & desktop</div></header>
+<main>
+<section class="hero"><div class="eyebrow">VOS OUTILS, AU MÊME ENDROIT</div><h1>La pratique orthopédique,<br>plus fluide.</h1><p class="intro">Un accès direct à tes applications de consultation, de cotation, de suivi et de formation.</p></section>
+<div class="security" role="status"><div class="symbol">◈</div><div><strong>Protection Cloudflare à finaliser</strong>Ce portail centralise les liens, mais ne constitue pas un verrou de sécurité. Les adresses directes restent accessibles tant que Cloudflare Access n’a pas été activé sur l’hébergement et que l’ancien accès GitHub Pages n’a pas été désactivé.</div></div>
+<div class="controls"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Rechercher une application…" autocomplete="off"></label><button class="filter" id="favoritesOnly" type="button">☆ Favoris</button></div>
+<div class="sectionhead"><h2>Applications</h2><span id="count"></span></div>
+<div class="grid" id="grid"></div><div class="empty" id="empty">Aucune application ne correspond à cette recherche.</div>
+</main>
+<footer class="footer"><span>ORTHOSUITE · Portail d’accès aux outils professionnels</span><span>Ne pas saisir de données directement identifiantes de patients dans une application non sécurisée.</span></footer>
+</div>
+<script>
+const apps=[
+{id:"ngap",name:"NGAP Maroc",desc:"Recherche des actes, nomenclature et cotation des actes.",category:"Cotation",icon:"⌕",url:"../",tags:"ngap nomenclature cotation actes honoraires"},
+{id:"honoraires",name:"Simulateur d’honoraires",desc:"Simulation des honoraires et estimation des montants.",category:"Cotation",icon:"◫",url:"../simulateur-honoraires/",tags:"honoraires simulateur tarifs"},
+{id:"orthoscores",name:"OrthoScores",desc:"Scores fonctionnels orthopédiques avec calcul guidé.",category:"Consultation",icon:"▤",url:"../orthoscores/",tags:"scores fonctionnels mjoa consultation"},
+{id:"suivi",name:"Suivi patients",desc:"Outils de suivi et mesures fonctionnelles dans le temps.",category:"Consultation",icon:"◷",url:"../suivi-patients/",tags:"suivi patients scores évolution"},
+{id:"orthovisu",name:"OrthoVisu",desc:"Atlas visuel pour expliquer les pathologies et l’anatomie.",category:"Consultation",icon:"◉",url:"../orthovisu/",tags:"atlas visuel anatomie pathologie"},
+{id:"orthoclair",name:"OrthoClair",desc:"Visualisation des pathologies et des options thérapeutiques.",category:"Consultation",icon:"◇",url:"../ortho-clair/",tags:"orthoclair visualisation traitement"},
+{id:"ebot",name:"OrthoOS · EBOT",desc:"Révision structurée et préparation à l’examen EBOT.",category:"Formation",icon:"✳",url:"../orthoos-ebot/",tags:"ebot formation examen révision"},
+{id:"pharmacie",name:"Pharmacie de garde",desc:"Outil de recherche des pharmacies de garde au Maroc.",category:"Pratique",icon:"✚",url:"../pharmacie-garde-maroc/",tags:"pharmacie garde maroc"}
+];
+const $=id=>document.getElementById(id);let term="",onlyFav=false;
+const readFav=()=>{try{return JSON.parse(localStorage.getItem("orthosuite-favs")||"[]")}catch{return[]}};
+function render(){const favs=readFav();const items=apps.filter(a=>(!onlyFav||favs.includes(a.id))&&(a.name+" "+a.desc+" "+a.tags).toLowerCase().includes(term));$("count").textContent=items.length+" / "+apps.length;$("grid").innerHTML=items.map(a=>'<a class="app" href="'+a.url+'" aria-label="Ouvrir '+a.name+'"><div class="apphead"><div class="appicon" aria-hidden="true">'+a.icon+'</div><button class="fav '+(favs.includes(a.id)?"active":"")+'" data-fav="'+a.id+'" type="button" aria-label="Ajouter aux favoris" aria-pressed="'+favs.includes(a.id)+'">'+(favs.includes(a.id)?"★":"☆")+'</button></div><div class="apptitle">'+a.name+'</div><div class="appdesc">'+a.desc+'</div><div class="launch"><span>OUVRIR L’APPLICATION</span><span>→</span></div></a>').join("");$("empty").style.display=items.length?"none":"block"}
+$("search").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();render()});
+$("favoritesOnly").addEventListener("click",()=>{onlyFav=!onlyFav;$("favoritesOnly").textContent=onlyFav?"★ Favoris actifs":"☆ Favoris";render()});
+$("grid").addEventListener("click",e=>{const b=e.target.closest("[data-fav]");if(!b)return;e.preventDefault();e.stopPropagation();const id=b.dataset.fav;const favs=readFav();const next=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];localStorage.setItem("orthosuite-favs",JSON.stringify(next));render()});
+render();if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
