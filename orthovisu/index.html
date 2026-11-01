@@ -115,7 +115,7 @@ function renderDetail(){const c=selected;if(!c)return;$("crumb").textContent=c.r
 if(compare){$("visualArea").innerHTML='<div class="comparegrid">'+detailPanel(c,c.normal,"NORMAL","Anatomie de référence.")+detailPanel(c,c.lesion,"LÉSION","Aspect pathologique représenté.")+'</div>'}
 else{$("visualArea").innerHTML=detailPanel(c,stageData(c,stage),stageLabel(stage),stage===0?"Structure anatomique de référence.":stage===1?c.short:c.procedure.desc)}
 $("clinicalInfo").innerHTML='<article class="infobox"><h3>Repères anatomiques</h3><ul>'+c.anatomy.map(x=>'<li>'+escapeHtml(x)+'</li>').join("")+'</ul></article><article class="infobox"><h3>À montrer / examiner</h3><ul>'+c.exam.map(x=>'<li>'+escapeHtml(x)+'</li>').join("")+'</ul></article><article class="infobox"><h3>Options à discuter</h3><p>'+escapeHtml(c.treatment)+'</p></article><article class="infobox"><h3>Chaîne cinétique</h3><p>'+escapeHtml(c.chain)+'</p></article><article class="infobox"><h3>Principe illustré</h3><p>'+escapeHtml(c.procedure.desc)+'</p></article><article class="infobox"><h3>Point de vigilance</h3><p>Corréler la représentation à l’examen clinique et à l’imagerie du patient. L’image illustrative ne remplace pas une vue radiologique individuelle.</p></article>';
-$("patientText").textContent=c.patient;$("patientBox").classList.toggle("visible",patient)}
+$("patientText").textContent=c.patient;$("patientBox").classList.toggle("visible",patient);$("clinicalInfo").style.display=patient?"none":"grid"}
 function closeCase(){selected=null;$("detail").classList.remove("visible");$("home").classList.remove("hidden");history.replaceState(null,"",location.pathname);window.scrollTo(0,0)}
 $("filters").addEventListener("click",e=>{const b=e.target.closest("[data-region]");if(!b)return;region=b.dataset.region;onlyFavs=false;$("favorites").textContent="☆ Favoris";renderFilters();renderCards()});
 $("cards").addEventListener("click",e=>{const b=e.target.closest("[data-case]");if(b)openCase(b.dataset.case)});
@@ -124,7 +124,7 @@ $("favorites").addEventListener("click",()=>{onlyFavs=!onlyFavs;$("favorites").t
 $("back").addEventListener("click",closeCase);$("homeBtn").addEventListener("click",()=>selected?closeCase():window.scrollTo({top:0,behavior:"smooth"}));
 document.querySelector(".viewbar").addEventListener("click",e=>{const b=e.target.closest("[data-stage]");if(b){stage=Number(b.dataset.stage);compare=false;renderDetail()}});
 $("compareBtn").addEventListener("click",()=>{compare=!compare;renderDetail()});
-$("patientMode").addEventListener("click",()=>{patient=!patient;renderDetail()});
+$("patientMode").addEventListener("click",()=>{patient=!patient;if(patient){stage=1;compare=false}renderDetail()});
 $("favoriteBtn").addEventListener("click",()=>{if(!selected)return;if(favs.has(selected.id))favs.delete(selected.id);else favs.add(selected.id);localStorage.setItem("orthovisu-favs",JSON.stringify([...favs]));renderDetail();renderCards()});
 $("shareBtn").addEventListener("click",async()=>{if(!selected)return;const url=location.href;try{if(navigator.share)await navigator.share({title:selected.name,url});else{await navigator.clipboard.writeText(url);$("shareBtn").textContent="Lien copié"}}catch(e){}});
 $("visualArea").addEventListener("click",e=>{const img=e.target.closest("img[data-zoom]");if(!img)return;$("zoomImage").src=img.src;$("zoomTitle").textContent=selected?selected.name:"Vue agrandie";$("zoomDialog").showModal()});
